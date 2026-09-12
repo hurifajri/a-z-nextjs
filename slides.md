@@ -1,6 +1,5 @@
 ---
-# try also 'default' to start simple
-theme: seriph
+theme: neobrutalism
 # random image from a curated Unsplash collection by Anthony
 # like them? see https://unsplash.com/collections/94734566/slidev
 background: https://cover.sli.dev
@@ -607,7 +606,7 @@ Double-click on the draggable elements to edit their positions.
 </v-drag>
 ```
 
-<v-drag pos="558,247,261,_,-15">
+<v-drag pos="471,257,261,_,-15">
   <div text-center text-3xl border border-main rounded>
     Double-click me!
   </div>

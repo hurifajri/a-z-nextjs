@@ -17,6 +17,7 @@
   },
   "devDependencies": {
     "prettier": "^3.9.6",
-    "prettier-plugin-slidev": "^1.0.5"
+    "prettier-plugin-slidev": "^1.0.5",
+    "slidev-theme-neobrutalism": "link:../slidev-theme-neobrutalism"
   }
 }

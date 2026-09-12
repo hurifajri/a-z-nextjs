@@ -27,6 +27,9 @@ importers:
       prettier-plugin-slidev:
         specifier: ^1.0.5
         version: 1.0.5(prettier@3.9.6)
+      slidev-theme-neobrutalism:
+        specifier: link:../slidev-theme-neobrutalism
+        version: link:../slidev-theme-neobrutalism
 
 packages:
 
