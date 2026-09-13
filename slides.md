@@ -24,7 +24,7 @@ Digunakan oleh berbagai perusahaan terkemuka dunia, Next.js memudahkan Antum mem
 </p>
 
 <!-- Card Deck Stack Showcase -->
-<div class="relative w-[780px] h-[310px] mx-auto mt-2">
+<div class="relative w-[780px] h-[310px] mx-auto mt-16">
 
   <!-- Base Placeholder (Click 0) -->
   <div
