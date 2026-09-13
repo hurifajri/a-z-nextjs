@@ -109,13 +109,13 @@ Digunakan oleh berbagai perusahaan terkemuka dunia, Next.js memudahkan Antum mem
       </div>
       <div class="pt-2 border-t-2 border-black/10">
         <a
-          href="https://www.nerdwallet.com"
+          href="https://dub.co"
           target="_blank"
           rel="noopener noreferrer"
           class="inline-flex items-center gap-1.5 text-black font-black bg-white hover:bg-[#00E5FF] px-3 py-1.5 rounded-lg border-2 border-black transition-all shadow-[2px_2px_0px_#000] text-xs"
           @click.stop
         >
-          <span>nerdwallet.com</span>
+          <span>dub.co</span>
           <span class="text-[10px]">↗</span>
         </a>
       </div>
@@ -183,13 +183,13 @@ Digunakan oleh berbagai perusahaan terkemuka dunia, Next.js memudahkan Antum mem
       </div>
       <div class="pt-2 border-t-2 border-black/10">
         <a
-          href="https://www.codecademy.com"
+          href="https://egghead.io"
           target="_blank"
           rel="noopener noreferrer"
           class="inline-flex items-center gap-1.5 text-black font-black bg-white hover:bg-[#FF6B8B] hover:text-white px-3 py-1.5 rounded-lg border-2 border-black transition-all shadow-[2px_2px_0px_#000] text-xs"
           @click.stop
         >
-          <span>codecademy.com</span>
+          <span>egghead.io</span>
           <span class="text-[10px]">↗</span>
         </a>
       </div>
@@ -257,13 +257,13 @@ Digunakan oleh berbagai perusahaan terkemuka dunia, Next.js memudahkan Antum mem
       </div>
       <div class="pt-2 border-t-2 border-black/10">
         <a
-          href="https://www.ticketmaster.com"
+          href="https://cal.com"
           target="_blank"
           rel="noopener noreferrer"
           class="inline-flex items-center gap-1.5 text-black font-black bg-white hover:bg-[#FFA502] px-3 py-1.5 rounded-lg border-2 border-black transition-all shadow-[2px_2px_0px_#000] text-xs"
           @click.stop
         >
-          <span>ticketmaster.com</span>
+          <span>cal.com</span>
           <span class="text-[10px]">↗</span>
         </a>
       </div>
@@ -331,13 +331,13 @@ Digunakan oleh berbagai perusahaan terkemuka dunia, Next.js memudahkan Antum mem
       </div>
       <div class="pt-2 border-t-2 border-black/10">
         <a
-          href="https://jobs.netflix.com"
+          href="https://zapier.com"
           target="_blank"
           rel="noopener noreferrer"
           class="inline-flex items-center gap-1.5 text-black font-black bg-white hover:bg-[#FFE600] px-3 py-1.5 rounded-lg border-2 border-black transition-all shadow-[2px_2px_0px_#000] text-xs"
           @click.stop
         >
-          <span>jobs.netflix.com</span>
+          <span>zapier.com</span>
           <span class="text-[10px]">↗</span>
         </a>
       </div>
