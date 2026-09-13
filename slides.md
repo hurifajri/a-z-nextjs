@@ -368,7 +368,7 @@ Digunakan oleh berbagai perusahaan terkemuka dunia, Next.js memudahkan Antum mem
 ## TANGGA BELAJAR MENUJU NEXT.JS
 
 <p>Alur Fondasi Ideal yang Sebenarnya Dibutuhkan Sebelum Masuk ke Dunia Fullstack</p>
-<span v-mark.underline.orange>inline markers</span>
+
 <!-- Node-Edge Flow Container -->
 <div class="flex items-stretch justify-between gap-2.5 mt-2">
   <!-- Node 1: HTML, CSS & JS -->

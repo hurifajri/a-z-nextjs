@@ -1,3 +1,25 @@
-dist
+# Dependencies & Build artifacts
 node_modules
+dist
+.slidev
+
+# AI Assistant & Agent directories
+.agents
+.claude
+.hermes
+.gemini
+.cursor
+.windsurf
+.copilot
+
+# Editor & Tooling directories
+.vscode
+.idea
+
+# Lockfiles
 pnpm-lock.yaml
+package-lock.json
+yarn.lock
+
+# Catch-all for any other hidden/dot directories
+.*/
