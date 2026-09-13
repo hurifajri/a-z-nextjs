@@ -1,0 +1,20 @@
+/* Global custom styles */
+
+/* Subtitle paragraph directly following an h2 title */
+.slidev-layout h2 + p {
+  font-size: 1.15rem;
+  font-weight: 600;
+  line-height: 1.45;
+  color: var(--brutal-black, #000000);
+  opacity: 0.85;
+  margin-top: -0.25rem;
+  margin-bottom: 1rem;
+}
+
+/* Links: no underscore/underline, and text always black even on hover */
+.slidev-layout a,
+.slidev-layout a:hover,
+.slidev-layout a:focus {
+  color: #000000 !important;
+  text-decoration: none !important;
+}

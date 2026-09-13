@@ -17,7 +17,7 @@
 
   <!-- Tag Pill -->
   <rect x="470" y="12" width="112" height="24" rx="5" fill="#FF6B8B" stroke="#000000" stroke-width="1.5"/>
-  <text x="526" y="28" font-family="sans-serif" font-size="9" font-weight="900" text-anchor="middle" fill="#000000">LMS & EDTECH</text>
+  <text x="526" y="28" font-family="sans-serif" font-size="9" font-weight="900" text-anchor="middle" fill="#000000">LMS &amp; EDTECH</text>
 
   <!-- App Custom Content -->
   
@@ -36,20 +36,20 @@
             <!-- Lesson List -->
             <rect x="365" y="130" width="200" height="140" rx="4" fill="#FFFFFF" stroke="#000" stroke-width="2"/>
             <rect x="375" y="140" width="180" height="24" rx="3" fill="#2ED573" stroke="#000" stroke-width="1"/>
-            <text x="385" y="156" font-family="sans-serif" font-size="9" font-weight="900" fill="#000">✓ 01. Setup & Environment</text>
+            <text x="385" y="156" font-family="sans-serif" font-size="9" font-weight="900" fill="#000">✓ 01. Setup &amp; Environment</text>
             <rect x="375" y="170" width="180" height="24" rx="3" fill="#FFE600" stroke="#000" stroke-width="1"/>
-            <text x="385" y="186" font-family="sans-serif" font-size="9" font-weight="900" fill="#000">▶ 02. Routing & Layout</text>
+            <text x="385" y="186" font-family="sans-serif" font-size="9" font-weight="900" fill="#000">▶ 02. Routing &amp; Layout</text>
             <rect x="375" y="200" width="180" height="24" rx="3" fill="#FFF" stroke="#000" stroke-width="1"/>
             <text x="385" y="216" font-family="sans-serif" font-size="9" font-weight="700" fill="#666">🔒 03. Server Components</text>
             <rect x="375" y="230" width="180" height="24" rx="3" fill="#FFF" stroke="#000" stroke-width="1"/>
-            <text x="385" y="246" font-family="sans-serif" font-size="9" font-weight="700" fill="#666">🔒 04. Database & Prisma</text>
+            <text x="385" y="246" font-family="sans-serif" font-size="9" font-weight="700" fill="#666">🔒 04. Database &amp; Prisma</text>
         
 
   <!-- Watermark / Placeholder Notice Footer -->
   <rect x="15" y="288" width="570" height="38" rx="6" fill="#FFFFFF" stroke="#000000" stroke-width="2.5"/>
   <rect x="25" y="296" width="22" height="22" rx="3" fill="#FFE600" stroke="#000000" stroke-width="1.5"/>
   <text x="36" y="311" font-family="sans-serif" font-size="11" font-weight="900" text-anchor="middle" fill="#000000">📷</text>
-  <text x="56" y="306" font-family="sans-serif" font-size="10" font-weight="900" fill="#000000">PLACEHOLDER SCREENSHOT • LMS & LEARNING PORTAL</text>
+  <text x="56" y="306" font-family="sans-serif" font-size="10" font-weight="900" fill="#000000">PLACEHOLDER SCREENSHOT • LMS &amp; LEARNING PORTAL</text>
   <text x="56" y="320" font-family="sans-serif" font-size="9" font-weight="700" fill="#64748B">Simpan tangkapan layar asli di: public/screenshots/04-lms-education.svg</text>
   <rect x="480" y="296" width="95" height="22" rx="4" fill="#000000"/>
   <text x="527" y="311" font-family="sans-serif" font-size="9" font-weight="900" text-anchor="middle" fill="#FFE600">600 × 340 PX</text>
