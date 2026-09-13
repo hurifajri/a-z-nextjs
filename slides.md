@@ -178,7 +178,7 @@ Digunakan oleh berbagai perusahaan terkemuka dunia, Next.js memudahkan Antum mem
           <span class="font-black text-xs text-black">LMS / Learning Portal</span>
         </div>
         <p class="text-[11px] text-gray-700 leading-relaxed font-medium">
-          Modul kurikulum terstruktur, pemutar materi video santri, pemantau progres belajar, kuis evaluasi, dan sertifikat kelulusan.
+          Modul kurikulum terstruktur, pemutar materi video, pemantau progres belajar, kuis evaluasi, dan sertifikat kelulusan.
         </p>
       </div>
       <div class="pt-2 border-t-2 border-black/10">
@@ -289,7 +289,7 @@ Digunakan oleh berbagai perusahaan terkemuka dunia, Next.js memudahkan Antum mem
           <span class="font-black text-xs text-black">Community & Forum</span>
         </div>
         <p class="text-[11px] text-gray-700 leading-relaxed font-medium">
-          Ruang diskusi tanya-jawab santri, sistem upvote jawaban bermanfaat, utas percakapan teratur, serta reputasi profil anggota.
+          Ruang diskusi tanya-jawab, sistem upvote jawaban bermanfaat, utas percakapan teratur, serta reputasi profil anggota.
         </p>
       </div>
       <div class="pt-2 border-t-2 border-black/10">
@@ -365,9 +365,11 @@ Digunakan oleh berbagai perusahaan terkemuka dunia, Next.js memudahkan Antum mem
 
 ---
 
-## TANGGA BELAJAR MENUJU NEXT.JS
+## BAGAIMANA TANGGA BELAJAR MENUJU NEXT.JS?
 
-<p>Alur Fondasi Ideal yang Sebenarnya Dibutuhkan Sebelum Masuk ke Dunia Fullstack</p>
+<p>
+  Dari fondasi dasar web hingga fullstack framework — alur bertahap yang semoga Allah mudahkan Antum dalam mempelajarinya.
+</p>
 
 <!-- Node-Edge Flow Container -->
 <div class="flex items-stretch justify-between gap-2.5 mt-2">
