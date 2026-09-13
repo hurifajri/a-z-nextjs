@@ -1,0 +1,62 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="600" height="340" viewBox="0 0 600 340">
+  <!-- Outer Window Frame -->
+  <rect x="4" y="4" width="592" height="332" rx="10" fill="#FFF7ED" stroke="#000000" stroke-width="4"/>
+
+  <!-- Top Bar / Titlebar -->
+  <path d="M 4,14 A 10,10 0 0,1 14,4 L 586,4 A 10,10 0 0,1 596,14 L 596,44 L 4,44 Z" fill="#FFFFFF" stroke="#000000" stroke-width="4"/>
+  <line x1="4" y1="44" x2="596" y2="44" stroke="#000000" stroke-width="4"/>
+
+  <!-- Window Dots -->
+  <circle cx="24" cy="24" r="6" fill="#FF5F56" stroke="#000000" stroke-width="1.5"/>
+  <circle cx="42" cy="24" r="6" fill="#FFBD2E" stroke="#000000" stroke-width="1.5"/>
+  <circle cx="60" cy="24" r="6" fill="#27C93F" stroke="#000000" stroke-width="1.5"/>
+
+  <!-- URL Bar Mockup -->
+  <rect x="85" y="12" width="370" height="24" rx="5" fill="#F1F5F9" stroke="#000000" stroke-width="1.5"/>
+  <text x="100" y="28" font-family="monospace" font-size="10" font-weight="bold" fill="#475569">🔒 https://tickets.eventhub.id/schedule</text>
+
+  <!-- Tag Pill -->
+  <rect x="470" y="12" width="112" height="24" rx="5" fill="#FFA502" stroke="#000000" stroke-width="1.5"/>
+  <text x="526" y="28" font-family="sans-serif" font-size="9" font-weight="900" text-anchor="middle" fill="#000000">BOOKING & TICKETING</text>
+
+  <!-- App Custom Content -->
+  
+            <!-- Event Hero -->
+            <rect x="35" y="70" width="530" height="60" rx="4" fill="#FFA502" stroke="#000" stroke-width="2"/>
+            <text x="55" y="95" font-family="sans-serif" font-size="13" font-weight="900" fill="#000">HSI TECH SUMMIT 2026: NEXT.JS TRACK</text>
+            <text x="55" y="113" font-family="sans-serif" font-size="10" font-weight="700" fill="#000">📍 Graha Informatika • 📅 25 Oktober 2026</text>
+
+            <!-- Calendar / Slot Picker -->
+            <rect x="35" y="140" width="340" height="130" rx="4" fill="#FFFFFF" stroke="#000" stroke-width="2"/>
+            <text x="50" y="160" font-family="sans-serif" font-size="10" font-weight="900" fill="#000">PILIH JADWAL SESI & WORKSHOP</text>
+            
+            <rect x="50" y="175" width="90" height="35" rx="3" fill="#FFE600" stroke="#000" stroke-width="1.5"/>
+            <text x="95" y="190" font-family="sans-serif" font-size="9" font-weight="900" text-anchor="middle" fill="#000">SESI PAGI</text>
+            <text x="95" y="202" font-family="sans-serif" font-size="8" font-weight="700" text-anchor="middle" fill="#333">09:00 - 12:00</text>
+
+            <rect x="150" y="175" width="90" height="35" rx="3" fill="#FFF" stroke="#000" stroke-width="1.5"/>
+            <text x="195" y="190" font-family="sans-serif" font-size="9" font-weight="900" text-anchor="middle" fill="#000">SESI SIANG</text>
+            <text x="195" y="202" font-family="sans-serif" font-size="8" font-weight="700" text-anchor="middle" fill="#333">13:30 - 16:30</text>
+
+            <rect x="250" y="175" width="90" height="35" rx="3" fill="#FFF" stroke="#000" stroke-width="1.5"/>
+            <text x="295" y="190" font-family="sans-serif" font-size="9" font-weight="900" text-anchor="middle" fill="#000">SESI MALAM</text>
+            <text x="295" y="202" font-family="sans-serif" font-size="8" font-weight="700" text-anchor="middle" fill="#333">19:30 - 21:30</text>
+
+            <!-- Checkout Box -->
+            <rect x="385" y="140" width="180" height="130" rx="4" fill="#FFFFFF" stroke="#000" stroke-width="2"/>
+            <text x="400" y="165" font-family="sans-serif" font-size="11" font-weight="900" fill="#000">RINGKASAN TIKET</text>
+            <text x="400" y="185" font-family="sans-serif" font-size="10" font-weight="700" fill="#666">1x Akses Penuh</text>
+            <text x="400" y="210" font-family="sans-serif" font-size="14" font-weight="900" fill="#2ED573">Rp 0 (GRATIS)</text>
+            <rect x="400" y="225" width="150" height="28" rx="3" fill="#000"/>
+            <text x="475" y="243" font-family="sans-serif" font-size="10" font-weight="900" text-anchor="middle" fill="#FFE600">RESERVASI SEKARANG</text>
+        
+
+  <!-- Watermark / Placeholder Notice Footer -->
+  <rect x="15" y="288" width="570" height="38" rx="6" fill="#FFFFFF" stroke="#000000" stroke-width="2.5"/>
+  <rect x="25" y="296" width="22" height="22" rx="3" fill="#FFE600" stroke="#000000" stroke-width="1.5"/>
+  <text x="36" y="311" font-family="sans-serif" font-size="11" font-weight="900" text-anchor="middle" fill="#000000">📷</text>
+  <text x="56" y="306" font-family="sans-serif" font-size="10" font-weight="900" fill="#000000">PLACEHOLDER SCREENSHOT • BOOKING & RESERVATION SYSTEM</text>
+  <text x="56" y="320" font-family="sans-serif" font-size="9" font-weight="700" fill="#64748B">Simpan tangkapan layar asli di: public/screenshots/06-booking-event.svg</text>
+  <rect x="480" y="296" width="95" height="22" rx="4" fill="#000000"/>
+  <text x="527" y="311" font-family="sans-serif" font-size="9" font-weight="900" text-anchor="middle" fill="#FFE600">600 × 340 PX</text>
+</svg>

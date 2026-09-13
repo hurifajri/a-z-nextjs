@@ -1,0 +1,55 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="600" height="340" viewBox="0 0 600 340">
+  <!-- Outer Window Frame -->
+  <rect x="4" y="4" width="592" height="332" rx="10" fill="#F0FFF4" stroke="#000000" stroke-width="4"/>
+
+  <!-- Top Bar / Titlebar -->
+  <path d="M 4,14 A 10,10 0 0,1 14,4 L 586,4 A 10,10 0 0,1 596,14 L 596,44 L 4,44 Z" fill="#FFFFFF" stroke="#000000" stroke-width="4"/>
+  <line x1="4" y1="44" x2="596" y2="44" stroke="#000000" stroke-width="4"/>
+
+  <!-- Window Dots -->
+  <circle cx="24" cy="24" r="6" fill="#FF5F56" stroke="#000000" stroke-width="1.5"/>
+  <circle cx="42" cy="24" r="6" fill="#FFBD2E" stroke="#000000" stroke-width="1.5"/>
+  <circle cx="60" cy="24" r="6" fill="#27C93F" stroke="#000000" stroke-width="1.5"/>
+
+  <!-- URL Bar Mockup -->
+  <rect x="85" y="12" width="370" height="24" rx="5" fill="#F1F5F9" stroke="#000000" stroke-width="1.5"/>
+  <text x="100" y="28" font-family="monospace" font-size="10" font-weight="bold" fill="#475569">🔒 https://tech-media.id/articles/nextjs-deepdive</text>
+
+  <!-- Tag Pill -->
+  <rect x="470" y="12" width="112" height="24" rx="5" fill="#2ED573" stroke="#000000" stroke-width="1.5"/>
+  <text x="526" y="28" font-family="sans-serif" font-size="9" font-weight="900" text-anchor="middle" fill="#000000">CONTENT & MEDIA</text>
+
+  <!-- App Custom Content -->
+  
+            <!-- Hero Article -->
+            <rect x="35" y="70" width="340" height="200" rx="4" fill="#FFFFFF" stroke="#000" stroke-width="2"/>
+            <rect x="47" y="82" width="316" height="100" rx="3" fill="#2ED573" stroke="#000" stroke-width="1.5"/>
+            <text x="55" y="200" font-family="sans-serif" font-size="12" font-weight="900" fill="#000">Panduan Komprehensif Arsitektur App Router</text>
+            <rect x="55" y="212" width="60" height="14" rx="2" fill="#FFE600" stroke="#000" stroke-width="1"/>
+            <text x="85" y="222" font-family="sans-serif" font-size="8" font-weight="900" text-anchor="middle" fill="#000">NEXT.JS 15</text>
+            <text x="130" y="223" font-family="sans-serif" font-size="9" font-weight="700" fill="#888">5 menit baca • 1.2k views</text>
+
+            <!-- Sidebar Trending -->
+            <rect x="385" y="70" width="180" height="200" rx="4" fill="#FFFFFF" stroke="#000" stroke-width="2"/>
+            <rect x="395" y="80" width="160" height="20" rx="2" fill="#000"/>
+            <text x="475" y="94" font-family="sans-serif" font-size="9" font-weight="900" text-anchor="middle" fill="#FFF">ARTIKEL POPULER</text>
+            
+            <rect x="395" y="110" width="160" height="40" rx="3" fill="#F8F9FA" stroke="#000" stroke-width="1"/>
+            <text x="405" y="128" font-family="sans-serif" font-size="9" font-weight="800" fill="#000">Mengapa React Server...</text>
+            
+            <rect x="395" y="160" width="160" height="40" rx="3" fill="#F8F9FA" stroke="#000" stroke-width="1"/>
+            <text x="405" y="178" font-family="sans-serif" font-size="9" font-weight="800" fill="#000">Optimasi LCP 100% di...</text>
+
+            <rect x="395" y="210" width="160" height="40" rx="3" fill="#F8F9FA" stroke="#000" stroke-width="1"/>
+            <text x="405" y="228" font-family="sans-serif" font-size="9" font-weight="800" fill="#000">Deploy Praktis ke Vercel...</text>
+        
+
+  <!-- Watermark / Placeholder Notice Footer -->
+  <rect x="15" y="288" width="570" height="38" rx="6" fill="#FFFFFF" stroke="#000000" stroke-width="2.5"/>
+  <rect x="25" y="296" width="22" height="22" rx="3" fill="#FFE600" stroke="#000000" stroke-width="1.5"/>
+  <text x="36" y="311" font-family="sans-serif" font-size="11" font-weight="900" text-anchor="middle" fill="#000000">📷</text>
+  <text x="56" y="306" font-family="sans-serif" font-size="10" font-weight="900" fill="#000000">PLACEHOLDER SCREENSHOT • EDITORIAL & MEDIA CMS</text>
+  <text x="56" y="320" font-family="sans-serif" font-size="9" font-weight="700" fill="#64748B">Simpan tangkapan layar asli di: public/screenshots/05-content-portal.svg</text>
+  <rect x="480" y="296" width="95" height="22" rx="4" fill="#000000"/>
+  <text x="527" y="311" font-family="sans-serif" font-size="9" font-weight="900" text-anchor="middle" fill="#FFE600">600 × 340 PX</text>
+</svg>

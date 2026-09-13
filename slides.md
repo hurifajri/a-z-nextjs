@@ -1,670 +1,790 @@
 ---
-theme: default
-# random image from a curated Unsplash collection by Anthony
-# like them? see https://unsplash.com/collections/94734566/slidev
-background: https://cover.sli.dev
-# some information about your slides (markdown enabled)
-title: Welcome to Slidev
-info: |
-  ## Slidev Starter Template
-  Presentation slides for developers.
-
-  Learn more at [Sli.dev](https://sli.dev)
-# apply UnoCSS classes to the current slide
-class: text-center
-# https://sli.dev/features/drawing
-drawings:
-  persist: false
-# slide transition: https://sli.dev/guide/animations.html#slide-transitions
-transition: slide-left
-# enable Comark Syntax: https://comark.dev/syntax/markdown
-comark: true
-# duration of the presentation
-duration: 35min
+theme: neobrutalism
+layout: cover
+badgeLeft: "✦ SANDBOX IT HSI 2026"
+badgeRight: "NEXT.JS TRACK"
 ---
 
-# Welcome to Slidev
+# Next.js: The React <span v-mark.underline.orange>Framework</span> for the <span v-mark.underline.orange>Web</span>
 
-Presentation slides for developers
+Used by some of the world's largest companies, Next.js enables you to create high-quality web applications with the power of React components
 
-<div @click="$slidev.nav.next" class="mt-12 py-1" hover:bg="white op-10">
-  Press Space for next page <carbon:arrow-right />
+<div class="mt-8 flex justify-center gap-4">
+  <span class="brutal-badge brutal-badge-cyan">react.dev</span>
+  <span class="brutal-badge brutal-badge-yellow">nextjs.org</span>
+  <span class="brutal-badge brutal-badge-pink">vercel.com</span>
 </div>
 
-<div class="abs-br m-6 text-xl">
-  <button @click="$slidev.nav.openInEditor()" title="Open in Editor" class="slidev-icon-btn">
-    <carbon:edit />
-  </button>
-  <a href="https://github.com/slidevjs/slidev" target="_blank" class="slidev-icon-btn">
-    <carbon:logo-github />
-  </a>
+---
+
+## APA SAJA YANG BISA DIBUAT DENGAN NEXT.JS?
+
+<p class="-mt-3 mb-2.5 text-xs opacity-70">
+  Showcase 8 ragam web application nyata dan modern yang bisa Anda kembangkan menggunakan Next.js
+</p>
+
+<!-- 8-App Photo Gallery Showcase Grid -->
+<div class="grid grid-cols-4 gap-2.5">
+  <!-- 01. E-Commerce -->
+  <div class="brutal-card !p-2 bg-white border-2 border-black shadow-[3px_3px_0px_#000] flex flex-col justify-between rounded-lg hover:-translate-y-0.5 hover:shadow-[4px_4px_0px_#000] transition-all" style="padding: 0.55rem;">
+    <div>
+      <div class="relative overflow-hidden border-1.5 border-black rounded bg-gray-100 mb-1.5 aspect-video">
+        <img src="/screenshots/01-ecommerce.svg" alt="E-Commerce Store" class="w-full h-full object-cover" />
+        <span class="absolute top-1 right-1 text-[8px] font-black uppercase px-1.5 py-0.2 bg-[#FFE600] border border-black rounded shadow-[1px_1px_0px_#000]">
+          E-Commerce
+        </span>
+      </div>
+      <div class="font-black text-xs text-black leading-tight">
+        Toko Online & Retail
+      </div>
+      <p class="text-[10px] text-gray-700 mt-1 leading-snug">
+        Katalog produk SSR/ISR cepat, filter dinamis, keranjang belanja, & checkout payment.
+      </p>
+    </div>
+    <div class="mt-1.5 pt-1 border-t border-dashed border-gray-300 flex items-center justify-between text-[9px] font-bold text-gray-500">
+      <span>SSR • Server Actions</span>
+      <span class="text-black font-black">01</span>
+    </div>
+  </div>
+
+  <!-- 02. SaaS Analytics -->
+  <div class="brutal-card !p-2 bg-white border-2 border-black shadow-[3px_3px_0px_#000] flex flex-col justify-between rounded-lg hover:-translate-y-0.5 hover:shadow-[4px_4px_0px_#000] transition-all" style="padding: 0.55rem;">
+    <div>
+      <div class="relative overflow-hidden border-1.5 border-black rounded bg-gray-100 mb-1.5 aspect-video">
+        <img src="/screenshots/02-saas-dashboard.svg" alt="SaaS Dashboard" class="w-full h-full object-cover" />
+        <span class="absolute top-1 right-1 text-[8px] font-black uppercase px-1.5 py-0.2 bg-[#00E5FF] border border-black rounded shadow-[1px_1px_0px_#000]">
+          SaaS
+        </span>
+      </div>
+      <div class="font-black text-xs text-black leading-tight">
+        Analytics Dashboard
+      </div>
+      <p class="text-[10px] text-gray-700 mt-1 leading-snug">
+        Visualisasi grafik metrik bisnis interaktif, monitoring real-time, & multi-tenant auth.
+      </p>
+    </div>
+    <div class="mt-1.5 pt-1 border-t border-dashed border-gray-300 flex items-center justify-between text-[9px] font-bold text-gray-500">
+      <span>Client Components • Charts</span>
+      <span class="text-black font-black">02</span>
+    </div>
+  </div>
+
+  <!-- 03. AI Copilot -->
+  <div class="brutal-card !p-2 bg-white border-2 border-black shadow-[3px_3px_0px_#000] flex flex-col justify-between rounded-lg hover:-translate-y-0.5 hover:shadow-[4px_4px_0px_#000] transition-all" style="padding: 0.55rem;">
+    <div>
+      <div class="relative overflow-hidden border-1.5 border-black rounded bg-gray-100 mb-1.5 aspect-video">
+        <img src="/screenshots/03-ai-copilot.svg" alt="AI Copilot" class="w-full h-full object-cover" />
+        <span class="absolute top-1 right-1 text-[8px] font-black uppercase px-1.5 py-0.2 bg-[#B388EB] border border-black rounded shadow-[1px_1px_0px_#000]">
+          AI Copilot
+        </span>
+      </div>
+      <div class="font-black text-xs text-black leading-tight">
+        AI Chat & Workspace
+      </div>
+      <p class="text-[10px] text-gray-700 mt-1 leading-snug">
+        Chatbot cerdas dengan streaming response LLM, upload dokumen, & memory assistant.
+      </p>
+    </div>
+    <div class="mt-1.5 pt-1 border-t border-dashed border-gray-300 flex items-center justify-between text-[9px] font-bold text-gray-500">
+      <span>Vercel AI SDK • Streaming</span>
+      <span class="text-black font-black">03</span>
+    </div>
+  </div>
+
+  <!-- 04. LMS Portal -->
+  <div class="brutal-card !p-2 bg-white border-2 border-black shadow-[3px_3px_0px_#000] flex flex-col justify-between rounded-lg hover:-translate-y-0.5 hover:shadow-[4px_4px_0px_#000] transition-all" style="padding: 0.55rem;">
+    <div>
+      <div class="relative overflow-hidden border-1.5 border-black rounded bg-gray-100 mb-1.5 aspect-video">
+        <img src="/screenshots/04-lms-education.svg" alt="LMS Education" class="w-full h-full object-cover" />
+        <span class="absolute top-1 right-1 text-[8px] font-black uppercase px-1.5 py-0.2 bg-[#FF6B8B] text-white border border-black rounded shadow-[1px_1px_0px_#000]">
+          EdTech
+        </span>
+      </div>
+      <div class="font-black text-xs text-black leading-tight">
+        LMS / Learning Portal
+      </div>
+      <p class="text-[10px] text-gray-700 mt-1 leading-snug">
+        Portal kursus santri, video playback, progress bar, kuis evaluasi, & sertifikat.
+      </p>
+    </div>
+    <div class="mt-1.5 pt-1 border-t border-dashed border-gray-300 flex items-center justify-between text-[9px] font-bold text-gray-500">
+      <span>Auth.js • Media Streaming</span>
+      <span class="text-black font-black">04</span>
+    </div>
+  </div>
+
+  <!-- 05. Content & Media CMS -->
+  <div class="brutal-card !p-2 bg-white border-2 border-black shadow-[3px_3px_0px_#000] flex flex-col justify-between rounded-lg hover:-translate-y-0.5 hover:shadow-[4px_4px_0px_#000] transition-all" style="padding: 0.55rem;">
+    <div>
+      <div class="relative overflow-hidden border-1.5 border-black rounded bg-gray-100 mb-1.5 aspect-video">
+        <img src="/screenshots/05-content-portal.svg" alt="Content Portal" class="w-full h-full object-cover" />
+        <span class="absolute top-1 right-1 text-[8px] font-black uppercase px-1.5 py-0.2 bg-[#2ED573] border border-black rounded shadow-[1px_1px_0px_#000]">
+          Media CMS
+        </span>
+      </div>
+      <div class="font-black text-xs text-black leading-tight">
+        Content & News Portal
+      </div>
+      <p class="text-[10px] text-gray-700 mt-1 leading-snug">
+        Portal berita & artikel dengan optimasi SEO prima, OpenGraph dinamis, & ultra-fast ISR.
+      </p>
+    </div>
+    <div class="mt-1.5 pt-1 border-t border-dashed border-gray-300 flex items-center justify-between text-[9px] font-bold text-gray-500">
+      <span>Static ISR • Metadata API</span>
+      <span class="text-black font-black">05</span>
+    </div>
+  </div>
+
+  <!-- 06. Booking & Ticketing -->
+  <div class="brutal-card !p-2 bg-white border-2 border-black shadow-[3px_3px_0px_#000] flex flex-col justify-between rounded-lg hover:-translate-y-0.5 hover:shadow-[4px_4px_0px_#000] transition-all" style="padding: 0.55rem;">
+    <div>
+      <div class="relative overflow-hidden border-1.5 border-black rounded bg-gray-100 mb-1.5 aspect-video">
+        <img src="/screenshots/06-booking-event.svg" alt="Booking & Tickets" class="w-full h-full object-cover" />
+        <span class="absolute top-1 right-1 text-[8px] font-black uppercase px-1.5 py-0.2 bg-[#FFA502] border border-black rounded shadow-[1px_1px_0px_#000]">
+          Booking
+        </span>
+      </div>
+      <div class="font-black text-xs text-black leading-tight">
+        Booking & Ticketing
+      </div>
+      <p class="text-[10px] text-gray-700 mt-1 leading-snug">
+        Reservasi jadwal konsultasi, pemilihan slot kalender interaktif, & e-ticket barcode.
+      </p>
+    </div>
+    <div class="mt-1.5 pt-1 border-t border-dashed border-gray-300 flex items-center justify-between text-[9px] font-bold text-gray-500">
+      <span>Server Actions • Zod</span>
+      <span class="text-black font-black">06</span>
+    </div>
+  </div>
+
+  <!-- 07. Social Forum -->
+  <div class="brutal-card !p-2 bg-white border-2 border-black shadow-[3px_3px_0px_#000] flex flex-col justify-between rounded-lg hover:-translate-y-0.5 hover:shadow-[4px_4px_0px_#000] transition-all" style="padding: 0.55rem;">
+    <div>
+      <div class="relative overflow-hidden border-1.5 border-black rounded bg-gray-100 mb-1.5 aspect-video">
+        <img src="/screenshots/07-social-community.svg" alt="Community Forum" class="w-full h-full object-cover" />
+        <span class="absolute top-1 right-1 text-[8px] font-black uppercase px-1.5 py-0.2 bg-[#00E5FF] border border-black rounded shadow-[1px_1px_0px_#000]">
+          Community
+        </span>
+      </div>
+      <div class="font-black text-xs text-black leading-tight">
+        Community & Forum
+      </div>
+      <p class="text-[10px] text-gray-700 mt-1 leading-snug">
+        Forum tanya-jawab ala StackOverflow, voting upvote/downvote, & thread komentar real-time.
+      </p>
+    </div>
+    <div class="mt-1.5 pt-1 border-t border-dashed border-gray-300 flex items-center justify-between text-[9px] font-bold text-gray-500">
+      <span>Optimistic UI • SWR</span>
+      <span class="text-black font-black">07</span>
+    </div>
+  </div>
+
+  <!-- 08. Internal ERP & Ops -->
+  <div class="brutal-card !p-2 bg-white border-2 border-black shadow-[3px_3px_0px_#000] flex flex-col justify-between rounded-lg hover:-translate-y-0.5 hover:shadow-[4px_4px_0px_#000] transition-all" style="padding: 0.55rem;">
+    <div>
+      <div class="relative overflow-hidden border-1.5 border-black rounded bg-gray-100 mb-1.5 aspect-video">
+        <img src="/screenshots/08-internal-erp.svg" alt="Internal ERP" class="w-full h-full object-cover" />
+        <span class="absolute top-1 right-1 text-[8px] font-black uppercase px-1.5 py-0.2 bg-[#FFE600] border border-black rounded shadow-[1px_1px_0px_#000]">
+          Backoffice
+        </span>
+      </div>
+      <div class="font-black text-xs text-black leading-tight">
+        Internal ERP & Admin
+      </div>
+      <p class="text-[10px] text-gray-700 mt-1 leading-snug">
+        Sistem manajemen operasional: absensi santri/karyawan, persetujuan cuti, & audit log data.
+      </p>
+    </div>
+    <div class="mt-1.5 pt-1 border-t border-dashed border-gray-300 flex items-center justify-between text-[9px] font-bold text-gray-500">
+      <span>Fullstack CRUD • Prisma</span>
+      <span class="text-black font-black">08</span>
+    </div>
+  </div>
 </div>
 
-<!--
-The last comment block of each slide will be treated as slide notes. It will be visible and editable in Presenter Mode along with the slide. [Read more in the docs](https://sli.dev/guide/syntax.html#notes)
--->
-
----
-transition: fade-out
 ---
 
-# What is Slidev?
+## TANGGA BELAJAR MENUJU NEXT.JS
 
-Slidev is a slides maker and presenter designed for developers, consist of the following features
+<p class="-mt-3 mb-4 text-xs opacity-70">Alur Fondasi Ideal yang Sebenarnya Dibutuhkan Sebelum Masuk ke Dunia Fullstack</p>
+<span v-mark.underline.orange>inline markers</span>
+<!-- Node-Edge Flow Container -->
+<div class="flex items-stretch justify-between gap-2.5 mt-2">
+  <!-- Node 1: HTML, CSS & JS -->
+  <div v-click="1" class="flex-1 brutal-card bg-white p-3 border-2 border-black shadow-[3px_3px_0px_#000] flex flex-col justify-between">
+    <div>
+      <div class="text-[10px] font-black uppercase tracking-wider bg-[#FFE600] px-1.5 py-0.5 border border-black rounded inline-block mb-1.5">
+        01. PONDASI DASAR
+      </div>
+      <div class="font-black text-sm text-black">HTML + CSS + JS</div>
+      <p class="text-[11px] text-gray-700 mt-1 leading-snug">
+        Struktur halaman, estetika styling, dan logika manipulasi data di browser.
+      </p>
+    </div>
+    <div class="mt-2 pt-2 border-t border-dashed border-gray-300 text-[10px] font-bold text-gray-500">
+      Wajib Dipahami
+    </div>
+  </div>
 
-- 📝 **Text-based** - focus on the content with Markdown, and then style them later
-- 🎨 **Themable** - themes can be shared and re-used as npm packages
-- 🧑‍💻 **Developer Friendly** - code highlighting, live coding with autocompletion
-- 🤹 **Interactive** - embed Vue components to enhance your expressions
-- 🎥 **Recording** - built-in recording and camera view
-- 📤 **Portable** - export to PDF, PPTX, PNGs, or even a hostable SPA
-- 🛠 **Hackable** - virtually anything that's possible on a webpage is possible in Slidev
-<br>
+  <!-- Edge 1 -->
+  <div v-click="3" class="flex items-center justify-center shrink-0">
+    <div class="w-7 h-7 rounded-full border-2 border-black bg-white flex items-center justify-center font-black text-xs shadow-[2px_2px_0px_#000]">
+      ➔
+    </div>
+  </div>
 
-<br>
+  <!-- Node 2: React.js -->
+  <div v-click="3" class="flex-1 brutal-card bg-white p-3 border-2 border-black shadow-[3px_3px_0px_#000] flex flex-col justify-between">
+    <div>
+      <div class="text-[10px] font-black uppercase tracking-wider bg-[#00E5FF] px-1.5 py-0.5 border border-black rounded inline-block mb-1.5">
+        02. UI LIBRARY
+      </div>
+      <div class="font-black text-sm text-black">React.js</div>
+      <p class="text-[11px] text-gray-700 mt-1 leading-snug">
+        Berpikir berbasis komponen, manajemen state (useState), props, & reaktivitas.
+      </p>
+    </div>
+    <div class="mt-2 pt-2 border-t border-dashed border-gray-300 text-[10px] font-bold text-gray-500">
+      Fondasi Komponen
+    </div>
+  </div>
 
-Read more about [Why Slidev?](https://sli.dev/guide/why)
+  <!-- Edge 2 -->
+  <div v-click="4" class="flex items-center justify-center shrink-0">
+    <div class="w-7 h-7 rounded-full border-2 border-black bg-white flex items-center justify-center font-black text-xs shadow-[2px_2px_0px_#000]">
+      ➔
+    </div>
+  </div>
 
-<!--
-You can have `style` tag in markdown to override the style for the current page.
-Learn more: https://sli.dev/features/slide-scope-style
--->
+  <!-- Node 3: TypeScript -->
+  <div v-click="4" class="flex-1 brutal-card bg-white p-3 border-2 border-black shadow-[3px_3px_0px_#000] flex flex-col justify-between">
+    <div>
+      <div class="text-[10px] font-black uppercase tracking-wider bg-[#FF6B8B] text-white px-1.5 py-0.5 border border-black rounded inline-block mb-1.5">
+        03. TIPE DATA
+      </div>
+      <div class="font-black text-sm text-black">TypeScript</div>
+      <p class="text-[11px] text-gray-700 mt-1 leading-snug">
+        Keamanan tipe variabel, auto-complete cerdas, dan mencegah bug koding sejak awal.
+      </p>
+    </div>
+    <div class="mt-2 pt-2 border-t border-dashed border-gray-300 text-[10px] font-bold text-[#FF6B8B]">
+      *Opsional tapi Dianjurkan
+    </div>
+  </div>
 
-<style>
-h1 {
-  background-color: #2B90B6;
-  background-image: linear-gradient(45deg, #4EC5D4 10%, #146b8c 20%);
-  background-size: 100%;
-  -webkit-background-clip: text;
-  -moz-background-clip: text;
-  -webkit-text-fill-color: transparent;
-  -moz-text-fill-color: transparent;
-}
-</style>
+  <!-- Edge 3 -->
+  <div v-click="5" class="flex items-center justify-center shrink-0">
+    <div class="w-7 h-7 rounded-full border-2 border-black bg-[#FFE600] flex items-center justify-center font-black text-xs shadow-[2px_2px_0px_#000]">
+      ➔
+    </div>
+  </div>
 
-<!--
-Here is another comment.
--->
+  <!-- Node 4: Next.js -->
+  <div v-click="5" class="flex-1 brutal-card bg-[#FFE600] p-3 border-2 border-black shadow-[4px_4px_0px_#000] flex flex-col justify-between ring-2 ring-black">
+    <div>
+      <div class="text-[10px] font-black uppercase tracking-wider bg-black text-white px-1.5 py-0.5 rounded inline-block mb-1.5">
+        04. FULLSTACK WEB
+      </div>
+      <div class="font-black text-sm text-black">Next.js App Router</div>
+      <p class="text-[11px] text-gray-900 mt-1 leading-snug">
+        Framework lengkap: Server Components, Routing otomatis, & siap rilis produksi.
+      </p>
+    </div>
+    <div class="mt-2 pt-2 border-t border-dashed border-black/30 text-[10px] font-black text-black">
+      🎯 Tujuan Bootcamp Kita
+    </div>
+  </div>
+</div>
 
----
-transition: slide-up
-level: 2
----
+<!-- Hand-drawn arrow pointing to sandbox.hsi.id/learning (Revealed on click 2) -->
+<p v-click="2" class="absolute bottom-12 left-14 text-[10px] text-gray-800 font-bold max-w-60 z-20 leading-tight">
+  💡 Tim Sandbox sudah menyiapkan modul mandiri untuk belajar dasar HTML, CSS & JS di tautan ini!
+</p>
+<p v-click="2" class="absolute bottom-20 left-45 opacity-90 font-mono text-xs font-bold transform bg-[#FFE600] px-2 py-0.5 border-2 border-black rounded shadow-[2px_2px_0px_#000] z-20">
+  sandbox.hsi.id/learning
+</p>
 
-# Navigation
-
-Hover on the bottom-left corner to see the navigation's controls panel, [learn more](https://sli.dev/guide/ui#navigation-bar)
-
-## Keyboard Shortcuts
-
-|                                                    |                             |
-| -------------------------------------------------- | --------------------------- |
-| <kbd>right</kbd> / <kbd>space</kbd>                | next animation or slide     |
-| <kbd>left</kbd> / <kbd>shift</kbd><kbd>space</kbd> | previous animation or slide |
-| <kbd>up</kbd>                                      | previous slide              |
-| <kbd>down</kbd>                                    | next slide                  |
-
-<!-- https://sli.dev/guide/animations.html#click-animation -->
-
-<img
-  v-click
-  class="absolute -bottom-9 -left-7 w-80 opacity-50"
-  src="https://sli.dev/assets/arrow-bottom-left.svg"
-  alt=""
-/>
-<p v-after class="absolute bottom-23 left-45 opacity-30 transform -rotate-10">Here!</p>
+<!-- Bottom Strategy Box (Revealed on click 6) -->
+<div v-click="6" class="absolute bottom-8 right-14 w-120 p-3 border-2 border-black rounded bg-white shadow-[3px_3px_0px_#000]">
+  <div class="flex items-center gap-2 font-black text-xs text-black mb-1">
+    <span class="bg-[#2ED573] text-black px-2 py-0.5 border border-black rounded text-[10px] uppercase font-black">
+      💡 REALITAS BOOTCAMP 4 BULAN
+    </span>
+    <span>Jalur Pintas Pareto (80/20)</span>
+  </div>
+  <p class="text-[10px] text-gray-700 leading-relaxed">
+    Belajar keempat tangga secara terpisah dari nol butuh waktu lebih dari setahun.
+    Di bootcamp intensif ini, kita langsung fokus ke <b>Next.js</b> sambil memungut esensi HTML, CSS, JS, dan React yang <b>benar-benar dipakai di 80% proyek nyata</b>!
+  </p>
+</div>
 
 ---
 layout: two-cols
-layoutClass: gap-16
 ---
 
-# Table of contents
+## ROADMAP PEMBELAJARAN
 
-You can use the `Toc` component to generate a table of contents for your slides:
+<p class="-mt-3 mb-2 text-xs opacity-70">16 Modul Terstruktur: Langkah Demi Langkah dari Dasar hingga Rilis ke Publik</p>
 
-```html
-<Toc minDepth="1" maxDepth="1" />
-```
+::left::
 
-The title will be inferred from your slide content, or you can override it with `title` and `level` in your frontmatter.
+<div class="h-full flex flex-col gap-1.5 text-xs">
+  <div class="flex-1 flex items-center justify-between px-2.5 border-2 border-black rounded bg-[#FFE600] font-bold shadow-[2px_2px_0px_#000]">
+    <span>01. Pengenalan Next.js & Ekosistemnya</span>
+    <span>⭐</span>
+  </div>
+  <div class="flex-1 flex items-center px-2.5 border-2 border-black rounded bg-white font-bold shadow-[2px_2px_0px_#000]">
+    02. Setup Project & Tools (ESLint, Tailwind)
+  </div>
+  <div class="flex-1 flex items-center px-2.5 border-2 border-black rounded bg-white font-bold shadow-[2px_2px_0px_#000]">
+    03. Navigasi & Layout (Routing Dinamis)
+  </div>
+  <div class="flex-1 flex items-center px-2.5 border-2 border-black rounded bg-white font-bold shadow-[2px_2px_0px_#000]">
+    04. State Management Dasar (useState, useEffect)
+  </div>
+  <div class="flex-1 flex items-center px-2.5 border-2 border-black rounded bg-white font-bold shadow-[2px_2px_0px_#000]">
+    05. State Management Lanjutan (useContext)
+  </div>
+  <div class="flex-1 flex items-center px-2.5 border-2 border-black rounded bg-white font-bold shadow-[2px_2px_0px_#000]">
+    06. Mini Project: Aplikasi Todo Sederhana
+  </div>
+  <div class="flex-1 flex items-center px-2.5 border-2 border-black rounded bg-white font-bold shadow-[2px_2px_0px_#000]">
+    07. Konsumsi API: Menampilkan Data (GET)
+  </div>
+  <div class="flex-1 flex items-center px-2.5 border-2 border-black rounded bg-white font-bold shadow-[2px_2px_0px_#000]">
+    08. Manipulasi Data (POST, PUT, DELETE)
+  </div>
+</div>
 
 ::right::
 
-<Toc text-sm minDepth="1" maxDepth="2" />
+<div class="h-full flex flex-col gap-1.5 text-xs">
+  <div class="flex-1 flex items-center px-2.5 border-2 border-black rounded bg-white font-bold shadow-[2px_2px_0px_#000]">
+    09. Form Input & Validasi Data
+  </div>
+  <div class="flex-1 flex items-center px-2.5 border-2 border-black rounded bg-white font-bold shadow-[2px_2px_0px_#000]">
+    10. Penanganan Data Dinamis (Filter & Cari)
+  </div>
+  <div class="flex-1 flex items-center px-2.5 border-2 border-black rounded bg-white font-bold shadow-[2px_2px_0px_#000]">
+    11. Handoff UI/UX: Dari Figma ke Kode
+  </div>
+  <div class="flex-1 flex items-center px-2.5 border-2 border-black rounded bg-white font-bold shadow-[2px_2px_0px_#000]">
+    12. Integrasi API Backend & Login (JWT)
+  </div>
+  <div class="flex-1 flex items-center px-2.5 border-2 border-black rounded bg-white font-bold shadow-[2px_2px_0px_#000]">
+    13. Mengenal Dokumentasi API (Swagger)
+  </div>
+  <div class="flex-1 flex items-center px-2.5 border-2 border-black rounded bg-white font-bold shadow-[2px_2px_0px_#000]">
+    14. Desain Responsif & Tampilan Mobile
+  </div>
+  <div class="flex-1 flex items-center px-2.5 border-2 border-black rounded bg-white font-bold shadow-[2px_2px_0px_#000]">
+    15. Unit Testing Komponen Klien
+  </div>
+  <div class="flex-1 flex items-center px-2.5 border-2 border-black rounded bg-white font-bold shadow-[2px_2px_0px_#000]">
+    16. Build & Deploy Website ke Vercel
+  </div>
+</div>
 
 ---
-layout: image-right
-image: https://cover.sli.dev
+layout: intro
+badge: "MODUL 01"
+badgeColor: "yellow"
 ---
 
-# Code
+## 01. Pengenalan Next.js & Ekosistemnya
 
-Use code snippets and get the highlighting directly, and even types hover!
+Mengenal Apa Itu Next.js, Bedanya dengan React Biasa, serta Fondasi Struktur Folder dan Routing.
 
-```ts [filename-example.ts] {all|4|6|6-7|9|all} twoslash
-// TwoSlash enables TypeScript hover information
-// and errors in markdown code blocks
-// More at https://shiki.style/packages/twoslash
-import { computed, ref } from "vue";
+---
 
-const count = ref(0);
-const doubled = computed(() => count.value * 2);
+### Kenapa Kita Butuh Next.js?
 
-doubled.value = 2;
+Solusi Praktis Bikin Website yang Cepat, Rapi, dan Gampang Ditemukan di Google
+
+Next.js adalah framework React yang dirancang agar kita bisa membangun website nyata dengan mudah. Jika React biasa hanya fokus di browser pengunjung, **Next.js bekerja cerdas menggabungkan keunggulan server dan browser.**
+
+<div class="grid grid-cols-3 gap-4 mt-6">
+  <div class="brutal-card bg-white">
+    <div class="font-black text-lg mb-1">🚀 Lengkap & Siap Pakai</div>
+    <p class="text-xs text-gray-700">Tidak perlu pusing install router manual. Routing halaman, tata letak, dan pengolahan data sudah langsung tersedia.</p>
+  </div>
+  <div class="brutal-card bg-white">
+    <div class="font-black text-lg mb-1">⚡ Tampilan Langsung Muncul</div>
+    <p class="text-xs text-gray-700">Server langsung mengirimkan halaman yang sudah jadi. Pengunjung tidak perlu menunggu layar putih berputar-putar.</p>
+  </div>
+  <div class="brutal-card bg-white">
+    <div class="font-black text-lg mb-1">🛠 Fitur Otomatis Canggih</div>
+    <p class="text-xs text-gray-700">Gambar otomatis di-compress (`next/image`), font dimuat cepat (`next/font`), dan link antar halaman terasa instan.</p>
+  </div>
+</div>
+
+---
+layout: two-cols
+---
+
+### React Biasa (SPA) vs Next.js
+
+Memahami Perbedaan Cara Menampilkan Halaman ke Pengunjung
+
+::left::
+
+#### React Biasa (Vite / CRA)
+
+- 📦 **Browser Bekerja Sendirian**: Browser mengunduh file HTML kosong `<div id="root"></div>`, lalu sibuk merakit halaman sendiri.
+- ⏳ **Layar Putih Sejenak**: Pengunjung sering melihat halaman kosong atau loading spinner sebelum isi konten muncul.
+- 🔍 **Kurang Ramah Google (SEO)**: Mesin pencari dan media sosial kesulitan membaca isi teks jika halaman lambat dirakit.
+- 🛡 **Kode Rahasia Rawan Bocor**: Kunci API privat atau logika rahasia tidak aman jika ditaruh di komponen biasa.
+
+::right::
+
+#### Next.js (App Router)
+
+- ⚡ **Tampilan Siap Baca**: Server langsung merakit dan mengirimkan halaman siap jadi, sehingga tulisan langsung tampil seketika.
+- 🧩 **Ukuran File Lebih Ringan**: Sebagian besar pekerjaan selesai di server, jadi HP pengunjung tidak keberatan memproses kode.
+- 📈 **Mudah Dibagikan ke Medsos**: Judul, gambar thumbnail, dan deskripsi otomatis terbaca rapi saat link dibagikan.
+- 🔒 **Jauh Lebih Aman**: Sambungan ke database dan password rahasia tersimpan aman di server tanpa bisa diintip pengunjung.
+
+---
+
+### Ringkasan Perbedaan Utama
+
+Tabel Komparasi Sederhana untuk Memilih Pendekatan yang Pas
+
+| Aspek                    | React Biasa (Vite / CRA)                            | Next.js (App Router)                                 |
+| :----------------------- | :-------------------------------------------------- | :--------------------------------------------------- |
+| **Cara Tampil**          | Browser merakit halaman sendiri dari nol            | Server mengirim halaman yang sudah jadi              |
+| **Kecepatan Buka Awal**  | Muncul layar kosong atau spinner sesaat             | Konten langsung terbaca dalam hitungan milidetik     |
+| **Beban di HP Pengguna** | Makin banyak halaman, file yang diunduh makin besar | Ringan, hanya mengirim kode yang benar-benar dipakai |
+| **Bikin Halaman Baru**   | Harus install library tambahan (`react-router`)     | Cukup buat folder baru di dalam folder `app/`        |
+| **Optimasi Gambar**      | Harus compress manual satu per satu                 | Otomatis dioptimalkan lewat komponen `next/image`    |
+| **SEO (Google Search)**  | Butuh pengaturan rumit tambahan                     | Sudah otomatis siap pakai lewat fitur Metadata       |
+
+---
+layout: two-cols
+---
+
+### Server vs Client Component
+
+Kapan Menggunakan Komponen Server dan Kapan Butuh Komponen Klien?
+
+::left::
+
+#### Server Component _(Bawaan Next.js)_
+
+Komponen santai yang hanya bertugas menampilkan data:
+
+```tsx
+// app/users/page.tsx
+// ✅ Otomatis jalan di server (Default)
+export default async function UsersPage() {
+  const users = await db.user.findMany(); // Ambil data langsung!
+
+  return (
+    <ul>
+      {users.map((u) => (
+        <li key={u.id}>{u.name}</li>
+      ))}
+    </ul>
+  );
+}
 ```
 
-<arrow v-click="[4, 5]" x1="350" y1="310" x2="195" y2="342" color="#953" width="2" arrowSize="1" />
+- ❌ Tidak bisa pakai tombol klik `onClick` atau `useState`
+- ✅ Sangat cepat, hemat kuota pengunjung, dan aman
 
-<!-- This allow you to embed external code blocks -->
+::right::
 
-<<< @/snippets/external.ts#snippet
+#### Client Component (`'use client'`)
 
-<!-- Footer -->
+Dipakai khusus saat butuh tombol klik atau input interaktif:
 
-[Learn more](https://sli.dev/features/line-highlighting)
+```tsx
+"use client"; // 👈 Tulis baris ini di baris paling atas!
 
-<!-- Inline style -->
-<style>
-.footnotes-sep {
-  @apply mt-5 opacity-10;
+import { useState } from "react";
+
+export default function Counter() {
+  const [angka, setAngka] = useState(0);
+
+  return (
+    <button onClick={() => setAngka(angka + 1)}>Diklik: {angka} kali</button>
+  );
 }
-.footnotes {
-  @apply text-sm opacity-75;
-}
-.footnote-backref {
-  display: none;
-}
-</style>
-
-<!--
-Notes can also sync with clicks
-
-[click] This will be highlighted after the first click
-
-[click] Highlighted with `count = ref(0)`
-
-[click:3] Last click (skip two clicks)
--->
-
----
-level: 2
----
-
-# Shiki Magic Move
-
-Powered by [shiki-magic-move](https://shiki-magic-move.netlify.app/), Slidev supports animations across multiple code snippets.
-
-Add multiple code blocks and wrap them with <code>````md magic-move</code> (four backticks) to enable the magic move. For example:
-
-````md magic-move {lines: true}
-```ts {*|2|*}
-// step 1
-const author = reactive({
-  name: "John Doe",
-  books: [
-    "Vue 2 - Advanced Guide",
-    "Vue 3 - Basic Guide",
-    "Vue 4 - The Mystery",
-  ],
-});
 ```
 
-```ts {*|1-2|3-4|3-4,8}
-// step 2
-export default {
-  data() {
-    return {
-      author: {
-        name: "John Doe",
-        books: [
-          "Vue 2 - Advanced Guide",
-          "Vue 3 - Basic Guide",
-          "Vue 4 - The Mystery",
-        ],
-      },
-    };
-  },
-};
+- ✅ Bisa memakai `useState`, tombol klik, dan form input
+- ✅ Bisa mengakses fitur browser seperti `localStorage`
+
+---
+
+### Struktur Folder di Next.js
+
+Cukup Buat Folder Baru, Alamat Halaman Website Otomatis Terbentuk!
+
+Next.js menggunakan aturan sederhana: **nama folder adalah rute halaman di browser**. Tidak perlu lagi menulis file routing yang panjang dan membingungkan:
+
 ```
+proyek-nextjs/
+├── app/                      # Tempat utama membuat semua halaman website
+│   ├── layout.tsx            # Kerangka tetap website (misal: navbar & footer)
+│   ├── page.tsx              # Halaman depan / beranda utama ("/")
+│   ├── loading.tsx           # Animasi atau teks saat halaman sedang loading
+│   ├── not-found.tsx         # Halaman jika alamat tidak ditemukan (404)
+│   ├── error.tsx             # Halaman ramah jika terjadi kendala teknis
+│   ├── tentang/
+│   │   └── page.tsx          # Halaman alamat "/tentang"
+│   └── produk/
+│       ├── page.tsx          # Halaman alamat "/produk"
+│       └── [id]/
+│           └── page.tsx      # Halaman dinamis, misal: "/produk/buku-react"
+├── public/                   # Tempat menyimpan gambar, logo, dan file statis
+├── next.config.ts            # Pengaturan bawaan proyek Next.js
+└── package.json
+```
+
+---
+layout: two-cols
+---
+
+### File-File Khusus di Next.js
+
+Nama File yang Memiliki Fungsi Otomatis Tanpa Perlu Dikonfigurasi Manual
+
+::left::
+
+<div class="space-y-3 text-sm">
+  <div class="p-3 border-2 border-black rounded bg-white shadow-[2px_2px_0px_#000]">
+    <span class="font-black text-[#FFE600] bg-black px-1.5 py-0.5 rounded text-xs mr-2">page.tsx</span>
+    File wajib untuk menampilkan isi halaman ke pengunjung website.
+  </div>
+  <div class="p-3 border-2 border-black rounded bg-white shadow-[2px_2px_0px_#000]">
+    <span class="font-black text-[#00E5FF] bg-black px-1.5 py-0.5 rounded text-xs mr-2">layout.tsx</span>
+    Kerangka bersama (seperti navbar) yang tidak akan me-reload saat pindah menu.
+  </div>
+  <div class="p-3 border-2 border-black rounded bg-white shadow-[2px_2px_0px_#000]">
+    <span class="font-black text-[#FF6B8B] bg-black px-1.5 py-0.5 rounded text-xs mr-2">loading.tsx</span>
+    Tampilan sementara otomatis saat halaman sedang mengambil data baru.
+  </div>
+</div>
+
+::right::
+
+<div class="space-y-3 text-sm">
+  <div class="p-3 border-2 border-black rounded bg-white shadow-[2px_2px_0px_#000]">
+    <span class="font-black text-[#2ED573] bg-black px-1.5 py-0.5 rounded text-xs mr-2">error.tsx</span>
+    Menangkap masalah teknis dengan rapi agar website tidak rusak berantakan.
+  </div>
+  <div class="p-3 border-2 border-black rounded bg-white shadow-[2px_2px_0px_#000]">
+    <span class="font-black text-[#B388EB] bg-black px-1.5 py-0.5 rounded text-xs mr-2">not-found.tsx</span>
+    Halaman ramah yang muncul otomatis jika pengunjung salah mengetik alamat URL.
+  </div>
+  <div class="p-3 border-2 border-black rounded bg-white shadow-[2px_2px_0px_#000]">
+    <span class="font-black text-white bg-black px-1.5 py-0.5 rounded text-xs mr-2">route.ts</span>
+    Jalur penyedia data khusus (API data) jika ingin membuat layanan data sendiri.
+  </div>
+</div>
+
+---
+
+### Contoh Membuat Halaman & Rute
+
+Halaman Statis, Halaman dengan Nomor ID, dan Pengelompokan Folder
 
 ```ts
-// step 3
-export default {
-  data: () => ({
-    author: {
-      name: "John Doe",
-      books: [
-        "Vue 2 - Advanced Guide",
-        "Vue 3 - Basic Guide",
-        "Vue 4 - The Mystery",
-      ],
-    },
-  }),
-};
-```
-
-Non-code blocks are ignored.
-
-```vue
-<!-- step 4 -->
-<script setup>
-const author = {
-  name: "John Doe",
-  books: [
-    "Vue 2 - Advanced Guide",
-    "Vue 3 - Basic Guide",
-    "Vue 4 - The Mystery",
-  ],
-};
-</script>
-```
-````
-
----
-
-# Components
-
-<div grid="~ cols-2 gap-4">
-<div>
-
-You can use Vue components directly inside your slides.
-
-We have provided a few built-in components like `<Tweet/>`, `<BlueSky/>`, and `<Youtube/>` that you can use directly. And adding your custom components is also super easy.
-
-```html
-<Counter :count="10" />
-```
-
-<!-- ./components/Counter.vue -->
-<Counter :count="10" m="t-4" />
-
-Check out [the guides](https://sli.dev/builtin/components.html) for more.
-
-</div>
-<div>
-
-```html
-<Tweet id="1390115482657726468" />
-```
-
-<Tweet id="1390115482657726468" scale="0.65" />
-
-</div>
-</div>
-
-<!--
-Presenter note with **bold**, *italic*, and ~~striked~~ text.
-
-Also, HTML elements are valid:
-<div class="flex w-full">
-  <span style="flex-grow: 1;">Left content</span>
-  <span>Right content</span>
-</div>
--->
-
----
-class: px-20
----
-
-# Themes
-
-Slidev comes with powerful theming support. Themes can provide styles, layouts, components, or even configurations for tools. Switching between themes by just **one edit** in your frontmatter:
-
-<div grid="~ cols-2 gap-2" m="t-2">
-
-```yaml
----
-theme: default
----
-```
-
-```yaml
----
-theme: seriph
----
-```
-
-<img border="rounded" src="https://github.com/slidevjs/themes/blob/main/screenshots/theme-default/01.png?raw=true" alt="">
-
-<img border="rounded" src="https://github.com/slidevjs/themes/blob/main/screenshots/theme-seriph/01.png?raw=true" alt="">
-
-</div>
-
-Read more about [How to use a theme](https://sli.dev/guide/theme-addon#use-theme) and
-check out the [Awesome Themes Gallery](https://sli.dev/resources/theme-gallery).
-
----
-
-# Clicks Animations
-
-You can add `v-click` to elements to add a click animation.
-
-<div v-click>
-
-This shows up when you press <kbd>space</kbd> or <kbd>right</kbd>, or click outside the slide on the right.
-
-```html
-<div v-click>This shows up when you trigger a click animation.</div>
-```
-
-</div>
-
-<p v-click>
-You can also add modifiers to change the animation:
-</p>
-
-<div class="grid gap-3 mt-4 text-sm" style="grid-template-columns: repeat(3, 1fr) 1.5fr 1fr">
-  <div v-after.up class="p-3 rounded border border-primary/20 bg-primary/10">
-    <div class="font-mono text-xs opacity-60 mb-1">v-click.up</div>
-    <div>Slide from bottom</div>
-  </div>
-  <div v-click.fade-in class="p-3 rounded border border-primary/30 bg-primary/15">
-    <div class="font-mono text-xs opacity-60 mb-1">v-click.fade-in</div>
-    <div>Fade in</div>
-  </div>
-  <div v-click.fade class="p-3 rounded border border-primary/40 bg-primary/20">
-    <div class="font-mono text-xs opacity-60 mb-1">v-click.fade</div>
-    <div>Dim (0.5 opacity)</div>
-  </div>
-  <div v-click.fade.right.scale class="p-3 rounded border border-primary/50 bg-primary/25">
-    <div class="font-mono text-xs opacity-60 mb-1">v-click.fade.right.scale</div>
-    <div>Composed</div>
-  </div>
-  <div v-click.none class="p-3 rounded border border-primary/60 bg-primary/30">
-    <div class="font-mono text-xs opacity-60 mb-1">v-click.none</div>
-    <div>No transition</div>
-  </div>
-</div>
-
-<v-click>
-
-The <span v-mark.red="7"><code>v-mark</code> directive</span>
-also allows you to add
-<span v-mark.circle.orange="8">inline marks</span>
-, powered by [Rough Notation](https://roughnotation.com/):
-
-```html
-<span v-mark.underline.orange>inline markers</span>
-```
-
-</v-click>
-
-<div v-click mt-12>
-
-[Learn more](https://sli.dev/guide/animations#click-animation)
-
-</div>
-
----
-
-# Motions
-
-Motion animations are powered by [@vueuse/motion](https://motion.vueuse.org/), triggered by `v-motion` directive.
-
-```html
-<div
-  v-motion
-  :initial="{ x: -80 }"
-  :enter="{ x: 0 }"
-  :click-3="{ x: 80 }"
-  :leave="{ x: 1000 }"
->
-  Slidev
-</div>
-```
-
-<div class="w-60 relative">
-  <div class="relative w-40 h-40">
-    <img
-      v-motion
-      :initial="{ x: 800, y: -100, scale: 1.5, rotate: -50 }"
-      :enter="final"
-      class="absolute inset-0"
-      src="https://sli.dev/logo-square.png"
-      alt=""
-    />
-    <img
-      v-motion
-      :initial="{ y: 500, x: -100, scale: 2 }"
-      :enter="final"
-      class="absolute inset-0"
-      src="https://sli.dev/logo-circle.png"
-      alt=""
-    />
-    <img
-      v-motion
-      :initial="{ x: 600, y: 400, scale: 2, rotate: 100 }"
-      :enter="final"
-      class="absolute inset-0"
-      src="https://sli.dev/logo-triangle.png"
-      alt=""
-    />
-  </div>
-
-  <div
-    class="text-5xl absolute top-14 left-40 text-[#2B90B6] -z-1"
-    v-motion
-    :initial="{ x: -80, opacity: 0}"
-    :enter="{ x: 0, opacity: 1, transition: { delay: 2000, duration: 1000 } }">
-    Slidev
-  </div>
-</div>
-
-<!-- vue script setup scripts can be directly used in markdown, and will only affects current page -->
-<script setup lang="ts">
-const final = {
-  x: 0,
-  y: 0,
-  rotate: 0,
-  scale: 1,
-  transition: {
-    type: 'spring',
-    damping: 10,
-    stiffness: 20,
-    mass: 2
-  }
-}
-</script>
-
-<div
-  v-motion
-  :initial="{ x:35, y: 30, opacity: 0}"
-  :enter="{ y: 0, opacity: 1, transition: { delay: 3500 } }">
-
-[Learn more](https://sli.dev/guide/animations.html#motion)
-
-</div>
-
----
-
-# $\LaTeX$
-
-$\LaTeX$ is supported out-of-box. Powered by [$\KaTeX$](https://katex.org/).
-
-<div h-3 />
-
-Inline $\sqrt{3x-1}+(1+x)^2$
-
-Block
-
-$$ {1|3|all}
-\begin{aligned}
-\nabla \cdot \vec{E} &= \frac{\rho}{\varepsilon_0} \\
-\nabla \cdot \vec{B} &= 0 \\
-\nabla \times \vec{E} &= -\frac{\partial\vec{B}}{\partial t} \\
-\nabla \times \vec{B} &= \mu_0\vec{J} + \mu_0\varepsilon_0\frac{\partial\vec{E}}{\partial t}
-\end{aligned}
-$$
-
-[Learn more](https://sli.dev/features/latex)
-
----
-
-# Diagrams
-
-You can create diagrams / graphs from textual descriptions, directly in your Markdown.
-
-<div class="grid grid-cols-4 gap-5 pt-4 -mb-6">
-
-```mermaid {scale: 0.5, alt: 'A simple sequence diagram'}
-sequenceDiagram
-    Alice->John: Hello John, how are you?
-    Note over Alice,John: A typical interaction
-```
-
-```mermaid {theme: 'neutral', scale: 0.8}
-graph TD
-B[Text] --> C{Decision}
-C -->|One| D[Result 1]
-C -->|Two| E[Result 2]
-```
-
-```mermaid
-mindmap
-  root((mindmap))
-    Origins
-      Long history
-      ::icon(fa fa-book)
-      Popularisation
-        British popular psychology author Tony Buzan
-    Research
-      On effectiveness<br/>and features
-      On Automatic creation
-        Uses
-            Creative techniques
-            Strategic planning
-            Argument mapping
-    Tools
-      Pen and paper
-      Mermaid
-```
-
-```plantuml {scale: 0.7}
-@startuml
-
-package "Some Group" {
-  HTTP - [First Component]
-  [Another Component]
+// 1. Halaman Biasa: app/produk/page.tsx
+// Alamat di browser: /produk
+
+// 2. Halaman Dinamis (Berdasarkan ID): app/produk/[id]/page.tsx
+// Alamat di browser: /produk/123 atau /produk/laptop-gaming
+export default async function DetailProduk({
+  params,
+}: {
+  params: Promise<{ id: string }>
+}) {
+  const { id } = await params
+  return <h1>Halaman Produk ID: {id}</h1>
 }
 
-node "Other Groups" {
-  FTP - [Second Component]
-  [First Component] --> FTP
-}
-
-cloud {
-  [Example 1]
-}
-
-database "MySql" {
-  folder "This is my folder" {
-    [Folder 3]
-  }
-  frame "Foo" {
-    [Frame 4]
-  }
-}
-
-[Another Component] --> [Example 1]
-[Example 1] --> [Folder 3]
-[Folder 3] --> [Frame 4]
-
-@enduml
+// 3. Folder Pengelompokan: app/(auth)/login/page.tsx
+// Alamat di browser: /login (tanda kurung "(auth)" tidak ikut masuk ke URL)
 ```
 
+> **Tips Santai:** Tanda kurung kurawal seperti `[id]` digunakan saat isi alamat URL berubah-ubah tergantung data barang atau artikel yang dipilih pengunjung!
+
+---
+layout: intro
+badge: "RANGKUMAN"
+badgeColor: "yellow"
+---
+
+## 3 Hal Penting yang Perlu Diingat
+
+1. **Next.js adalah React Siap Pakai**: Kita tidak perlu lagi repot mengatur router atau optimasi manual, semuanya sudah siap dibangun.
+2. **Secara Bawaan Sangat Ringan**: Semua komponen otomatis berjalan di server; gunakan tulisan `'use client'` hanya pada komponen yang memiliki tombol interaktif atau form ketik.
+3. **Bikin Halaman Sangat Mudah**: Cukup buat folder baru di dalam `app/` dan tambahkan file `page.tsx` di dalamnya, halamanmu langsung aktif!
+
+---
+layout: intro
+badge: "MODUL 02"
+badgeColor: "cyan"
+---
+
+## 02. Setup Project dan Tools
+
+Inisialisasi project baru, menyiapkan ESLint, Prettier, dan Tailwind CSS, serta memahami perbedaan mendasar antara folder pages/ dan app/ directory.
+
+---
+layout: intro
+badge: "MODUL 03"
+badgeColor: "pink"
+---
+
+## 03. Navigasi dan Layout
+
+Routing dinamis dan nested routes, layout halaman dengan app/layout.tsx, serta pemanfaatan komponen Link, useRouter, dan usePathname.
+
+---
+layout: intro
+badge: "MODUL 04"
+badgeColor: "yellow"
+---
+
+## 04. State Management Dasar
+
+Memahami cara menyimpan data sementara menggunakan useState, mengelola efek samping dengan useEffect, dan teknik lifting state antar komponen.
+
+---
+layout: intro
+badge: "MODUL 05"
+badgeColor: "green"
+---
+
+## 05. State Management Lanjutan
+
+Mengelola data bersama (global state) di React menggunakan useContext agar data mudah digunakan di berbagai komponen tanpa oper props berulang kali.
+
+---
+layout: intro
+badge: "MODUL 06"
+badgeColor: "purple"
+---
+
+## 06. Mini Project: Aplikasi Todo Sederhana
+
+Praktek langsung membangun aplikasi catatan tugas (Todo App) dari nol, menerapkan navigasi antar halaman, dan memberi styling rapi dengan Tailwind CSS.
+
+---
+layout: intro
+badge: "MODUL 07"
+badgeColor: "cyan"
+---
+
+## 07. Konsumsi API: Menampilkan Data (GET)
+
+Mengambil data dari endpoint eksternal, menampilkan daftar data ke antarmuka, serta mengelola tampilan saat loading dan jika terjadi kendala error.
+
+---
+layout: intro
+badge: "MODUL 08"
+badgeColor: "pink"
+---
+
+## 08. Manipulasi Data (POST, PUT, DELETE)
+
+Membuat form dengan validasi, mengirim data baru ke server backend, memperbarui dan menghapus data, serta menangani status respon HTTP secara tepat.
+
+---
+layout: intro
+badge: "MODUL 09"
+badgeColor: "yellow"
+---
+
+## 09. Form Input & Validasi
+
+Pengelolaan form tingkat lanjut, memahami perbedaan Controlled vs Uncontrolled input, serta menambahkan validasi input agar data pengguna selalu akurat.
+
+---
+layout: intro
+badge: "MODUL 10"
+badgeColor: "green"
+---
+
+## 10. Penanganan Data Dinamis
+
+Menampilkan data dalam format tabel atau kartu, membuat fitur pencarian data, filter kategori, pagination / infinite scroll, serta komponen empty state saat data kosong.
+
+---
+layout: intro
+badge: "MODUL 11"
+badgeColor: "purple"
+---
+
+## 11. Handoff UI/UX: Dari Figma ke Kode
+
+Membaca spesifikasi desain di Figma secara teliti (jarak, warna, tipografi) dan menerjemahkannya ke dalam kode antarmuka menggunakan Tailwind CSS.
+
+---
+layout: intro
+badge: "MODUL 12"
+badgeColor: "cyan"
+---
+
+## 12. Integrasi Endpoint Backend & Autentikasi JWT
+
+Menghubungkan aplikasi frontend ke layanan API tim backend nyata, serta menerapkan alur login dan proteksi halaman menggunakan token otentikasi (JWT).
+
+---
+layout: intro
+badge: "MODUL 13"
+badgeColor: "pink"
+---
+
+## 13. Mengenal Dokumentasi API (OpenAPI/Swagger)
+
+Kemahiran membaca kontrak dan spesifikasi API dari dokumentasi Swagger/OpenAPI, serta berkolaborasi dengan lancar bersama tim developer backend.
+
+---
+layout: intro
+badge: "MODUL 14"
+badgeColor: "yellow"
+---
+
+## 14. Responsive Layout & Media Queries
+
+Membangun tampilan website yang fleksibel, adaptif, dan tetap proporsional saat dibuka di layar HP, tablet, maupun layar laptop lebar.
+
+---
+layout: intro
+badge: "MODUL 15"
+badgeColor: "green"
+---
+
+## 15. Unit Testing untuk Client Component
+
+Pengujian otomatis sederhana pada komponen klien untuk memastikan tombol, form, dan logika interaksi berjalan benar sebelum dirilis ke pengguna.
+
+---
+layout: intro
+badge: "MODUL 16"
+badgeColor: "purple"
+---
+
+## 16. Build & Deploy Website ke Vercel
+
+Menyiapkan kompilasi akhir proyek (next build), mengunggah website ke platform Vercel secara mudah, serta tips pemantauan dan troubleshooting dasar setelah online.
+
+---
+layout: cover
+badgeLeft: "✦ TERIMA KASIH"
+badgeRight: "SIAP PRAKTEK"
+---
+
+# SEMANGAT BERKARYA!
+
+Semua Programmer Handal Berawal dari Pemula. Mari Mulai Bikin Aplikasi Pertamamu dengan Percaya Diri!
+
+<div class="mt-6 flex justify-center gap-4">
+  <span class="brutal-badge brutal-badge-yellow">TANYA JAWAB</span>
+  <span class="brutal-badge brutal-badge-cyan">DISKUSI SANTAI</span>
+  <span class="brutal-badge brutal-badge-pink">MULAI KODING</span>
 </div>
-
-Learn more: [Mermaid Diagrams](https://sli.dev/features/mermaid) and [PlantUML Diagrams](https://sli.dev/features/plantuml)
-
----
-foo: bar
-dragPos:
-  square: 691,32,167,_,-16
----
-
-# Draggable Elements
-
-Double-click on the draggable elements to edit their positions.
-
-<br>
-
-###### Directive Usage
-
-```md
-<img v-drag="'square'" src="https://sli.dev/logo.png">
-```
-
-<br>
-
-###### Component Usage
-
-```md
-<v-drag text-3xl>
-  <div class="i-carbon:arrow-up" />
-  Use the `v-drag` component to have a draggable container!
-</v-drag>
-```
-
-<v-drag pos="471,257,261,_,-15">
-  <div text-center text-3xl border border-main rounded>
-    Double-click me!
-  </div>
-</v-drag>
-
-<img v-drag="'square'" src="https://sli.dev/logo.png">
-
-###### Draggable Arrow
-
-```md
-<v-drag-arrow two-way />
-```
-
-<v-drag-arrow pos="67,452,253,46" two-way op70 />
-
----
-src: ./pages/imported-slides.md
-hide: false
----
-
----
-
-# Monaco Editor
-
-Slidev provides built-in Monaco Editor support.
-
-Add `{monaco}` to the code block to turn it into an editor:
-
-```ts {monaco}
-import { ref } from "vue";
-import { emptyArray } from "./external";
-
-const arr = ref(emptyArray(10));
-```
-
-Use `{monaco-run}` to create an editor that can execute the code directly in the slide:
-
-```ts {monaco-run}
-import { version } from "vue";
-import { emptyArray, sayHello } from "./external";
-
-sayHello();
-console.log(`vue ${version}`);
-console.log(
-  emptyArray<number>(10).reduce(
-    (fib) => [...fib, fib.at(-1)! + fib.at(-2)!],
-    [1, 1],
-  ),
-);
-```
-
----
-layout: center
-class: text-center
----
-
-# Learn More
-
-[Documentation](https://sli.dev) · [GitHub](https://github.com/slidevjs/slidev) · [Showcases](https://sli.dev/resources/showcases)
-
-<PoweredBySlidev mt-10 />
