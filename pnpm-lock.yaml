@@ -11,12 +11,6 @@ importers:
       '@slidev/cli':
         specifier: ^52.19.1
         version: 52.19.1(@devframes/hub@0.9.18(crossws@0.4.12(srvx@1.0.4))(devframe@0.9.18(cac@7.0.0)(srvx@1.0.4)))(@nuxt/kit@3.21.11)(@oxc-project/types@0.149.0)(@types/markdown-it@14.2.0)(@types/node@22.20.2)(@vitejs/devtools-kit@0.4.12(@modelcontextprotocol/server@2.0.0)(cac@7.0.0)(srvx@1.0.4)(vite@8.3.0(@types/node@22.20.2)(jiti@2.7.0)(yaml@2.9.0)))(@vue/compiler-sfc@3.5.42)(cac@7.0.0)(crossws@0.4.12(srvx@1.0.4))(hono@4.13.7)(lightningcss@1.33.0)(markdown-it@14.3.1)(oxc-parser@0.131.0)(postcss@8.5.28)(rolldown@1.2.8)(srvx@1.0.4)
-      '@slidev/theme-default':
-        specifier: latest
-        version: 0.25.0
-      '@slidev/theme-seriph':
-        specifier: latest
-        version: 0.25.0
       vue:
         specifier: ^3.5.33
         version: 3.5.42(typescript@6.0.3)
@@ -27,9 +21,6 @@ importers:
       prettier-plugin-slidev:
         specifier: ^1.0.5
         version: 1.0.5(prettier@3.9.6)
-      slidev-theme-neobrutalism:
-        specifier: link:../slidev-theme-neobrutalism
-        version: link:../slidev-theme-neobrutalism
 
 packages:
 
@@ -710,14 +701,6 @@ packages:
   '@slidev/rough-notation@0.1.0':
     resolution: {integrity: sha512-a/CbVmjuoO3E4JbUr2HOTsXndbcrdLWOM+ajbSQIY3gmLFzhjeXHGksGcp1NZ08pJjLZyTCxfz1C7v/ltJqycA==}
 
-  '@slidev/theme-default@0.25.0':
-    resolution: {integrity: sha512-iWvthH1Ny+i6gTwRnEeeU+EiqsHC56UdEO45bqLSNmymRAOWkKUJ/M0o7iahLzHSXsiPu71B7C715WxqjXk2hw==}
-    engines: {node: '>=14.0.0', slidev: '>=v0.47.0'}
-
-  '@slidev/theme-seriph@0.25.0':
-    resolution: {integrity: sha512-PnFQbn4I70+/cVie5iAr0Im6sYvnwjkO7Yj5KonTyJZFFJFytckLTrD3ijft/J4cRnz7OmSzTyQKNX1FN/x0YQ==}
-    engines: {node: '>=14.0.0', slidev: '>=v0.47.0'}
-
   '@slidev/types@0.47.5':
     resolution: {integrity: sha512-X67V4cCgM0Sz50bP8GbVzmiL8DHC2IXvdKcsN7DlxHyf+/T4d9GveeGukwha5Fx3MuYeGZWKag7TFL2ZY4w54A==}
     engines: {node: '>=18.0.0'}
@@ -1257,9 +1240,6 @@ packages:
   clone-regexp@3.0.0:
     resolution: {integrity: sha512-ujdnoq2Kxb8s3ItNBtnYeXdm07FcU0u8ARAT1lQ2YdMwQC+cdiXX8KoqMVuglztILivceTtp4ivqGSmEmhBUJw==}
     engines: {node: '>=12'}
-
-  codemirror-theme-vars@0.1.2:
-    resolution: {integrity: sha512-WTau8X2q58b0SOAY9DO+iQVw8JKVEgyQIqArp2D732tcc+pobbMta3bnVMdQdmgwuvNrOFFr6HoxPRoQOgooFA==}
 
   colorette@2.0.20:
     resolution: {integrity: sha512-IfEDxwoWIjkeXL1eXcDiow4UbKjhLdq6/EuSVR9GMN7KVH3r9gQ83e73hsz1Nd1T3ijd5xv1wcWRYO+D6kCI2w==}
@@ -2424,9 +2404,6 @@ packages:
     resolution: {integrity: sha512-OpN0zzVdiaiAhxpuuj5efpIS4sY9j7bY6uR5mnj5yPzGkdkjNKSJeUThPb60Jw29QuAZgA4o+/iB49kFiaBX6g==}
     engines: {node: '>=14'}
     hasBin: true
-
-  prism-theme-vars@0.2.5:
-    resolution: {integrity: sha512-/D8gBTScYzi9afwE6v3TC1U/1YFZ6k+ly17mtVRdLpGy7E79YjJJWkXFgUDHJ2gDksV/ZnXF7ydJ4TvoDm2z/Q==}
 
   process-nextick-args@2.0.1:
     resolution: {integrity: sha512-3ouUOpQhtgrbOa17J7+uxOTpITYWaGP7/AhoR3+A+/1e9skrzelGi/dXzEYyvbxubEF6Wn2ypscTKiKJFFn1ag==}
@@ -3898,18 +3875,6 @@ snapshots:
     dependencies:
       roughjs: 4.6.6
 
-  '@slidev/theme-default@0.25.0':
-    dependencies:
-      '@slidev/types': 0.47.5
-      codemirror-theme-vars: 0.1.2
-      prism-theme-vars: 0.2.5
-
-  '@slidev/theme-seriph@0.25.0':
-    dependencies:
-      '@slidev/types': 0.47.5
-      codemirror-theme-vars: 0.1.2
-      prism-theme-vars: 0.2.5
-
   '@slidev/types@0.47.5': {}
 
   '@slidev/types@52.19.1(@devframes/hub@0.9.18(crossws@0.4.12(srvx@1.0.4))(devframe@0.9.18(cac@7.0.0)(srvx@1.0.4)))(@modelcontextprotocol/server@2.0.0)(@nuxt/kit@3.21.11)(@vue/compiler-sfc@3.5.42)(cac@7.0.0)(crossws@0.4.12(srvx@1.0.4))(rolldown@1.2.8)(srvx@1.0.4)(typescript@6.0.3)(vite@8.3.0(@types/node@22.20.2)(jiti@2.7.0)(yaml@2.9.0))':
@@ -4695,8 +4660,6 @@ snapshots:
   clone-regexp@3.0.0:
     dependencies:
       is-regexp: 3.1.0
-
-  codemirror-theme-vars@0.1.2: {}
 
   colorette@2.0.20: {}
 
@@ -5961,8 +5924,6 @@ snapshots:
       prettier: 3.9.6
 
   prettier@3.9.6: {}
-
-  prism-theme-vars@0.2.5: {}
 
   process-nextick-args@2.0.1: {}
 

@@ -1,5 +1,5 @@
 ---
-theme: neobrutalism
+theme: none
 layout: cover
 badgeLeft: "✦ SANDBOX IT HSI 2026"
 badgeRight: "KELAS NEXT.JS"
@@ -473,12 +473,12 @@ Digunakan oleh berbagai perusahaan terkemuka dunia, Next.js memudahkan Antum mem
 <!-- Bottom Strategy Box (Revealed on click 6) -->
 <div v-click="6" class="flow-card mt-6 px-4 py-2 border-2 border-black rounded bg-white shadow-[3px_3px_0px_#000]">
   <div class="flex items-center gap-2 font-black text-xs text-black mb-1">
-    <span class="bg-[#2ED573] text-black px-2 py-0.5 border border-black rounded text-[10px] uppercase font-black">
+    <span class="bg-[#2ED573] text-black px-2 py-0.5 border border-black rounded text-xs uppercase font-black">
       💡 REALITAS BOOTCAMP 4 BULAN
     </span>
     <span>Jalur Pintas Pareto (80/20)</span>
   </div>
-  <p class="text-[10px] text-gray-700 leading-snug">
+  <p class="text-xs text-gray-700 leading-snug">
     Belajar keempat tangga secara terpisah dari nol butuh waktu lebih dari setahun. Di bootcamp intensif ini, kita langsung fokus ke <b>Next.js</b> sambil menyerap intisari HTML, CSS, JS, dan React yang <b>benar-benar dipakai di 80% proyek nyata</b>!
   </p>
 </div>
