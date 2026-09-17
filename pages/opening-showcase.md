@@ -5,7 +5,7 @@ hideInToc: true
 ## APA SAJA YANG BISA DIBUAT DENGAN NEXT.JS?
 
 <p>
-  Dari landing page sederhana hingga marketplace — apa pun yang bisa diakses melalui browser, insyaa Allah bisa Antum buat.
+  Dari <span v-mark.circle.orange="1">landing page</span> sederhana hingga <span v-mark.circle.orange="2">marketplace</span> — apa pun yang bisa diakses melalui browser, insyaa Allah bisa Antum buat.
 </p>
 
 <!-- 4 Columns × 2 Rows Showcase Grid with Rotated Neobrutalist Cards (Click Animation Fade-In) -->
@@ -13,7 +13,7 @@ hideInToc: true
 
   <!-- 01. E-Commerce -->
   <div
-    v-click="1"
+    v-click="3"
     class="showcase-card bg-white border-2 border-black shadow-[3px_3px_0px_#000] rounded-lg overflow-hidden flex flex-col justify-between cursor-pointer"
     style="transform: rotate(-1.5deg);"
   >
@@ -43,7 +43,7 @@ hideInToc: true
 
   <!-- 02. SaaS Analytics -->
   <div
-    v-click="2"
+    v-click="4"
     class="showcase-card bg-white border-2 border-black shadow-[3px_3px_0px_#000] rounded-lg overflow-hidden flex flex-col justify-between cursor-pointer"
     style="transform: rotate(1.2deg);"
   >
@@ -73,7 +73,7 @@ hideInToc: true
 
   <!-- 03. AI Copilot -->
   <div
-    v-click="3"
+    v-click="5"
     class="showcase-card bg-white border-2 border-black shadow-[3px_3px_0px_#000] rounded-lg overflow-hidden flex flex-col justify-between cursor-pointer"
     style="transform: rotate(-1deg);"
   >
@@ -103,7 +103,7 @@ hideInToc: true
 
   <!-- 04. LMS Portal -->
   <div
-    v-click="4"
+    v-click="6"
     class="showcase-card bg-white border-2 border-black shadow-[3px_3px_0px_#000] rounded-lg overflow-hidden flex flex-col justify-between cursor-pointer"
     style="transform: rotate(1.8deg);"
   >
@@ -133,7 +133,7 @@ hideInToc: true
 
   <!-- 05. Content & Media CMS -->
   <div
-    v-click="5"
+    v-click="7"
     class="showcase-card bg-white border-2 border-black shadow-[3px_3px_0px_#000] rounded-lg overflow-hidden flex flex-col justify-between cursor-pointer"
     style="transform: rotate(1.4deg);"
   >
@@ -163,7 +163,7 @@ hideInToc: true
 
   <!-- 06. Booking & Ticketing -->
   <div
-    v-click="6"
+    v-click="8"
     class="showcase-card bg-white border-2 border-black shadow-[3px_3px_0px_#000] rounded-lg overflow-hidden flex flex-col justify-between cursor-pointer"
     style="transform: rotate(-1.4deg);"
   >
@@ -193,7 +193,7 @@ hideInToc: true
 
   <!-- 07. Social Forum -->
   <div
-    v-click="7"
+    v-click="9"
     class="showcase-card bg-white border-2 border-black shadow-[3px_3px_0px_#000] rounded-lg overflow-hidden flex flex-col justify-between cursor-pointer"
     style="transform: rotate(1.1deg);"
   >
@@ -223,7 +223,7 @@ hideInToc: true
 
   <!-- 08. Internal ERP & Ops -->
   <div
-    v-click="8"
+    v-click="10"
     class="showcase-card bg-white border-2 border-black shadow-[3px_3px_0px_#000] rounded-lg overflow-hidden flex flex-col justify-between cursor-pointer"
     style="transform: rotate(-1.2deg);"
   >
