@@ -242,6 +242,128 @@ src/app/
 </div>
 
 ---
+layout: two-cols
+---
+
+### Konvensi Penamaan File & Folder
+
+Menyepakati Standar Agar Satu Tim Tidak Beda Gaya
+
+::left::
+
+#### Penamaan File
+
+<v-clicks>
+
+- **Komponen React** → `PascalCase` atau `kebab-case`
+  `UserProfile.tsx` atau `user-profile.tsx`
+  _(nama function tetap `PascalCase`)_
+- **Hook, util, lib** → `kebab-case`
+  `use-auth.ts`, `format-rupiah.ts`
+- **Konstanta / config** → `kebab-case`
+  `api-routes.ts`, `site-config.ts`
+- **Type / interface** → `kebab-case`
+  `user-types.ts`, `api-response.ts`
+
+</v-clicks>
+
+::right::
+
+#### Penamaan di Kode (JavaScript/TypeScript)
+
+<v-clicks>
+
+- **Variabel & fungsi** → `camelCase`
+  `userName`, `fetchUserData()`
+- **Komponen React** → `PascalCase`
+  `function UserProfile() {}`
+- **Konstanta tetap** → `CONSTANT_CASE`
+  `MAX_RETRY_COUNT`, `API_BASE_URL`
+- **Type / Interface** → `PascalCase`
+  `type UserResponse`, `interface ApiConfig`
+
+</v-clicks>
+
+<div v-click class="mt-3 brutal-card bg-white p-2 text-xs">
+  💡 Tidak ada aturan mutlak — yang penting <strong>konsisten dalam satu proyek</strong>. Sepakati di awal bersama tim!
+</div>
+---
+
+### Strategi Pengelompokan File
+
+Bagaimana Menata Ratusan File Agar Proyek Tetap Rapi dan Mudah Dinavigasi
+
+<v-switch>
+<template #1>
+
+```text
+// 📁 By Feature / Route (Direkomendasikan)
+// Semua file terkait fitur dikumpulkan dalam satu folder
+src/app/dashboard/
+├── page.tsx
+├── DashboardChart.tsx
+├── use-dashboard-data.ts
+├── dashboard-types.ts
+└── format-dashboard.ts
+```
+
+✅ Mudah dihapus, mudah dipahami — satu folder = satu fitur utuh
+
+</template>
+<template #2>
+
+```text
+// 📁 By Type (Kurang Scalable)
+// File dikelompokkan berdasarkan jenisnya
+src/
+├── components/
+│   ├── DashboardChart.tsx
+│   └── UserProfile.tsx
+├── hooks/
+│   ├── use-dashboard-data.ts
+│   └── use-auth.ts
+└── utils/
+    └── format-dashboard.ts
+```
+
+⚠️ Terasa rapi di awal, tapi saat aplikasi membesar, satu fitur tersebar di banyak folder
+
+</template>
+</v-switch>
+
+---
+
+### ⚠️ Anti-Pattern: Barrel Exports
+
+Kenapa `index.ts` Re-Export Itu Sering Menjadi Masalah
+
+Barrel file adalah `index.ts` yang hanya me-re-export dari file lain:
+
+```ts
+// ❌ components/index.ts — "Barrel File"
+export { Button } from './Button';
+export { Input } from './Input';
+export { Modal } from './Modal';
+export { Tabs } from './Tabs';
+// ... puluhan export lainnya
+```
+
+<v-clicks>
+
+- 🌳 **Tree-shaking rusak** — `import { Button } from '@/components'` memaksa bundler meng-resolve SELURUH barrel, memperbesar bundle.
+- 🔄 **Circular dependency** — Barrel menjadi titik pusat yang sangat rawan memicu import melingkar antar modul.
+- 🐢 **IDE & TypeScript lambat** — Auto-import dan type-checking harus resolve semua re-export, DX jadi berat.
+- ⚡ **Hot reload berantai** — Satu perubahan file bisa trigger reload SEMUA file yang import dari barrel tersebut.
+- 🔍 **Debugging sulit** — Stack trace menunjuk ke `index.ts`, bukan file asli tempat bug berada.
+- 📖 **Next.js sendiri menyarankan menghindarinya** — Dokumentasi resmi menyebut barrel files sebagai penyebab masalah performa build.
+
+</v-clicks>
+
+<div v-click class="mt-2 brutal-card bg-green-100 p-2 text-xs border-2 border-black">
+  ✅ <strong>Solusi:</strong> Import langsung dari file aslinya → <code>import { Button } from '@/components/Button'</code>
+</div>
+
+---
 layout: intro
 badge: "RANGKUMAN"
 badgeColor: "yellow"
@@ -249,8 +371,11 @@ hideInToc: true
 transition: slide-up
 ---
 
-## 3 Hal Penting dari Modul 02
+## 6 Hal Penting dari Modul 02
 
 1. **Folder Adalah Rute**: Cukup buat folder baru dengan file `page.tsx` di dalamnya untuk melahirkan halaman baru di website.
 2. **File Konvensi Bawaan**: Gunakan `layout.tsx` untuk kerangka bersama, `loading.tsx` untuk indikator tunggu, dan `error.tsx` untuk penanganan error.
 3. **Route Groups & Colocation**: Gunakan tanda kurung `(group)` untuk fleksibilitas layout tanpa mengubah URL, dan letakkan komponen pendukung langsung di samping halamannya.
+4. **Konvensi Penamaan**: File komponen boleh PascalCase atau kebab-case (nama function tetap PascalCase). Variabel `camelCase`, konstanta `CONSTANT_CASE`.
+5. **Kelompokkan File per Fitur**: Kumpulkan semua file terkait fitur dalam satu folder — lebih scalable daripada mengelompokkan per tipe.
+6. **Hindari Barrel Exports**: Jangan pakai `index.ts` re-export — merusak tree-shaking, memperlambat IDE, dan mempersulit debugging. Import langsung dari file aslinya.
