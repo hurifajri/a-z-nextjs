@@ -30,7 +30,7 @@ const style = computed(() => handleBackground(props.background));
     <!-- Top Left Decorative Badge -->
     <div
       v-if="$slots['badge-left'] || (badgeLeft !== false && badgeLeft)"
-      class="absolute top-8 left-10"
+      class="absolute top-8 left-14"
     >
       <slot name="badge-left">
         <span class="brutal-badge" :class="`brutal-badge-${badgeLeftColor}`">
@@ -42,7 +42,7 @@ const style = computed(() => handleBackground(props.background));
     <!-- Top Right Decorative Badge -->
     <div
       v-if="$slots['badge-right'] || (badgeRight !== false && badgeRight)"
-      class="absolute top-8 right-10"
+      class="absolute top-8 right-14"
     >
       <slot name="badge-right">
         <span class="brutal-badge" :class="`brutal-badge-${badgeRightColor}`">

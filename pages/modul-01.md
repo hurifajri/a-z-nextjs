@@ -195,7 +195,12 @@ Kecepatan Kompilasi Rust vs Kekuatan Plugin Spesifik Framework
     <div>
       <div class="flex items-center justify-between mb-1.5">
         <span class="font-black text-sm text-black">Oxlint (Oxc)</span>
-        <span class="bg-[#00E5FF] text-[10px] font-black px-1.5 py-0.5 border border-black rounded">Pre-Commit Tool</span>
+        <span
+          v-motion
+          :initial="{ scale: 0.8, x: -10 }"
+          :enter="{ scale: 1, x: 0, transition: { type: 'spring', stiffness: 300 } }"
+          class="bg-[#00E5FF] text-[10px] font-black px-1.5 py-0.5 border border-black rounded"
+        >⚡ 50x–100x Rust</span>
       </div>
       <div class="text-[11px] text-gray-600 mb-2 font-mono">Engine: Rust</div>
       <ul class="space-y-1 text-[11px] text-gray-800 leading-snug">
@@ -214,7 +219,12 @@ Kecepatan Kompilasi Rust vs Kekuatan Plugin Spesifik Framework
     <div>
       <div class="flex items-center justify-between mb-1.5">
         <span class="font-black text-sm text-black">Biome (ex-Rome)</span>
-        <span class="bg-[#FF6B8B] text-white text-[10px] font-black px-1.5 py-0.5 border border-black rounded">All-in-One</span>
+        <span
+          v-motion
+          :initial="{ scale: 0.8, x: -10 }"
+          :enter="{ scale: 1, x: 0, transition: { type: 'spring', stiffness: 300, delay: 150 } }"
+          class="bg-[#FF6B8B] text-white text-[10px] font-black px-1.5 py-0.5 border border-black rounded"
+        >⚡ 25x–35x Rust</span>
       </div>
       <div class="text-[11px] text-gray-600 mb-2 font-mono">Engine: Rust</div>
       <ul class="space-y-1 text-[11px] text-gray-800 leading-snug">
