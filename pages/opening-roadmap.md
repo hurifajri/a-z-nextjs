@@ -4,8 +4,10 @@ hideInToc: true
 
 ## ROADMAP PEMBELAJARAN
 
-<p>16 Modul Terstruktur: Langkah Demi Langkah dari Dasar hingga Rilis ke Publik</p>
+<p>
+  Dari fondasi dasar hingga rilis ke publik — 16 modul terstruktur yang insyaa Allah membimbing Antum langkah demi langkah.
+</p>
 
-<div class="roadmap-toc mt-3">
+<div v-click class="roadmap-toc mt-3">
   <Toc columns="2" maxDepth="1" />
 </div>
