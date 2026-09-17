@@ -234,6 +234,7 @@ layout: intro
 badge: "RANGKUMAN"
 badgeColor: "yellow"
 hideInToc: true
+transition: slide-up
 ---
 
 ## 3 Hal Penting dari Modul 15

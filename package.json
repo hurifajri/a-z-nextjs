@@ -19,6 +19,7 @@
   },
   "slidev": {
     "colorSchema": "light",
+    "transition": "slide-left",
     "defaults": {
       "fonts": {
         "sans": "Space Grotesk, Plus Jakarta Sans, sans-serif",

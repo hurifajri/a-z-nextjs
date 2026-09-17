@@ -312,6 +312,7 @@ layout: intro
 badge: "RANGKUMAN"
 badgeColor: "yellow"
 hideInToc: true
+transition: slide-up
 ---
 
 ## Selamat! Antum Baru Saja Membangun Aplikasi Fullstack! 🎉

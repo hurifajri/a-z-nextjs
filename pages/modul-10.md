@@ -277,6 +277,7 @@ layout: intro
 badge: "RANGKUMAN"
 badgeColor: "yellow"
 hideInToc: true
+transition: fade-out
 ---
 
 ## 3 Hal Penting dari Modul 10

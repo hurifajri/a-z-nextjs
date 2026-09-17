@@ -404,7 +404,9 @@
 .roadmap-toc {
   width: 100%;
   margin-top: 0.5rem;
-  transition: opacity 0.45s ease, transform 0.45s cubic-bezier(0.16, 1, 0.3, 1) !important;
+  transition:
+    opacity 0.45s ease,
+    transform 0.45s cubic-bezier(0.16, 1, 0.3, 1) !important;
 }
 
 .roadmap-toc.slidev-vclick-hidden {
@@ -495,19 +497,51 @@
   animation: tocItemPop 0.3s cubic-bezier(0.16, 1, 0.3, 1) both;
 }
 
-.roadmap-toc:not(.slidev-vclick-hidden) li.slidev-toc-item:nth-child(1) { animation-delay: 0.02s; }
-.roadmap-toc:not(.slidev-vclick-hidden) li.slidev-toc-item:nth-child(2) { animation-delay: 0.05s; }
-.roadmap-toc:not(.slidev-vclick-hidden) li.slidev-toc-item:nth-child(3) { animation-delay: 0.08s; }
-.roadmap-toc:not(.slidev-vclick-hidden) li.slidev-toc-item:nth-child(4) { animation-delay: 0.11s; }
-.roadmap-toc:not(.slidev-vclick-hidden) li.slidev-toc-item:nth-child(5) { animation-delay: 0.14s; }
-.roadmap-toc:not(.slidev-vclick-hidden) li.slidev-toc-item:nth-child(6) { animation-delay: 0.17s; }
-.roadmap-toc:not(.slidev-vclick-hidden) li.slidev-toc-item:nth-child(7) { animation-delay: 0.20s; }
-.roadmap-toc:not(.slidev-vclick-hidden) li.slidev-toc-item:nth-child(8) { animation-delay: 0.23s; }
-.roadmap-toc:not(.slidev-vclick-hidden) li.slidev-toc-item:nth-child(9) { animation-delay: 0.26s; }
-.roadmap-toc:not(.slidev-vclick-hidden) li.slidev-toc-item:nth-child(10) { animation-delay: 0.29s; }
-.roadmap-toc:not(.slidev-vclick-hidden) li.slidev-toc-item:nth-child(11) { animation-delay: 0.32s; }
-.roadmap-toc:not(.slidev-vclick-hidden) li.slidev-toc-item:nth-child(12) { animation-delay: 0.35s; }
-.roadmap-toc:not(.slidev-vclick-hidden) li.slidev-toc-item:nth-child(13) { animation-delay: 0.38s; }
-.roadmap-toc:not(.slidev-vclick-hidden) li.slidev-toc-item:nth-child(14) { animation-delay: 0.41s; }
-.roadmap-toc:not(.slidev-vclick-hidden) li.slidev-toc-item:nth-child(15) { animation-delay: 0.44s; }
-.roadmap-toc:not(.slidev-vclick-hidden) li.slidev-toc-item:nth-child(16) { animation-delay: 0.47s; }
+.roadmap-toc:not(.slidev-vclick-hidden) li.slidev-toc-item:nth-child(1) {
+  animation-delay: 0.02s;
+}
+.roadmap-toc:not(.slidev-vclick-hidden) li.slidev-toc-item:nth-child(2) {
+  animation-delay: 0.05s;
+}
+.roadmap-toc:not(.slidev-vclick-hidden) li.slidev-toc-item:nth-child(3) {
+  animation-delay: 0.08s;
+}
+.roadmap-toc:not(.slidev-vclick-hidden) li.slidev-toc-item:nth-child(4) {
+  animation-delay: 0.11s;
+}
+.roadmap-toc:not(.slidev-vclick-hidden) li.slidev-toc-item:nth-child(5) {
+  animation-delay: 0.14s;
+}
+.roadmap-toc:not(.slidev-vclick-hidden) li.slidev-toc-item:nth-child(6) {
+  animation-delay: 0.17s;
+}
+.roadmap-toc:not(.slidev-vclick-hidden) li.slidev-toc-item:nth-child(7) {
+  animation-delay: 0.2s;
+}
+.roadmap-toc:not(.slidev-vclick-hidden) li.slidev-toc-item:nth-child(8) {
+  animation-delay: 0.23s;
+}
+.roadmap-toc:not(.slidev-vclick-hidden) li.slidev-toc-item:nth-child(9) {
+  animation-delay: 0.26s;
+}
+.roadmap-toc:not(.slidev-vclick-hidden) li.slidev-toc-item:nth-child(10) {
+  animation-delay: 0.29s;
+}
+.roadmap-toc:not(.slidev-vclick-hidden) li.slidev-toc-item:nth-child(11) {
+  animation-delay: 0.32s;
+}
+.roadmap-toc:not(.slidev-vclick-hidden) li.slidev-toc-item:nth-child(12) {
+  animation-delay: 0.35s;
+}
+.roadmap-toc:not(.slidev-vclick-hidden) li.slidev-toc-item:nth-child(13) {
+  animation-delay: 0.38s;
+}
+.roadmap-toc:not(.slidev-vclick-hidden) li.slidev-toc-item:nth-child(14) {
+  animation-delay: 0.41s;
+}
+.roadmap-toc:not(.slidev-vclick-hidden) li.slidev-toc-item:nth-child(15) {
+  animation-delay: 0.44s;
+}
+.roadmap-toc:not(.slidev-vclick-hidden) li.slidev-toc-item:nth-child(16) {
+  animation-delay: 0.47s;
+}

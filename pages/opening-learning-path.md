@@ -1,5 +1,6 @@
 ---
 hideInToc: true
+transition: slide-up
 ---
 
 ## BAGAIMANA TANGGA BELAJAR MENUJU NEXT.JS?
