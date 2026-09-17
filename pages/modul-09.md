@@ -4,9 +4,9 @@ badge: "MODUL 09"
 badgeColor: "yellow"
 ---
 
-## 09. Form, Validasi, dan Konsumsi API (POST/PUT/DELETE)
+## 09. Form, Validasi & Konsumsi API (POST/PUT/DELETE)
 
-Membangun form interaktif dengan validasi, mengirim data ke server, serta menangani respon HTTP secara tepat.
+Pengelolaan Form Modern, Mengatasi Masalah Form Manual dengan React Hook Form & TanStack Form, Skema Validasi dengan Valibot (vs Zod), serta Mutasi Data API.
 
 ---
 layout: two-cols
@@ -14,189 +14,153 @@ layout: two-cols
 
 ### Controlled vs Uncontrolled Input
 
-Dua pendekatan mengelola form di React
+Dua Pendekatan Mengelola Nilai Input di React
 
 ::left::
 
-#### Controlled (Rekomendasi ✅)
+#### Controlled Input
 
-React yang mengontrol nilai input:
+Nilai dikendalikan penuh oleh state React:
 
-```tsx {2|4-5|all}
+```tsx {2|5-6|all}
 "use client"
-export default function Form() {
-  const [nama, setNama] = useState("")
+const [nama, setNama] = useState("")
 
-  return (
-    <input
-      value={nama}
-      onChange={e => setNama(e.target.value)}
-    />
-  )
-}
+<input
+  value={nama}
+  onChange={e => setNama(e.target.value)}
+/>
 ```
 
-- ✅ Validasi real-time
-- ✅ State dan UI selalu sinkron
-- ✅ Mudah di-debug
+- ✅ Sinkronisasi instan ke state
+- ❌ **Re-render setiap ketikan satu huruf**
+- ❌ Boros komputasi pada form yang memiliki puluhan field!
 
 ::right::
 
-#### Uncontrolled
+#### Uncontrolled Input
 
-Browser yang mengontrol nilai input:
+Nilai disimpan langsung oleh DOM browser:
 
 ```tsx
 "use client"
-export default function Form() {
-  const inputRef = useRef<HTMLInputElement>(null)
+const inputRef = useRef<HTMLInputElement>(null)
 
-  function handleSubmit() {
-    const value = inputRef.current?.value
-    console.log(value)
-  }
-
-  return (
-    <input ref={inputRef} />
-  )
-}
+<input ref={inputRef} defaultValue="Fulan" />
 ```
 
-- ✅ Performa lebih baik (less re-render)
-- ❌ Sulit validasi real-time
-- ❌ State tidak terkontrol React
+- ⚡ **Tanpa Re-render**: Mengetik ribuan kata tidak memicu komponen render ulang.
+- 🚀 Performa sangat tinggi!
+- 💡 Konsep inilah yang dimanfaatkan oleh library modern seperti **React Hook Form**.
 
 ---
 
-### Membangun Form dengan Validasi
+### Mengapa Form Manual Sulit di Skala Besar?
 
-Validasi input sebelum data dikirim ke server
+Tantangan Nyata Saat Mengelola Form Kompleks Hanya dengan `useState`
 
-```tsx {2-3|5-13|15-16|all}
-"use client"
-export default function RegisterForm() {
-  const [form, setForm] = useState({ nama: "", email: "", password: "" })
-  const [errors, setErrors] = useState<Record<string, string>>({})
+<div class="grid grid-cols-2 gap-4 mt-4">
+  <div class="brutal-card bg-white p-3 text-xs" v-click>
+    <div class="font-black text-sm mb-1 text-red-600">💥 Masalah Performa</div>
+    <p class="text-gray-600">Form dengan 15 input berarti 15 state. Setiap kali pengguna mengetik di satu kolom, <strong>ke-15 kolom lainnya ikut ter-render ulang</strong>.</p>
+  </div>
+  <div class="brutal-card bg-white p-3 text-xs" v-click>
+    <div class="font-black text-sm mb-1 text-red-600">🍝 Validasi Rumit</div>
+    <p class="text-gray-600">Puluhan baris <code>if-else</code> manual untuk cek email, minimal karakter, konfirmasi password, hingga field bersarang.</p>
+  </div>
+</div>
 
-  function validate() {
-    const errs: Record<string, string> = {}
-    if (!form.nama.trim()) errs.nama = "Nama wajib diisi"
-    if (!form.email.includes("@")) errs.email = "Email tidak valid"
-    if (form.password.length < 8) errs.password = "Minimal 8 karakter"
-    setErrors(errs)
-    return Object.keys(errs).length === 0
-  }
-
-  function handleSubmit(e: React.FormEvent) {
-    e.preventDefault()    // Cegah reload halaman!
-    if (!validate()) return
-    // ... kirim ke API
-  }
-
-  return (
-    <form onSubmit={handleSubmit}>
-      <input value={form.nama} onChange={e => setForm({...form, nama: e.target.value})} />
-      {errors.nama && <span className="text-red-500 text-sm">{errors.nama}</span>}
-      {/* ... field lainnya */}
-    </form>
-  )
-}
-```
+<div v-click class="mt-4 brutal-card bg-white p-3 text-sm">
+  🌟 <strong>Solusi Komunitas Open Source:</strong>
+  <div class="grid grid-cols-3 gap-2 mt-2 text-xs">
+    <div><strong>React Hook Form (RHF)</strong><br/>Standar industri, uncontrolled & super cepat</div>
+    <div><strong>TanStack Form</strong><br/>Modern, type-safe lintas framework</div>
+    <div><strong>Formik</strong><br/>Library populer era lama</div>
+  </div>
+</div>
 
 ---
-
-### HTTP Methods: POST, PUT, DELETE
-
-Tiga cara utama mengirim data ke server
-
-<v-clicks>
-
-- **POST** — Membuat data baru (create)
-- **PUT** — Memperbarui data yang sudah ada (update)
-- **DELETE** — Menghapus data (delete)
-
-</v-clicks>
-
-````md magic-move
-```tsx
-// POST: Membuat data baru
-const res = await fetch("/api/todos", {
-  method: "POST",
-  headers: { "Content-Type": "application/json" },
-  body: JSON.stringify({ title: "Belajar Next.js", done: false }),
-})
-```
-```tsx
-// PUT: Memperbarui data
-const res = await fetch("/api/todos/1", {
-  method: "PUT",
-  headers: { "Content-Type": "application/json" },
-  body: JSON.stringify({ title: "Belajar Next.js", done: true }),
-})
-```
-```tsx
-// DELETE: Menghapus data
-const res = await fetch("/api/todos/1", {
-  method: "DELETE",
-})
-```
-````
-
+layout: two-cols
 ---
 
-### HTTP Status Codes
+### Skema Validasi: Kenapa Memilih Valibot?
 
-Respon dari server yang harus Antum pahami
+Validasi Data Runtime yang Ringan dan Modular
 
-| Kode | Arti | Aksi di Frontend |
-|:-----|:-----|:-----------------|
-| **200** | Berhasil (OK) | Tampilkan data / pesan sukses |
-| **201** | Berhasil dibuat (Created) | Redirect atau refresh list |
-| **400** | Request tidak valid | Tampilkan pesan validasi |
-| **401** | Belum login (Unauthorized) | Redirect ke halaman login |
-| **404** | Data tidak ditemukan | Tampilkan "tidak ditemukan" |
-| **500** | Error di server | Tampilkan pesan error umum |
+::left::
 
-<div v-click class="mt-3 brutal-card bg-white p-3 text-sm">
-  💡 Selalu cek <code>res.ok</code> atau <code>res.status</code> sebelum memproses data! Jangan langsung <code>res.json()</code> tanpa pengecekan.
+#### 🪶 Valibot _(Pilihan Utama Kita)_
+
+- 📦 **Ukuran Mini**: Kurang dari **1 kB** (karena fungsi didesain *modular & tree-shakable*).
+- ⚡ Mengurangi beban bundle website hingga **98%** dibanding library validasi tradisional!
+- 🎯 Syntax deklaratif yang sangat bersih.
+
+```bash
+npm install valibot @hookform/resolvers
+```
+
+::right::
+
+#### 📦 Alternatif di Ekosistem: Zod
+
+- **Zod**: Standar yang sangat populer di Next.js saat ini. Sangat kaya fitur, namun ukuran bundlenya cukup besar (~12–14 kB) karena monolitik.
+- **Yup**: Populer di masa lalu bersama Formik.
+- **TypeBox**: Berfokus pada integrasi JSON Schema murni.
+
+<div v-click class="mt-2 brutal-card bg-yellow-100 p-2 text-xs border-2 border-black">
+  💡 Prinsip Valibot & Zod sama: Antum menulis aturan validasi satu kali, lalu otomatis mendapatkan <strong>TypeScript Type</strong> gratis!
 </div>
 
 ---
 
-### Pola Submit Form Lengkap
+### Contoh Skema Validasi dengan Valibot
 
-Loading saat submit + notifikasi sukses/gagal
+Mendefinisikan Aturan Validasi Secara Deklaratif
 
-```tsx {3-4|6-17|19-20|all}
+```tsx {1-2|4-10|12-13|all}
+import * as v from "valibot"
+
+// 1. Definisikan aturan skema
+export const RegisterSchema = v.object({
+  nama: v.pipe(v.string(), v.minLength(3, "Nama minimal 3 karakter")),
+  email: v.pipe(v.string(), v.email("Format email tidak sah")),
+  password: v.pipe(v.string(), v.minLength(8, "Password minimal 8 karakter")),
+  umur: v.pipe(v.number("Umur harus angka"), v.minValue(17, "Minimal 17 tahun")),
+})
+
+// 2. Ekstrak tipe TypeScript otomatis (Infer Type)!
+export type RegisterFormValues = v.InferOutput<typeof RegisterSchema>
+// RegisterFormValues otomatis punya properti { nama, email, password, umur }
+```
+
+---
+
+### Integrasi: React Hook Form + Valibot
+
+Kombinasi Sempurna untuk Form Cepat, Hemat Memori, dan Type-Safe
+
+```tsx {3-5|7-10|12-14|17-21|all}
 "use client"
-export default function CreateTodoForm() {
-  const [title, setTitle] = useState("")
-  const [submitting, setSubmitting] = useState(false)
+import { useForm } from "react-hook-form"
+import { valibotResolver } from "@hookform/resolvers/valibot"
+import { RegisterSchema, type RegisterFormValues } from "./schema"
 
-  async function handleSubmit(e: React.FormEvent) {
-    e.preventDefault()
-    setSubmitting(true)
+export default function RegisterForm() {
+  const { register, handleSubmit, formState: { errors, isSubmitting } } = useForm<RegisterFormValues>({
+    resolver: valibotResolver(RegisterSchema),
+  })
 
-    const res = await fetch("/api/todos", {
-      method: "POST",
-      headers: { "Content-Type": "application/json" },
-      body: JSON.stringify({ title }),
-    })
-
-    if (res.ok) {
-      setTitle("")           // Reset form
-      alert("Todo berhasil ditambahkan!")
-    } else {
-      alert("Gagal menambahkan todo")
-    }
-    setSubmitting(false)
+  async function onSubmit(data: RegisterFormValues) {
+    await fetch("/api/auth/register", { method: "POST", body: JSON.stringify(data) })
   }
 
   return (
-    <form onSubmit={handleSubmit}>
-      <input value={title} onChange={e => setTitle(e.target.value)} />
-      <button disabled={submitting}>
-        {submitting ? "Menyimpan..." : "Tambah Todo"}
+    <form onSubmit={handleSubmit(onSubmit)} className="space-y-3">
+      <input {...register("nama")} placeholder="Nama Lengkap" className="border p-2 w-full rounded" />
+      {errors.nama && <p className="text-red-500 text-xs">{errors.nama.message}</p>}
+
+      <button disabled={isSubmitting} className="brutal-btn">
+        {isSubmitting ? "Mendaftarkan..." : "Daftar Akun"}
       </button>
     </form>
   )
@@ -204,72 +168,47 @@ export default function CreateTodoForm() {
 ```
 
 ---
-
-### Update dan Delete
-
-Memperbarui dan menghapus data dari daftar
-
-```tsx {2-10|12-17|all}
-// Fungsi update: toggle status selesai
-async function toggleTodo(id: number, done: boolean) {
-  const res = await fetch(`/api/todos/${id}`, {
-    method: "PUT",
-    headers: { "Content-Type": "application/json" },
-    body: JSON.stringify({ done: !done }),
-  })
-  if (res.ok) refreshData()
-}
-
-// Fungsi delete: hapus todo
-async function deleteTodo(id: number) {
-  const confirmed = confirm("Yakin ingin menghapus?")
-  if (!confirmed) return
-
-  const res = await fetch(`/api/todos/${id}`, { method: "DELETE" })
-  if (res.ok) refreshData()
-}
-
-// Di JSX:
-<button onClick={() => toggleTodo(todo.id, todo.done)}>
-  {todo.done ? "✅" : "⬜"}
-</button>
-<button onClick={() => deleteTodo(todo.id)}>🗑️</button>
-```
-
+layout: two-cols
 ---
 
-### Error Handling yang Robust
+### Mutasi Data: POST, PUT, DELETE
 
-Menangani berbagai skenario gagal secara elegan
+Mengirim Perubahan Data ke Endpoint Backend
 
-```tsx {1-15|17-20|all}
-async function submitData(data: unknown) {
-  try {
-    const res = await fetch("/api/resource", {
-      method: "POST",
-      headers: { "Content-Type": "application/json" },
-      body: JSON.stringify(data),
-    })
+::left::
 
-    if (res.status === 400) {
-      const err = await res.json()
-      return { success: false, message: err.message }  // Validasi gagal
-    }
-    if (res.status === 401) {
-      router.push("/login")  // Redirect ke login
-      return { success: false, message: "Sesi habis" }
-    }
-    if (!res.ok) {
-      return { success: false, message: "Terjadi kesalahan server" }
-    }
+#### Tiga Aksi Utama
 
-    const result = await res.json()
-    return { success: true, data: result }
-  } catch {
-    return { success: false, message: "Tidak dapat terhubung ke server" }
-  }
-}
+- **POST**: Menambah data baru (*Create*)
+- **PUT / PATCH**: Memperbarui data yang ada (*Update*)
+- **DELETE**: Menghapus data (*Delete*)
+
+```tsx
+// Contoh PUT: Update data
+await fetch(`/api/todos/${id}`, {
+  method: "PUT",
+  headers: {
+    "Content-Type": "application/json"
+  },
+  body: JSON.stringify({ done: true }),
+})
 ```
+
+::right::
+
+#### Status Code yang Wajib Dipahami
+
+| Kode | Kategori | Arti |
+|:---|:---|:---|
+| **200 / 201** | ✅ Sukses | Data diproses / dibuat |
+| **400** | ⚠️ Validasi Gagal | Data input tidak sesuai skema |
+| **401** | 🔒 Unauthorized | Token sesi habis / belum login |
+| **404** | ❓ Not Found | Data yang mau diubah tidak ada |
+| **500** | 💥 Server Error | Kendala teknis di backend |
+
+<div v-click class="mt-2 brutal-card bg-white p-2 text-xs">
+  💡 Selalu periksa <code>if (!res.ok)</code> sebelum menampilkan notifikasi sukses ke user!
+</div>
 
 ---
 layout: intro
@@ -279,6 +218,6 @@ badgeColor: "yellow"
 
 ## 3 Hal Penting dari Modul 09
 
-1. **Controlled Input = Sinkron**: Gunakan `useState` + `onChange` agar state React dan tampilan form selalu sinkron. Tambahkan `e.preventDefault()` saat submit!
-2. **Validasi Sebelum Kirim**: Cek semua field sebelum `fetch()`. Tampilkan pesan error per-field agar pengguna tahu apa yang salah.
-3. **Tangani Setiap Status HTTP**: Jangan hanya tangani sukses — siapkan handler untuk 400 (validasi), 401 (auth), 404, dan 500.
+1. **React Hook Form Mencegah Re-render Berlebih**: Menggunakan pendekatan *uncontrolled* sehingga pengetikan input form besar tetap mulus dan cepat.
+2. **Valibot sebagai Skema Validasi Super Ringan**: Memberikan validasi data yang aman, deklaratif, dan auto-generate tipe TypeScript dengan ukuran bundle kurang dari 1 kB (dibandingkan Zod yang lebih berat).
+3. **Pahami Metode & Status Respon HTTP**: Padukan validasi frontend dengan respon status code yang tepat (201, 400, 401, 500) untuk pengalaman pengguna yang andal.

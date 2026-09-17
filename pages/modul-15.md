@@ -4,41 +4,91 @@ badge: "MODUL 15"
 badgeColor: "green"
 ---
 
-## 15. Unit Testing untuk Client Component
+## 15. Unit Testing
 
-Menulis pengujian otomatis pada komponen klien untuk memastikan tombol, form, dan logika interaksi berjalan benar.
+Menjamin Kualitas Kode dengan Testing Trophy, Menguji Komponen Klien, Menulis Integration Test yang Bernilai Tinggi, serta Mocking API dengan MSW.
 
 ---
 
-### Kenapa Perlu Testing?
+### Kenapa Testing Sangat Penting?
 
-Menangkap bug SEBELUM pengguna yang menemukannya
+Sebuah Contoh Bug Sederhana yang Bisa Merugikan Bisnis Jutaan Rupiah
 
-<v-clicks>
+````md magic-move
+```tsx
+// ❌ FUNGSI TANPA TESTING: Kelihatannya baik-baik saja...
+export function hitungTotal(harga: number, diskonPersen: number) {
+  // Developer salah ketik tanda kurung atau operator!
+  return harga - harga * diskonPersen // Jika diskon 20%, dikira diskonPersen = 20 (bukan 0.2)!
+}
 
-- 🐛 **Cegah Regresi** — Pastikan fitur lama tidak rusak saat menambah fitur baru
-- 📋 **Dokumentasi Hidup** — Test menjelaskan bagaimana komponen seharusnya bekerja
-- 🚀 **Deploy Percaya Diri** — Jika semua test hijau ✅, aman untuk rilis
-- 🔄 **Refactor Tanpa Takut** — Ubah internal kode selama test tetap lulus
+// Saat dipanggil: hitungTotal(100_000, 20)
+// Hasilnya: 100.000 - 2.000.000 = -1.900.000 (Pelanggan malah dapat uang!) 😱
+```
+```tsx
+// ✅ DENGAN TESTING OTOMATIS: Tertangkap dalam hitungan milidetik sebelum deploy!
+import { describe, it, expect } from "vitest"
+import { hitungTotal } from "./transaksi"
 
-</v-clicks>
+describe("hitungTotal", () => {
+  it("menghitung diskon 20% dengan benar", () => {
+    const total = hitungTotal(100_000, 20)
+    // Test langsung GAGAL! Bug dicegah sebelum rilis ke pengguna nyata.
+    expect(total).toBe(80_000)
+  })
+})
+```
+````
 
-<div v-click class="mt-4 brutal-card bg-white p-3 text-sm">
-  💡 Kita akan menggunakan <strong>Vitest</strong> (test runner) + <strong>React Testing Library</strong> (render komponen).
+---
+layout: two-cols
+---
+
+### Strategi Pengujian: The Testing Trophy
+
+Pola Modern yang Direkomendasikan di Ekosistem React (Kent C. Dodds)
+
+::left::
+
+```text
+       🏆 End-to-End (E2E)
+      ████████ Integration (ROI Terbesar!)
+     ████ Unit Tests
+    ██ Static Analysis (TypeScript, ESLint)
+```
+
+<p class="text-xs text-gray-700 mt-2">
+  Piramida lama terlalu fokus pada Unit Test mikro. <strong>Testing Trophy</strong> menekankan <strong>Integration Test</strong> karena paling mirip dengan cara pengguna memakai aplikasi!
+</p>
+
+::right::
+
+<div class="space-y-2 text-xs">
+  <div class="p-2 border-2 border-black rounded bg-white">
+    <strong>1. Static Analysis</strong>: Menangkap salah ketik & tipe data via TypeScript.
+  </div>
+  <div class="p-2 border-2 border-black rounded bg-white">
+    <strong>2. Unit Tests</strong>: Menguji fungsi murni / kalkulasi matematika terisolasi.
+  </div>
+  <div class="p-2 border-2 border-black rounded bg-yellow-100 font-bold shadow-[2px_2px_0px_#000]">
+    <strong>3. Integration Tests</strong>: Menguji beberapa komponen bekerja sama (Form + Tombol + Validasi + Tampilan).
+  </div>
+  <div class="p-2 border-2 border-black rounded bg-white">
+    <strong>4. E2E Tests</strong>: Simulasi alur penuh di browser asli (Playwright/Cypress).
+  </div>
 </div>
 
 ---
 
-### Setup Testing
+### Setup Tools: Vitest & React Testing Library
 
-Instalasi dan konfigurasi tools testing
+Tools Pengujian Standar Modern yang Cepat dan Ramah
 
 ```bash
-npm install -D vitest @testing-library/react @testing-library/jest-dom
-npm install -D @vitejs/plugin-react jsdom
+npm install -D vitest @testing-library/react @testing-library/jest-dom @testing-library/user-event jsdom
 ```
 
-```tsx {2-3|5-10|all}
+```tsx
 // vitest.config.ts
 import { defineConfig } from "vitest/config"
 import react from "@vitejs/plugin-react"
@@ -60,155 +110,122 @@ import "@testing-library/jest-dom"
 
 ---
 
-### Anatomy of a Test
+### Pola AAA: Arrange → Act → Assert
 
-Memahami struktur test: Arrange → Act → Assert
+Struktur Universal dalam Menulis Setiap Skenario Pengujian
 
 ```tsx {1-4|6-7|9-10|12-13|all}
-import { render, screen } from "@testing-library/react"
-import { describe, it, expect } from "vitest"
-import Greeting from "./Greeting"
-
-describe("Greeting", () => {
-  it("menampilkan pesan sapaan dengan nama", () => {
-    // ARRANGE: Render komponen dengan props
-    render(<Greeting nama="Fulan" />)
-
-    // ACT: (Dalam kasus ini, tidak ada aksi user)
-
-    // ASSERT: Pastikan teks muncul di layar
-    expect(screen.getByText("Halo, Fulan!")).toBeInTheDocument()
-  })
-})
-```
-
-<div v-click class="mt-3 grid grid-cols-3 gap-2 text-xs">
-  <div class="brutal-card bg-white p-2 text-center">
-    <strong>Arrange</strong><br/>Siapkan komponen
-  </div>
-  <div class="brutal-card bg-white p-2 text-center">
-    <strong>Act</strong><br/>Lakukan aksi user
-  </div>
-  <div class="brutal-card bg-white p-2 text-center">
-    <strong>Assert</strong><br/>Cek hasilnya
-  </div>
-</div>
-
----
-
-### Testing Interaksi User
-
-Simulasikan klik, ketik, dan submit form
-
-```tsx {1-2|5-6|8-10|12-14|all}
 import { render, screen } from "@testing-library/react"
 import userEvent from "@testing-library/user-event"
 import Counter from "./Counter"
 
 describe("Counter", () => {
   it("menambah angka saat tombol diklik", async () => {
+    // 1. ARRANGE: Siapkan komponen ke layar virtual
     const user = userEvent.setup()
     render(<Counter />)
 
-    // Pastikan awal = 0
-    expect(screen.getByText("Diklik: 0 kali")).toBeInTheDocument()
+    // 2. ACT: Lakukan interaksi selayaknya pengguna nyata
+    const tombol = screen.getByRole("button", { name: /tambah/i })
+    await user.click(tombol)
 
-    // Klik tombol
-    await user.click(screen.getByRole("button"))
-
-    // Pastikan angka bertambah
-    expect(screen.getByText("Diklik: 1 kali")).toBeInTheDocument()
+    // 3. ASSERT: Periksa apakah hasilnya sesuai harapan
+    expect(screen.getByText("Total: 1")).toBeInTheDocument()
   })
 })
 ```
 
 ---
+layout: two-cols
+---
 
-### Testing Form Input
+### Unit Test vs Integration Test
 
-Menguji form dengan validasi dan submit
+Perbedaan Lingkup Pengujian dalam Praktik
 
-```tsx {4-5|7-10|12-13|15-17|all}
-describe("LoginForm", () => {
-  it("menampilkan error jika email kosong", async () => {
-    const user = userEvent.setup()
-    render(<LoginForm />)
+::left::
 
-    // Langsung klik submit tanpa isi form
-    const submitBtn = screen.getByRole("button", { name: /login/i })
-    await user.click(submitBtn)
+#### 🔬 Unit Test (Terisolasi)
 
-    // Pastikan pesan error muncul
-    expect(screen.getByText("Email wajib diisi")).toBeInTheDocument()
-  })
+Menguji satu fungsi kecil tanpa melibatkan UI:
 
-  it("mengirim data saat form valid", async () => {
-    const user = userEvent.setup()
-    render(<LoginForm />)
+```tsx
+import { formatRupiah } from "./format"
 
-    // Isi form
-    await user.type(screen.getByLabelText("Email"), "fulan@mail.com")
-    await user.type(screen.getByLabelText("Password"), "password123")
-    await user.click(screen.getByRole("button", { name: /login/i }))
+test("formatRupiah memformat angka dengan benar", () => {
+  expect(formatRupiah(50000))
+    .toBe("Rp 50.000")
+})
+```
 
-    // Pastikan tidak ada error
-    expect(screen.queryByText("Email wajib diisi")).not.toBeInTheDocument()
-  })
+- Cepat dieksekusi
+- Bagus untuk kalkulasi matematika & regex
+
+::right::
+
+#### 🧩 Integration Test (Bekerja Sama)
+
+Menguji alur interaksi pengguna yang utuh:
+
+```tsx
+test("Pengguna mengisi form dan melihat pesan sukses", async () => {
+  const user = userEvent.setup()
+  render(<FormPendaftaran />)
+
+  await user.type(screen.getByLabelText("Nama"), "Ahmad")
+  await user.type(screen.getByLabelText("Email"), "ahmad@mail.com")
+  await user.click(screen.getByRole("button", { name: /daftar/i }))
+
+  expect(await screen.findByText("Pendaftaran Berhasil!"))
+    .toBeInTheDocument()
 })
 ```
 
 ---
 
-### Query Cheat Sheet
+### Mocking API Nyata dengan MSW (Mock Service Worker)
 
-Cara menemukan elemen di layar
-
-| Query | Kapan Dipakai |
-|:------|:-------------|
-| `getByText("Halo")` | Teks yang terlihat di layar |
-| `getByRole("button")` | Elemen berdasarkan role HTML |
-| `getByLabelText("Email")` | Input berdasarkan label |
-| `getByPlaceholderText("Cari...")` | Input berdasarkan placeholder |
-| `getByTestId("submit-btn")` | Fallback: elemen dengan `data-testid` |
-| `queryByText("Error")` | Cek apakah elemen **TIDAK** ada |
-
-<div v-click class="mt-3 brutal-card bg-white p-3 text-sm">
-  🎯 <strong>Prioritas:</strong> Gunakan <code>getByRole</code> → <code>getByLabelText</code> → <code>getByText</code> → <code>getByTestId</code> (terakhir).
-</div>
-
----
-
-### Menjalankan Test
-
-Perintah untuk menjalankan dan memantau test
+Jangan Mock Fungsi `fetch()` Secara Manual — Gunakan Mock di Network Layer!
 
 ```bash
-# Jalankan semua test sekali
-npx vitest run
-
-# Mode watch: otomatis re-run saat file berubah
-npx vitest
-
-# Jalankan file test tertentu
-npx vitest Counter.test.tsx
-
-# Dengan coverage report
-npx vitest run --coverage
+npm install -D msw
 ```
 
-<div v-click class="mt-4 text-center">
+````md magic-move
+```tsx
+// 1. Definisikan Mock Handler dengan MSW
+import { http, HttpResponse } from "msw"
 
-```text
- ✓ components/Counter.test.tsx (2 tests) 3ms
- ✓ components/LoginForm.test.tsx (3 tests) 8ms
- ✓ components/TodoItem.test.tsx (4 tests) 5ms
-
- Test Files  3 passed (3)
-      Tests  9 passed (9)
-   Duration  156ms
+export const handlers = [
+  http.get("https://api.example.com/products", () => {
+    return HttpResponse.json([
+      { id: 1, name: "Buku React Next.js", price: 120_000 },
+    ])
+  }),
+]
 ```
+```tsx
+// 2. Jalankan Server Mock di Lingkungan Test
+import { setupServer } from "msw/node"
+import { handlers } from "./handlers"
 
-</div>
+export const server = setupServer(...handlers)
+
+// Di vitest.setup.ts:
+beforeAll(() => server.listen())
+afterEach(() => server.resetHandlers())
+afterAll(() => server.close())
+```
+```tsx
+// 3. Komponen Antum di-test tanpa tahu kalau API sedang di-mock!
+test("Menampilkan daftar produk dari backend", async () => {
+  render(<ProductList />)
+
+  // Data dari mock MSW akan otomatis muncul di antarmuka!
+  expect(await screen.findByText("Buku React Next.js")).toBeInTheDocument()
+})
+```
+````
 
 ---
 layout: intro
@@ -218,6 +235,6 @@ badgeColor: "yellow"
 
 ## 3 Hal Penting dari Modul 15
 
-1. **AAA Pattern**: Setiap test mengikuti pola **Arrange** (render komponen), **Act** (simulasi aksi user), **Assert** (cek hasilnya).
-2. **Testing Library = User-Centric**: Query elemen seperti user melihat layar (`getByText`, `getByRole`) — bukan berdasarkan implementasi internal.
-3. **Jalankan Sering**: Gunakan mode `vitest --watch` agar test otomatis berjalan setiap kali Antum menyimpan file. Green tests = percaya diri deploy!
+1. **Testing Mencegah Kerugian Nyata**: Pengujian otomatis menangkap regresi dan bug logika fatal sebelum kode sampai ke tangan pengguna.
+2. **Fokus pada Integration Test (Testing Trophy)**: Uji bagaimana komponen saling berinteraksi selayaknya pengguna nyata menggunakan aplikasi Antum.
+3. **MSW untuk Pengujian API Realistis**: Menggunakan Mock Service Worker mencegat lalu lintas jaringan di layer network asli tanpa merusak kode internal aplikasi.

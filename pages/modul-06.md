@@ -6,61 +6,58 @@ badgeColor: "purple"
 
 ## 06. State Management Lanjutan
 
-Mengelola global state dengan useContext dan useReducer — solusi untuk prop drilling tanpa library eksternal.
+Mengatasi Prop Drilling & Callback Hell, Mengenal Context API, Evolusi State (Redux → Context → Zustand), serta Pola Pikir Engineer: Reinventing the Wheel vs Cargo-Culting.
 
 ---
 
-### Masalah Klasik: Prop Drilling
+### Dua Masalah Klasik: Prop Drilling & Callback Hell
 
-Mengirim props melewati banyak level komponen yang sebenarnya tidak butuh
+Ketika Aplikasi Membesar dan Komponen Semakin Bersarang
 
-<div class="flex justify-center mt-4">
-  <div class="brutal-card bg-white p-3 text-center text-sm w-80">
-    <strong>App</strong> (Punya <code>user</code>)
-    <div class="text-lg my-1">⬇️ props</div>
-    <div class="brutal-card bg-gray-100 p-2" v-click>
-      <strong>Header</strong> (Cuma numpang lewat 😩)
-      <div class="text-lg my-1">⬇️ props</div>
-      <div class="brutal-card bg-gray-200 p-2" v-click>
-        <strong>Navigation</strong> (Masih numpang 😰)
-        <div class="text-lg my-1">⬇️ props</div>
-        <div class="brutal-card bg-yellow-100 p-2 border-2 border-black" v-click>
-          <strong>UserProfile</strong> (Akhirnya dipakai! 🎉)
-        </div>
-      </div>
+<div class="grid grid-cols-2 gap-4 mt-2">
+  <div class="brutal-card bg-white p-3 text-xs" v-click>
+    <div class="font-black text-sm mb-1 text-red-600">📉 Prop Drilling</div>
+    <p class="text-gray-600 mb-2">Melempar data melewati banyak level komponen yang sebenarnya tidak membutuhkannya.</p>
+    <div class="bg-gray-100 p-1.5 rounded font-mono text-[11px] leading-relaxed">
+      App (punya data user)<br/>
+      └─ Header (cuma numpang lewat)<br/>
+      &nbsp;&nbsp;&nbsp;└─ Nav (masih numpang)<br/>
+      &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;└─ UserAvatar (akhirnya dipakai!)
+    </div>
+  </div>
+
+  <div class="brutal-card bg-white p-3 text-xs" v-click>
+    <div class="font-black text-sm mb-1 text-red-600">🌪️ Callback Hell</div>
+    <p class="text-gray-600 mb-2">Melempar fungsi update/setter dari komponen terbawah kembali ke atas melalui banyak tingkatan.</p>
+    <div class="bg-gray-100 p-1.5 rounded font-mono text-[11px] leading-relaxed">
+      &lt;Page onUpdate={...}&gt;<br/>
+      &nbsp;&nbsp;&lt;Table onUpdate={onUpdate}&gt;<br/>
+      &nbsp;&nbsp;&nbsp;&nbsp;&lt;Row onUpdate={onUpdate}&gt;<br/>
+      &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&lt;Button onClick={onUpdate} /&gt;
     </div>
   </div>
 </div>
 
-<div v-click class="mt-3 brutal-card bg-white p-2 text-sm text-center">
-  😵 Bayangkan jika ada 10 level! Kode jadi berantakan dan sulit di-maintain.
+<div v-click class="mt-3 brutal-card bg-yellow-100 p-2 text-xs border-2 border-black text-center">
+  😵 Jika salah satu nama props diubah di tengah jalan, seluruh rantai komponen akan patah dan error!
 </div>
 
 ---
 
-### Solusi: React Context API
+### Solusi Bawaan: React Context API
 
-Jalan pintas untuk berbagi data ke seluruh component tree tanpa prop drilling
+Jalan Pintas Berbagi Data ke Seluruh Komponen Tanpa Prop Drilling
 
 <v-clicks>
 
-- **`createContext`** — Membuat "gudang" data global
-- **`Provider`** — Komponen pembungkus yang membagikan data ke semua anak
-- **`useContext`** — Hook untuk mengambil data dari gudang, di komponen manapun!
+- **`createContext`** — Membuat "gudang data" global.
+- **`Provider`** — Komponen pembungkus yang memancarkan data ke seluruh anak di bawahnya.
+- **`useContext`** — Hook untuk mengambil data langsung dari gudang di komponen manapun!
 
 </v-clicks>
 
-<div v-click class="mt-6 brutal-card bg-white p-3 text-sm">
-  💡 Cocok untuk data yang dibutuhkan banyak komponen: <strong>tema (dark/light)</strong>, <strong>status login user</strong>, <strong>bahasa/locale</strong>.
-</div>
-
----
-
-### Membuat Context Provider
-
-Langkah demi langkah membuat context yang rapi
-
-```tsx {1,3|5-12|14-15|all}
+```tsx {1,3|5-11|13-14|all}
+"use client"
 import { createContext, useContext, useState } from "react"
 
 const ThemeContext = createContext<"light" | "dark">("light")
@@ -76,7 +73,7 @@ export function ThemeProvider({ children }: { children: React.ReactNode }) {
   )
 }
 
-// Custom hook — agar konsumer tidak perlu import createContext
+// Custom hook ramah pengembang
 export const useTheme = () => useContext(ThemeContext)
 ```
 
@@ -84,11 +81,11 @@ export const useTheme = () => useContext(ThemeContext)
 
 ### Dari Prop Drilling ke Context
 
-Lihat bagaimana kode menjadi jauh lebih bersih!
+Lihat Bagaimana Kode Menjadi Jauh Lebih Rapi dan Terpelihara!
 
 ````md magic-move
 ```tsx
-// ❌ SEBELUM: Prop Drilling — props menembus 4 level
+// ❌ SEBELUM: Prop Drilling — props user menembus 4 level
 function App() {
   const [user] = useState({ name: "Fulan" })
   return <Header user={user} />
@@ -104,7 +101,7 @@ function Profile({ user }) {
 }
 ```
 ```tsx
-// ✅ SESUDAH: Context — ambil langsung di mana perlu!
+// ✅ SESUDAH: Context — ambil langsung di komponen yang butuh!
 function App() {
   return (
     <AuthProvider>
@@ -113,13 +110,13 @@ function App() {
   )
 }
 function Header() {
-  return <Nav />    // Tidak perlu props!
+  return <Nav />     {/* Bersih dari props! */}
 }
 function Nav() {
-  return <Profile /> // Tidak perlu props!
+  return <Profile /> {/* Bersih dari props! */}
 }
 function Profile() {
-  const { user } = useAuth()  // Langsung ambil!
+  const { user } = useAuth()  {/* Langsung ambil dari gudang! */}
   return <div>Halo, {user.name}</div>
 }
 ```
@@ -129,137 +126,109 @@ function Profile() {
 layout: two-cols
 ---
 
-### useState vs useReducer
+### Evolusi State Management di Dunia React
 
-Kapan harus pakai yang mana?
+Bagaimana Komunitas Menemukan Cara Terbaik Mengelola State
 
 ::left::
 
-#### useState
+#### 📜 1. Era Redux (Masa Lalu)
 
-<div class="text-sm space-y-2">
+- Pernah menjadi standar wajib di industri
+- **Masalah**: *Boilerplate* raksasa! Untuk satu toggle boolean sederhana butuh *Action Types, Action Creators, Reducers, Dispatchers, dan Store config*.
+- Terlalu berat dan melelahkan untuk proyek modern.
 
-- ✅ State sederhana (boolean, string, number)
-- ✅ Logika update mudah dan langsung
-- ✅ State independen satu sama lain
-- ❌ Sulit jika banyak aksi terkait
+#### 📦 2. Era React Context (Solusi Bawaan)
 
-</div>
-
-```tsx
-const [count, setCount] = useState(0)
-setCount(count + 1)
-setCount(0)
-```
+- Tidak perlu install library eksternal
+- **Kelemahan**: Masalah performa re-render. Jika ada 1 data di context berubah, **semua komponen konsumen ikut re-render**.
 
 ::right::
 
-#### useReducer
+#### ⚡ 3. Era Zustand (Standar Modern)
 
-<div class="text-sm space-y-2">
+- 🪶 Super ringan (< 1 kB)
+- 🚀 **Tanpa Provider**: Tidak perlu membungkus `<App>` dengan berlapis-lapis `<Provider>`.
+- 🎯 **Selector-Based**: Hanya me-re-render komponen yang benar-benar menggunakan field tersebut!
+- 🔌 Bisa diakses di luar komponen React (di helper utility atau API interceptor).
 
-- ✅ State kompleks (object bertingkat)
-- ✅ Banyak tipe aksi (add, remove, toggle)
-- ✅ Logika terpusat di satu fungsi
-- ❌ Overkill untuk state sederhana
-
-</div>
-
-```tsx
-const [state, dispatch] = useReducer(
-  reducer, initialState
-)
-dispatch({ type: "INCREMENT" })
-dispatch({ type: "RESET" })
-```
-
----
-
-### Berkenalan dengan useReducer
-
-Mengelola state kompleks dengan aksi (action) yang terstruktur
-
-```tsx {1-3|5-12|14-17|all}
-// 1. Definisikan tipe
-type State = { count: number }
-type Action = { type: "increment" } | { type: "decrement" } | { type: "reset" }
-
-// 2. Buat fungsi reducer
-function reducer(state: State, action: Action): State {
-  switch (action.type) {
-    case "increment": return { count: state.count + 1 }
-    case "decrement": return { count: state.count - 1 }
-    case "reset":     return { count: 0 }
-  }
-}
-
-// 3. Gunakan di komponen
-function Counter() {
-  const [state, dispatch] = useReducer(reducer, { count: 0 })
-
-  return (
-    <div>
-      <span>{state.count}</span>
-      <button onClick={() => dispatch({ type: "increment" })}>+</button>
-      <button onClick={() => dispatch({ type: "reset" })}>Reset</button>
-    </div>
-  )
-}
-```
-
----
-
-### Combo: Context + useReducer
-
-Menggabungkan keduanya untuk global state management ala Redux!
-
-```tsx {2,5|7-9|11-12|all}
-export function CartProvider({ children }: { children: React.ReactNode }) {
-  const [state, dispatch] = useReducer(cartReducer, { items: [], total: 0 })
-
-  return (
-    <CartContext.Provider value={{ state, dispatch }}>
-      {children}
-    </CartContext.Provider>
-  )
-}
-
-// Di komponen manapun dalam tree:
-const { state, dispatch } = useCart()
-dispatch({ type: "ADD_ITEM", payload: { id: 1, nama: "Buku React" } })
-dispatch({ type: "REMOVE_ITEM", payload: { id: 1 } })
-```
-
-<div v-click class="mt-4 brutal-card bg-white p-3 text-sm">
-  🔥 Ini adalah pola dasar yang digunakan oleh library seperti Redux dan Zustand! Antum bisa membuat versi <em>lite</em>-nya sendiri.
+<div v-click class="mt-2 brutal-card bg-white p-2 text-xs">
+  💡 Pilihan lain di ekosistem: <strong>Jotai / Recoil</strong> (berbasis <em>Atomic state</em>).
 </div>
 
 ---
 
-### Contoh Praktis: Auth Context
+### Berkenalan dengan Zustand
 
-Menyimpan dan mengelola status login pengguna secara global
+State Management Modern dengan Nol Boilerplate
 
+```bash
+npm install zustand
+```
+
+````md magic-move
 ```tsx
-// Di halaman manapun — cek status login tanpa prop drilling!
-function ProfilePage() {
-  const { user, logout } = useAuth()
+// 1. Buat store terpusat (hanya butuh 10 baris!)
+import { create } from "zustand"
 
-  if (!user) {
-    return <p>Silakan login terlebih dahulu.</p>
-  }
+interface CartStore {
+  totalItem: number
+  tambahItem: () => void
+  resetCart: () => void
+}
+
+export const useCartStore = create<CartStore>((set) => ({
+  totalItem: 0,
+  tambahItem: () => set((state) => ({ totalItem: state.totalItem + 1 })),
+  resetCart: () => set({ totalItem: 0 }),
+}))
+```
+```tsx
+// 2. Gunakan di komponen manapun — TANPA PROVIDER!
+"use client"
+import { useCartStore } from "@/stores/cart"
+
+export default function TombolBeli() {
+  // Komponen ini HANYA re-render saat totalItem berubah
+  const totalItem = useCartStore((state) => state.totalItem)
+  const tambahItem = useCartStore((state) => state.tambahItem)
 
   return (
-    <div className="brutal-card bg-white p-4">
-      <h4>Ahlan wa Sahlan, {user.name}!</h4>
-      <p className="text-sm text-gray-600">{user.email}</p>
-      <button className="brutal-btn mt-4" onClick={logout}>
-        Keluar
-      </button>
-    </div>
+    <button onClick={tambahItem} className="brutal-btn">
+      Keranjang: {totalItem} item
+    </button>
   )
 }
 ```
+````
+
+---
+layout: two-cols
+---
+
+### Pola Pikir: Reinventing the Wheel vs Cargo-Culting
+
+Keseimbangan Bijak Seorang Software Engineer
+
+::left::
+
+#### 🚫 Reinventing the Wheel
+
+*Membuat roda dari awal lagi padahal roda bundar sudah tersedia.*
+
+- **Gejala**: Memaksa membuat sistem global state rumit atau event bus manual dengan 500 baris kode sendiri.
+- **Dampak**: Penuh bug tersembunyi, boros waktu, dan sulit dipahami oleh programmer lain di tim.
+- **Prinsip**: Jika masalah umum sudah diselesaikan dengan matang oleh komunitas (misal: Zustand), **manfaatkanlah**.
+
+::right::
+
+#### 🚫 Cargo-Culting
+
+*Meniru kebiasaan tanpa memahami alasan sebenarnya.*
+
+- **Gejala**: Aplikasi baru punya 2 halaman form, tapi langsung install Redux Toolkit, Redux Saga, dan puluhan library lain "karena tutorial bilang begitu".
+- **Dampak**: Proyek jadi lambat, bundle membengkak, dan kompleksitas kode meledak tanpa alasan.
+- **Prinsip**: Mulailah dari yang paling sederhana (`useState`). Tambahkan library **hanya ketika Antum benar-benar merasakan masalahnya**.
 
 ---
 layout: intro
@@ -269,6 +238,6 @@ badgeColor: "yellow"
 
 ## 3 Hal Penting dari Modul 06
 
-1. **Context API = Anti Prop Drilling**: Gunakan `createContext` + `Provider` + `useContext` untuk berbagi data ke seluruh komponen tanpa melewatkan props berlevel-level.
-2. **useReducer untuk State Kompleks**: Jika state punya banyak aksi (add, remove, toggle, reset), pindahkan logika ke reducer agar terpusat dan mudah di-debug.
-3. **Context + Reducer = Global State**: Kombinasi keduanya memberi Antum kemampuan global state management tanpa perlu install library tambahan!
+1. **Context Mengatasi Prop Drilling**: Gunakan Context API untuk data global yang jarang berubah seperti tema, data profil user, dan bahasa.
+2. **Zustand untuk State Reaktif**: Saat aplikasi membutuhkan global state dengan pembaruan frekuensi tinggi, Zustand adalah standar modern yang ringan, cepat, dan minim boilerplate.
+3. **Pahami Masalah Sebelum Memilih Tools**: Hindari *Reinventing the Wheel* dengan memanfaatkan karya open source, namun jauhi *Cargo-Culting* dengan tidak memasang library tanpa alasan yang jelas.

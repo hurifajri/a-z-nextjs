@@ -4,162 +4,9 @@ badge: "MODUL 02"
 badgeColor: "cyan"
 ---
 
-## 02. Setup Project dan Tools
+## 02. Struktur App Router & Routing
 
-Inisialisasi project Next.js pertama Antum, menyiapkan ESLint, Prettier, Tailwind CSS, serta memahami perbedaan Pages Router vs App Router.
-
----
-
-### Inisialisasi Project Baru
-
-Cara termudah memulai project Next.js
-
-Gunakan `create-next-app` untuk membuat project dengan konfigurasi standar terbaik:
-
-```bash
-npx create-next-app@latest my-next-app
-```
-
-<div class="mt-6 brutal-card bg-white p-4">
-  <span class="brutal-badge brutal-badge-green mb-2">💡 Pra-Syarat</span>
-  <p class="text-sm mt-2">Pastikan Antum sudah menginstal <strong>Node.js 18.17</strong> atau lebih baru dan <strong>npm/pnpm/yarn</strong> sebagai package manager.</p>
-</div>
-
----
-
-### Opsi Setup Project
-
-Setiap pilihan menentukan fondasi project Antum
-
-````md magic-move
-```bash
-✔ What is your project named? … my-next-app
-```
-```bash
-✔ What is your project named? … my-next-app
-✔ Would you like to use TypeScript? … Yes
-```
-```bash
-✔ What is your project named? … my-next-app
-✔ Would you like to use TypeScript? … Yes
-✔ Would you like to use ESLint? … Yes
-✔ Would you like to use Tailwind CSS? … Yes
-```
-```bash
-✔ What is your project named? … my-next-app
-✔ Would you like to use TypeScript? … Yes
-✔ Would you like to use ESLint? … Yes
-✔ Would you like to use Tailwind CSS? … Yes
-✔ Would you like your code inside a `src/` directory? … Yes
-✔ Would you like to use App Router? (recommended) … Yes
-✔ Would you like to customize the import alias? … No
-```
-````
-
-<div v-click class="mt-4 brutal-card bg-white p-3 text-sm">
-  ✅ Pilih <strong>Yes</strong> untuk semua opsi di atas — ini rekomendasi standar pelatihan kita!
-</div>
-
----
-
-### Struktur Folder Project
-
-Mengenal isi project baru hasil `create-next-app`
-
-<v-clicks>
-
-- 📁 **`src/app/`** — Jantung aplikasi! Berisi route, layout, dan seluruh halaman website Antum.
-- 📁 **`public/`** — Tempat asset statis (gambar, favicon, font) yang bisa diakses langsung via URL.
-- 📄 **`next.config.ts`** — Pengaturan utama Next.js (redirect, env, dll).
-- 📄 **`tailwind.config.ts`** — Konfigurasi tema, warna, dan breakpoints Tailwind CSS.
-- 📄 **`tsconfig.json`** — Konfigurasi compiler TypeScript dan path alias `@/`.
-- 📄 **`package.json`** — Daftar dependencies, scripts (`dev`, `build`, `start`).
-- 📄 **`.eslintrc.json`** — Aturan linting khusus untuk menjaga kualitas kode.
-
-</v-clicks>
-
----
-layout: two-cols
----
-
-### ESLint dan Prettier
-
-Menjaga kode tetap bersih, rapi, dan konsisten
-
-::left::
-
-#### ESLint (Sudah Bawaan)
-
-Mendeteksi **error dan bad practice** dalam kode:
-
-```json
-{
-  "extends": "next/core-web-vitals"
-}
-```
-
-Jalankan pemeriksaan:
-```bash
-npx next lint
-```
-
-::right::
-
-#### Prettier (Perlu Ditambahkan)
-
-Formatting kode otomatis agar **seragam** dalam tim:
-
-```bash
-npm install -D prettier prettier-plugin-tailwindcss
-```
-
-Buat file `.prettierrc`:
-```json {3|4|all}
-{
-  "semi": false,
-  "singleQuote": true,
-  "plugins": ["prettier-plugin-tailwindcss"]
-}
-```
-
----
-
-### Tailwind CSS: Styling Cepat
-
-Menulis CSS langsung di dalam atribut class — tanpa file CSS terpisah!
-
-````md magic-move
-```tsx
-// ❌ CSS Tradisional: buat file CSS terpisah
-import "./button.css"
-
-export default function Button() {
-  return <button className="btn-primary">Klik Saya</button>
-}
-```
-```tsx
-// ✅ Tailwind CSS: styling langsung di className!
-export default function Button() {
-  return (
-    <button className="bg-blue-500 text-white px-4 py-2 rounded hover:bg-blue-600">
-      Klik Saya
-    </button>
-  )
-}
-```
-````
-
-<div v-click class="mt-4 grid grid-cols-3 gap-3 text-xs">
-  <div class="brutal-card bg-white p-2 text-center">
-    <code>bg-blue-500</code><br/>Warna latar
-  </div>
-  <div class="brutal-card bg-white p-2 text-center">
-    <code>px-4 py-2</code><br/>Padding
-  </div>
-  <div class="brutal-card bg-white p-2 text-center">
-    <code>hover:bg-blue-600</code><br/>Efek hover
-  </div>
-</div>
+Memahami Fondasi App Router, Perbedaan dengan Pages Router, Konvensi File Khusus, dan Pembuatan Rute Halaman.
 
 ---
 layout: two-cols
@@ -167,11 +14,13 @@ layout: two-cols
 
 ### Pages Router vs App Router
 
-Dua pendekatan routing di Next.js
+Evolusi Besar Cara Mengatur Halaman di Next.js
 
 ::left::
 
-#### Pages Router _(Lama)_
+#### Pages Router _(Cara Lama)_
+
+Struktur berbasis file di dalam folder `pages/`:
 
 ```text
 pages/
@@ -182,17 +31,19 @@ pages/
       └── [slug].tsx   → /blog/:slug
 ```
 
-- Komponen = **Client** secara default
-- Layout via `_app.tsx` (kurang fleksibel)
-- `getServerSideProps` / `getStaticProps`
+- Komponen otomatis berjalan di sisi client
+- Pengaturan layout bertingkat terbatas
+- Menggunakan `getServerSideProps` / `getStaticProps`
 
 ::right::
 
-#### App Router _(Baru, Kita Pakai!)_
+#### App Router _(Standar Baru)_
+
+Struktur berbasis folder di dalam `app/`:
 
 ```text
 app/
-  ├── layout.tsx      → Layout global
+  ├── layout.tsx      → Kerangka global
   ├── page.tsx         → /
   ├── about/
   │   └── page.tsx     → /about
@@ -201,35 +52,191 @@ app/
           └── page.tsx → /blog/:slug
 ```
 
-- Komponen = **Server** secara default
-- Nested layouts di setiap folder
-- `fetch()` langsung di komponen
+- Komponen berjalan di server secara default
+- Nested Layouts sangat fleksibel dan intuitif
+- Mendukung streaming dan komponen asynchronous
 
 ---
 
-### Menjalankan Development Server
+### Prinsip Utama: Folder Adalah Rute!
 
-Mari lihat hasil instalasi kita!
+Cukup Buat Folder Baru, Alamat URL Website Otomatis Tercipta
 
-```bash
-npm run dev
+Di Next.js App Router, setiap **folder** di dalam direktori `app/` mewakili satu segmen URL.
+
+```text {1|2|3-4|5-6|7-8|all}
+src/app/
+├── page.tsx               → URL: / (Halaman Beranda)
+├── tentang/
+│   └── page.tsx           → URL: /tentang
+├── kontak/
+│   └── page.tsx           → URL: /kontak
+└── layanan/
+    └── page.tsx           → URL: /layanan
 ```
+
+<div v-click class="mt-4 brutal-card bg-white p-3 text-sm">
+  📌 <strong>Aturan Emas:</strong> Suatu rute hanya dapat diakses pengunjung jika di dalam folder tersebut terdapat file bernama <code>page.tsx</code>!
+</div>
+
+---
+layout: two-cols
+---
+
+### File Konvensi Khusus di Next.js
+
+Nama-Nama File dengan Peran Otomatis Tanpa Perlu Setup Tambahan
+
+::left::
+
+<div class="space-y-3 text-sm">
+  <div class="p-3 border-2 border-black rounded bg-white shadow-[2px_2px_0px_#000]">
+    <span class="font-black text-[#FFE600] bg-black px-1.5 py-0.5 rounded text-xs mr-2">page.tsx</span>
+    Tampilan utama halaman yang dapat diakses oleh pengunjung website.
+  </div>
+  <div class="p-3 border-2 border-black rounded bg-white shadow-[2px_2px_0px_#000]">
+    <span class="font-black text-[#00E5FF] bg-black px-1.5 py-0.5 rounded text-xs mr-2">layout.tsx</span>
+    Kerangka bersama (navbar/footer) yang tetap bertahan saat ganti halaman.
+  </div>
+  <div class="p-3 border-2 border-black rounded bg-white shadow-[2px_2px_0px_#000]">
+    <span class="font-black text-[#FF6B8B] bg-black px-1.5 py-0.5 rounded text-xs mr-2">loading.tsx</span>
+    Tampilan sementara otomatis (skeleton/spinner) saat data sedang dimuat.
+  </div>
+</div>
+
+::right::
+
+<div class="space-y-3 text-sm">
+  <div class="p-3 border-2 border-black rounded bg-white shadow-[2px_2px_0px_#000]">
+    <span class="font-black text-[#2ED573] bg-black px-1.5 py-0.5 rounded text-xs mr-2">error.tsx</span>
+    Penanganan kendala teknis secara elegan agar seluruh web tidak crash.
+  </div>
+  <div class="p-3 border-2 border-black rounded bg-white shadow-[2px_2px_0px_#000]">
+    <span class="font-black text-[#B388EB] bg-black px-1.5 py-0.5 rounded text-xs mr-2">not-found.tsx</span>
+    Tampilan ramah 404 jika halaman yang dicari pengunjung tidak ditemukan.
+  </div>
+  <div class="p-3 border-2 border-black rounded bg-white shadow-[2px_2px_0px_#000]">
+    <span class="font-black text-white bg-black px-1.5 py-0.5 rounded text-xs mr-2">route.ts</span>
+    Jalur penyedia API jika ingin membuat endpoint data backend sendiri.
+  </div>
+</div>
+
+---
+
+### Anatomi Root Layout (`app/layout.tsx`)
+
+File Wajib yang Menjadi Fondasi HTML Seluruh Website
+
+```tsx {1-5|7-11|all}
+// src/app/layout.tsx
+export default function RootLayout({
+  children,
+}: {
+  children: React.ReactNode
+}) {
+  return (
+    <html lang="id">
+      <body className="antialiased font-sans">
+        <header className="border-b p-4">Navbar Utama</header>
+        <main>{children}</main>
+        <footer className="border-t p-4 text-center">Footer © 2026</footer>
+      </body>
+    </html>
+  )
+}
+```
+
+<div v-click class="mt-4 brutal-card bg-white p-3 text-sm">
+  💡 Root Layout bersifat <strong>wajib</strong> dan harus mendefinisikan tag <code>&lt;html&gt;</code> dan <code>&lt;body&gt;</code>. File ini membungkus semua halaman yang ada di website Antum.
+</div>
+
+---
+
+### Hierarki Komponen di App Router
+
+Bagaimana Next.js Menggabungkan File-File Khusus Menjadi Satu Tampilan Utuh
+
+Saat pengunjung membuka sebuah alamat rute, Next.js menyusun komponen secara berlapis:
+
+```text
+<RootLayout>
+  <NestedLayout>
+    <Loading> (saat mengambil data)
+      <ErrorBoundary (error.tsx)>
+        <Page> (page.tsx)
+      </ErrorBoundary>
+    </Loading>
+  </NestedLayout>
+</RootLayout>
+```
+
+<div v-click class="mt-4 brutal-card bg-yellow-100 p-3 text-sm border-2 border-black">
+  ⚡ Saat berpindah menu, komponen <code>&lt;RootLayout&gt;</code> dan <code>&lt;NestedLayout&gt;</code> <strong>tidak akan dimuat ulang (re-rendered)</strong>. Hanya bagian <code>&lt;Page&gt;</code> yang berganti!
+</div>
+
+---
+layout: two-cols
+---
+
+### Route Groups `(namaFolder)`
+
+Merapikan Struktur Folder Tanpa Mengubah Alamat URL
+
+Gunakan tanda **kurung bulat** untuk mengelompokkan folder:
+
+```text
+src/app/
+├── (publik)/
+│   ├── layout.tsx         ← Navbar Publik
+│   ├── page.tsx           → /
+│   └── tentang/page.tsx   → /tentang
+└── (dashboard)/
+    ├── layout.tsx         ← Sidebar Dashboard
+    └── profil/page.tsx    → /profil
+```
+
+::right::
+
+#### Manfaat Route Groups
 
 <v-clicks>
 
-1. 🌐 Buka browser → `http://localhost:3000`
-2. 🎉 Antum akan melihat halaman selamat datang dari Next.js!
-3. ✏️ Coba edit `src/app/page.tsx`, simpan, dan lihat perubahannya langsung secara *real-time* (Fast Refresh).
+- 🎯 **URL Bersih**: Tanda kurung `(publik)` dan `(dashboard)` tidak masuk ke alamat URL.
+- 🎨 **Layout Berbeda**: Bagian dashboard bisa punya sidebar admin, sedangkan bagian publik punya navbar biasa.
+- 📂 **Organisasi Proyek**: Sangat rapi ketika aplikasi semakin besar dan kompleks.
 
 </v-clicks>
 
-<div v-click class="mt-4 brutal-card bg-white p-3">
-  <span class="brutal-badge brutal-badge-cyan">SCRIPTS PENTING</span>
-  <div class="grid grid-cols-3 gap-2 mt-3 text-xs">
-    <div><code>npm run dev</code> — Mode development</div>
-    <div><code>npm run build</code> — Kompilasi produksi</div>
-    <div><code>npm run start</code> — Jalankan hasil build</div>
-  </div>
+---
+
+### Colocation & Private Folders
+
+Menaruh Komponen dan Utility Dekat dengan Halamannya
+
+Di App Router, Antum bebas menaruh file pendukung di dalam folder rute:
+
+````md magic-move
+```text
+// 1. Colocation: File selain page.tsx tidak akan jadi rute
+src/app/dashboard/
+├── page.tsx               → URL: /dashboard
+├── tombol-export.tsx      → Komponen helper (Bukan rute!)
+└── use-dashboard.ts       → Custom hook (Bukan rute!)
+```
+```text
+// 2. Private Folders: Folder berawalan underscore diabaikan dari routing
+src/app/
+├── _components/           → Seluruh folder ini privat!
+│   └── Navbar.tsx
+├── _lib/                  → Fungsi bantuan privat
+│   └── format-rupiah.ts
+└── dashboard/
+    └── page.tsx           → URL: /dashboard
+```
+````
+
+<div v-click class="mt-3 brutal-card bg-white p-3 text-sm">
+  🛡️ Folder yang diawali garis bawah `_nama` secara otomatis dikecualikan dari sistem routing Next.js.
 </div>
 
 ---
@@ -240,6 +247,6 @@ badgeColor: "yellow"
 
 ## 3 Hal Penting dari Modul 02
 
-1. **`create-next-app` Siap Pakai**: Satu perintah langsung dapat project lengkap dengan TypeScript, ESLint, dan Tailwind CSS.
-2. **App Router Adalah Standar Baru**: Gunakan folder `app/` dengan Server Components sebagai default — lebih cepat dan aman.
-3. **Tailwind CSS = Produktivitas**: Styling langsung di `className` tanpa berpindah file, otomatis konsisten di seluruh tim.
+1. **Folder Adalah Rute**: Cukup buat folder baru dengan file `page.tsx` di dalamnya untuk melahirkan halaman baru di website.
+2. **File Konvensi Bawaan**: Gunakan `layout.tsx` untuk kerangka bersama, `loading.tsx` untuk indikator tunggu, dan `error.tsx` untuk penanganan error.
+3. **Route Groups & Colocation**: Gunakan tanda kurung `(group)` untuk fleksibilitas layout tanpa mengubah URL, dan letakkan komponen pendukung langsung di samping halamannya.

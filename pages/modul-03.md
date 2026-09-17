@@ -4,284 +4,232 @@ badge: "MODUL 03"
 badgeColor: "pink"
 ---
 
-## 03. Navigasi dan Routing Dinamis
+## 03. Navigasi & Routing Dinamis
 
-Membuat halaman dinamis, layout bertingkat, serta menavigasi antar halaman dengan Link, useRouter, dan usePathname.
+Membuat Rute URL Fleksibel Berdasarkan ID, Mengenal Catch-All Routes, Serta Menguasai Link dan Hook Navigasi.
 
 ---
 
-### Routing di App Router
+### Kebutuhan Halaman Dinamis
 
-Folder = Rute Halaman Website Antum
+Ketika URL Harus Mengikuti Data Produk, Artikel, atau Profil Pengguna
 
-Di Next.js App Router, setiap **folder** di dalam `app/` otomatis menjadi sebuah rute URL. Tidak perlu konfigurasi router manual!
+Bayangkan Antum punya 1.000 produk di toko online:
 
-```text {1|2-3|4-5|6-8|all}
-app/
-├── page.tsx              → /
-├── about/
-│   └── page.tsx          → /about
-├── blog/
-│   ├── page.tsx          → /blog
-│   └── [slug]/
-│       └── page.tsx      → /blog/tips-nextjs
+```text
+/produk/laptop-gaming
+/produk/mouse-wireless
+/produk/keyboard-mechanical
+... 997 produk lainnya
 ```
 
-<div v-click class="mt-4 brutal-card bg-white p-3 text-sm">
-  📌 <strong>Aturan Emas:</strong> Hanya file bernama <code>page.tsx</code> yang akan dirender sebagai halaman. File lain di folder itu (komponen helper, utils) tidak akan menjadi rute.
+<div v-click class="mt-4 brutal-card bg-yellow-100 p-4 border-2 border-black">
+  🤔 <strong>Apakah kita harus membuat 1.000 folder satu per satu?</strong><br/>
+  Tentu tidak! Di sinilah kita menggunakan fitur <strong>Dynamic Routes</strong> dengan tanda kurung siku <code>[id]</code>.
 </div>
 
 ---
 
-### Dynamic Routes
+### Membuat Dynamic Route (`[slug]`)
 
-Halaman yang kontennya berubah-ubah berdasarkan URL
+Satu Template Folder untuk Menangani Ribuan Halaman Berbeda
 
-Gunakan tanda **kurung siku** `[param]` untuk membuat rute dinamis:
+Cukup buat folder dengan kurung siku: `app/produk/[id]/page.tsx`
 
-```tsx {1-4|6-7|all}
+```tsx {1-3|5-12|all}
 // app/produk/[id]/page.tsx
-// Bisa diakses: /produk/1, /produk/laptop-gaming, dll.
-
-export default async function DetailProduk({
-  params,
-}: {
+interface PageProps {
   params: Promise<{ id: string }>
-}) {
+}
+
+export default async function DetailProduk({ params }: PageProps) {
   const { id } = await params
 
-  return <h1>Detail Produk: {id}</h1>
-}
-```
-
-<div v-click class="mt-3 grid grid-cols-2 gap-3 text-xs">
-  <div class="brutal-card bg-white p-2">
-    <code>[id]</code> — Satu segmen dinamis<br/>
-    <span class="text-gray-500">/produk/<strong>123</strong></span>
-  </div>
-  <div class="brutal-card bg-white p-2">
-    <code>[...slug]</code> — Catch-all segments<br/>
-    <span class="text-gray-500">/docs/<strong>a/b/c</strong></span>
-  </div>
-</div>
-
----
-
-### Route Groups
-
-Mengelompokkan halaman tanpa memengaruhi URL
-
-Gunakan tanda **kurung bulat** `(nama)` untuk membuat folder organisasi yang **tidak muncul di URL**:
-
-```text
-app/
-├── (marketing)/
-│   ├── about/page.tsx       → /about
-│   └── pricing/page.tsx     → /pricing
-├── (dashboard)/
-│   ├── settings/page.tsx    → /settings
-│   └── profile/page.tsx     → /profile
-```
-
-<v-clicks>
-
-- ✅ Folder `(marketing)` dan `(dashboard)` **tidak muncul** di URL
-- ✅ Setiap group bisa punya **layout sendiri** (`layout.tsx`)
-- ✅ Cocok untuk memisahkan area publik vs area login
-
-</v-clicks>
-
----
-
-### Layout: Kerangka Halaman Bersama
-
-Navbar, sidebar, dan footer yang tidak me-reload saat pindah halaman
-
-```tsx {2-3|5-11|all}
-// app/layout.tsx — Layout utama seluruh website
-export default function RootLayout({
-  children,
-}: {
-  children: React.ReactNode
-}) {
   return (
-    <html lang="id">
-      <body>
-        <nav>Navbar Global</nav>
-        <main>{children}</main>
-        <footer>Footer</footer>
-      </body>
-    </html>
-  )
-}
-```
-
-<div v-click class="mt-3 brutal-card bg-white p-3 text-sm">
-  🔑 <strong>Poin Penting:</strong> Saat pindah halaman, layout <strong>tidak di-render ulang</strong>! Hanya konten <code>{children}</code> yang berganti. Ini membuat navigasi terasa instan.
-</div>
-
----
-
-### Nested Layouts
-
-Setiap folder bisa memiliki layout tersendiri
-
-```text
-app/
-├── layout.tsx              ← Layout utama (navbar + footer)
-├── page.tsx
-└── dashboard/
-    ├── layout.tsx          ← Layout dashboard (sidebar)
-    └── page.tsx
-```
-
-````md magic-move
-```tsx
-// app/layout.tsx — Navbar + Footer
-export default function RootLayout({ children }) {
-  return (
-    <html lang="id">
-      <body>
-        <Navbar />
-        <main>{children}</main>
-        <Footer />
-      </body>
-    </html>
-  )
-}
-```
-```tsx
-// app/dashboard/layout.tsx — Tambah Sidebar
-export default function DashboardLayout({ children }) {
-  return (
-    <div className="flex">
-      <Sidebar />
-      <div className="flex-1 p-6">{children}</div>
+    <div>
+      <h1 className="text-2xl font-bold">Produk ID: {id}</h1>
+      <p>Data barang diambil berdasarkan parameter URL di atas.</p>
     </div>
   )
 }
-// Hasil: Navbar > Sidebar + Konten > Footer
 ```
-````
+
+<div v-click class="mt-4 brutal-card bg-white p-3 text-sm">
+  💡 Di Next.js terbaru, properti <code>params</code> bersifat <code>Promise</code> sehingga perlu di-<code>await</code> terlebih dahulu sebelum diambil nilainya.
+</div>
+
+---
+
+### Variasi Segmen Dinamis
+
+Pilihan Pola Dynamic Routes Sesuai Kebutuhan Aplikasi
+
+| Pola Folder | Contoh URL yang Cocok | Nilai `params` yang Diterima |
+|:---|:---|:---|
+| `produk/[id]` | `/produk/buku-react` | `{ id: 'buku-react' }` |
+| `blog/[...slug]` *(Catch-all)* | `/blog/2026/09/tips-next` | `{ slug: ['2026', '09', 'tips-next'] }` |
+| `docs/[[...slug]]` *(Optional)* | `/docs` atau `/docs/instalasi` | `{ slug: undefined }` atau `{ slug: ['instalasi'] }` |
+
+<div v-click class="mt-4 brutal-card bg-white p-3 text-xs">
+  📌 Gunakan <code>[...slug]</code> saat rute memiliki kedalaman bertingkat yang bervariasi (seperti rubrik artikel atau struktur dokumentasi panduan).
+</div>
 
 ---
 layout: two-cols
 ---
 
-### Navigasi: Link vs useRouter
+### Navigasi Deklaratif: Komponen `<Link>`
 
-Dua cara berpindah halaman di Next.js
+Cara Standar dan Optimal Berpindah Halaman di Next.js
 
 ::left::
 
-#### Komponen `Link` (Deklaratif)
+#### Mengapa Bukan Tag `<a>` Biasa?
 
-Untuk navigasi yang terlihat oleh pengguna:
-
-```tsx {1|4-5|all}
-import Link from "next/link"
-
-export default function Navbar() {
-  return (
-    <nav>
-      <Link href="/">Beranda</Link>
-      <Link href="/about">Tentang</Link>
-      <Link href="/blog/tips-nextjs">
-        Baca Artikel
-      </Link>
-    </nav>
-  )
-}
+```tsx
+// ❌ Jangan gunakan tag anchor biasa
+<a href="/tentang">Tentang</a>
 ```
 
-- ✅ SEO-friendly (menghasilkan `<a>`)
-- ✅ Auto **prefetch** halaman tujuan
+- Memaksa browser reload penuh dari nol
+- State aplikasi hilang
+- Terasa lambat dan ada kedipan layar
 
 ::right::
 
-#### Hook `useRouter` (Programatik)
+#### Gunakan `next/link`
 
-Untuk navigasi melalui logika kode:
+```tsx
+// ✅ Gunakan komponen Link bawaan
+import Link from "next/link"
 
-```tsx {1-2|5-8|all}
+<Link href="/tentang">Tentang</Link>
+```
+
+- ⚡ Navigasi instan di sisi klien
+- 🚀 **Prefetching Otomatis**: Konten halaman tujuan di-load saat link terlihat di layar!
+- Menjaga state aplikasi tetap awet
+
+---
+layout: two-cols
+---
+
+### Navigasi Programatik: Hook `useRouter`
+
+Melakukan Perpindahan Halaman Melalui Logika Kode (Event/Fungsi)
+
+::left::
+
+#### Kapan Menggunakan `useRouter`?
+
+Gunakan saat navigasi harus menunggu sebuah proses selesai:
+- Setelah pengguna selesai klik tombol submit login
+- Setelah data form berhasil disimpan ke backend
+- Saat terjadi redirect akibat error atau validasi
+
+::right::
+
+#### Contoh Implementasi
+
+```tsx {1-2|6|9|all}
 "use client"
 import { useRouter } from "next/navigation"
 
-export default function LoginForm() {
+export default function FormPembayaran() {
   const router = useRouter()
 
-  function handleLogin() {
-    // ... proses login
-    router.push("/dashboard")
+  async function prosesBayar() {
+    await kirimPembayaran()
+    router.push("/sukses") // Pindah rute!
   }
 
   return (
-    <button onClick={handleLogin}>
-      Login
+    <button onClick={prosesBayar} className="brutal-btn">
+      Bayar Sekarang
     </button>
   )
 }
 ```
 
-- ✅ Navigasi setelah submit form
-- ✅ Redirect setelah proses selesai
-
 ---
 
-### Hook Navigasi Penting
+### Tiga Hook Navigasi Esensial
 
-Tiga hook wajib untuk mengelola navigasi
+Hook Pendukung dari Paket `next/navigation` untuk Client Component
 
-```tsx {1-2|4-5|7-8|10-11|all}
+````md magic-move
+```tsx
+// 1. useRouter — Mengendalikan navigasi secara programatik
 "use client"
-import { useRouter, usePathname, useParams } from "next/navigation"
+import { useRouter } from "next/navigation"
 
-// 1. useRouter — Navigasi programatik
 const router = useRouter()
-router.push("/halaman-baru")   // Pindah halaman
-router.replace("/login")       // Pindah tanpa history
-router.back()                  // Kembali ke halaman sebelumnya
-router.refresh()               // Refresh data halaman saat ini
-
-// 2. usePathname — Tahu halaman mana yang sedang aktif
-const pathname = usePathname() // "/dashboard/settings"
-
-// 3. useParams — Ambil parameter dari URL dinamis
-const params = useParams()     // { id: "123" }
+router.push("/halaman-baru")  // Pindah halaman
+router.replace("/beranda")     // Pindah tanpa menyimpan history mundur
+router.back()                 // Kembali ke halaman sebelumnya
+router.refresh()              // Muat ulang data rute saat ini
 ```
-
----
-
-### Pola Aktif Link (Active Link)
-
-Memberi tanda visual pada menu yang sedang aktif
-
-```tsx {1-2|5|7-10|all}
+```tsx
+// 2. usePathname — Mengetahui alamat URL yang sedang aktif
 "use client"
 import { usePathname } from "next/navigation"
-import Link from "next/link"
 
-export default function NavLink({ href, children }) {
+const pathname = usePathname()
+// Jika browser di /produk/laptop-gaming → pathname bernilai "/produk/laptop-gaming"
+```
+```tsx
+// 3. useSearchParams — Mengambil parameter query (?kategori=elektronik)
+"use client"
+import { useSearchParams } from "next/navigation"
+
+const searchParams = useSearchParams()
+const cari = searchParams.get("q")
+const urutkan = searchParams.get("sort")
+```
+````
+
+---
+
+### Praktek: Active Link di Navbar
+
+Memberi Tanda Visual pada Menu Navigasi yang Sedang Aktif
+
+```tsx {1-3|6|8|12-14|all}
+"use client"
+import Link from "next/link"
+import { usePathname } from "next/navigation"
+
+export default function Navbar() {
   const pathname = usePathname()
-  const isActive = pathname === href
+
+  const links = [
+    { href: "/", label: "Beranda" },
+    { href: "/produk", label: "Katalog Produk" },
+    { href: "/tentang", label: "Tentang Kami" },
+  ]
 
   return (
-    <Link
-      href={href}
-      className={isActive
-        ? "font-bold text-blue-600 border-b-2 border-blue-600"
-        : "text-gray-600 hover:text-black"
-      }
-    >
-      {children}
-    </Link>
+    <nav className="flex gap-4 p-4 border-2 border-black bg-white">
+      {links.map((item) => {
+        const isActive = pathname === item.href
+        return (
+          <Link
+            key={item.href}
+            href={item.href}
+            className={`px-3 py-1 rounded font-bold border-2 transition-all ${
+              isActive
+                ? "bg-[#FFE600] border-black shadow-[2px_2px_0px_#000]"
+                : "border-transparent hover:border-black"
+            }`}
+          >
+            {item.label}
+          </Link>
+        )
+      })}
+    </nav>
   )
 }
 ```
-
-<div v-click class="mt-3 brutal-card bg-white p-3 text-sm">
-  💡 Gunakan pattern ini untuk navbar agar pengguna tahu mereka sedang di halaman mana!
-</div>
 
 ---
 layout: intro
@@ -291,6 +239,6 @@ badgeColor: "yellow"
 
 ## 3 Hal Penting dari Modul 03
 
-1. **Routing = Folder**: Buat folder di `app/` → otomatis jadi rute URL. Gunakan `[param]` untuk rute dinamis dan `(group)` untuk organisasi.
-2. **Layout Bertingkat**: Setiap folder bisa punya `layout.tsx` sendiri yang tidak me-reload saat navigasi — cocok untuk navbar, sidebar, dan footer.
-3. **Link untuk UI, useRouter untuk Logika**: Pakai `<Link>` di navigasi tampilan, pakai `useRouter()` untuk redirect setelah proses (login, submit form).
+1. **Dynamic Segments `[id]`**: Menggunakan kurung siku untuk menangani ribuan halaman berkonten dinamis hanya dengan satu folder template.
+2. **Prioritaskan `<Link>`**: Selalu gunakan komponen `Link` dari `next/link` agar navigasi terasa instan berkat optimasi prefetching otomatis.
+3. **Kombinasi Hook Navigasi**: Gunakan `useRouter()` untuk aksi programatik, serta `usePathname()` untuk membuat penanda rute aktif pada navbar.

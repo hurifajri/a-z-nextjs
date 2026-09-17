@@ -4,7 +4,7 @@ badge: "MODUL 14"
 badgeColor: "yellow"
 ---
 
-## 14. Middleware dan Auth Pattern
+## 14. Middleware & Auth Pattern
 
 Melindungi halaman dengan Next.js Middleware, mengelola sesi pengguna, dan membuat guard untuk rute yang memerlukan login.
 

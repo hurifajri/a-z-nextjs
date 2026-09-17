@@ -4,7 +4,7 @@ badge: "MODUL 07"
 badgeColor: "cyan"
 ---
 
-## 07. Data Fetching di Next.js
+## 07. Data Fetching di Next.js (SSR/SSG/ISR)
 
 Memahami SSR, SSG, dan ISR — cara Next.js mengambil dan meng-cache data secara otomatis untuk performa optimal.
 

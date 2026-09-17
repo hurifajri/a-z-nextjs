@@ -4,145 +4,174 @@ badge: "MODUL 08"
 badgeColor: "pink"
 ---
 
-## 08. Konsumsi API (GET) dan Loading/Error State
+## 08. Konsumsi API (GET) & Loading/Error State
 
-Mengambil data dari endpoint eksternal, menampilkan di antarmuka, serta mengelola tampilan loading, error, dan empty state.
-
----
-
-### Fetch Data di Server Component
-
-Cara paling simpel: langsung `await fetch()` tanpa useEffect!
-
-```tsx {1-3|5-7|9-15|all}
-// app/users/page.tsx — Server Component (default)
-interface User {
-  id: number; name: string; email: string
-}
-
-export default async function UsersPage() {
-  const res = await fetch("https://jsonplaceholder.typicode.com/users")
-  const users: User[] = await res.json()
-
-  return (
-    <div className="grid grid-cols-2 gap-4">
-      {users.map(user => (
-        <div key={user.id} className="border p-4 rounded">
-          <h3 className="font-bold">{user.name}</h3>
-          <p className="text-sm text-gray-600">{user.email}</p>
-        </div>
-      ))}
-    </div>
-  )
-}
-```
-
-<div v-click class="mt-3 brutal-card bg-white p-3 text-sm">
-  ✅ Di Server Component: <strong>tidak perlu</strong> useState, useEffect, atau loading state manual. Next.js menangani semuanya!
-</div>
+Mengambil data dari endpoint, perbandingan HTTP Client (fetch, Axios, Ky), masalah fetch manual, serta keunggulan TanStack Query (React Query).
 
 ---
 layout: two-cols
 ---
 
-### Server Fetch vs Client Fetch
+### Pilihan HTTP Client di Ekosistem JavaScript
 
-Dua pendekatan mengambil data dari API
+Berbagai Cara Mengirim HTTP Request ke Backend
 
 ::left::
 
-#### 🖥️ Server Component
+#### 1. Native `fetch()` _(Bawaan JS & Next.js)_
 
-```tsx
-// Simpel! Langsung await
-export default async function Page() {
-  const res = await fetch(
-    "https://api.example.com/data"
-  )
-  const data = await res.json()
+- ✅ Standar bawaan browser & Node.js (0 kB tambahan)
+- ✅ Di Next.js sudah di-expand dengan fitur caching bawaan
+- ❌ Respon harus di-parse manual (`res.json()`)
+- ❌ Tidak otomatis throw error pada status 400/500
 
-  return <List data={data} />
-}
-```
+#### 2. `axios` _(Paling Populer di Masa Lalu)_
 
-- ✅ Kode lebih bersih
-- ✅ Loading otomatis via `loading.tsx`
-- ✅ Data tidak terekspos di browser
-- ❌ Tidak bisa interaktif
+- ✅ Otomatis parse JSON
+- ✅ Fitur **Interceptors** (sisipkan token otomatis)
+- ❌ Berbasis XMLHttpRequest lama, ukuran bundle lebih besar (~13 kB)
 
 ::right::
 
-#### 💻 Client Component
+#### 3. `ky` _(Pilihan Modern & Ringan)_
+
+- 🪶 Sangat kecil (~3 kB), dibangun di atas native `fetch()`
+- 🔄 **Auto-Retry bawaan**: Otomatis mencoba ulang jika server gagal
+- 🛑 Penanganan HTTP error bawaan yang rapi
+
+```bash
+# Instalasi jika dibutuhkan
+npm install ky
+# atau
+npm install axios
+```
 
 ```tsx
+// Contoh Ky:
+import ky from "ky"
+const users = await ky.get("/api/users").json()
+```
+
+---
+
+### Dilema Fetch Data Manual di Sisi Klien
+
+Masalah-Masalah Nyata dari Pola `useEffect + useState + fetch`
+
+````md magic-move
+```tsx
+// ❌ POLA MANUAL: 20 baris hanya untuk 1 fetch sederhana!
 "use client"
-export default function Page() {
+export default function UserList() {
   const [data, setData] = useState([])
   const [loading, setLoading] = useState(true)
+  const [error, setError] = useState(null)
 
   useEffect(() => {
-    fetch("https://api.example.com/data")
+    fetch("/api/users")
       .then(res => res.json())
-      .then(data => {
-        setData(data)
-        setLoading(false)
-      })
+      .then(d => { setData(d); setLoading(false) })
+      .catch(err => { setError(err.message); setLoading(false) })
   }, [])
 
-  if (loading) return <Spinner />
-  return <List data={data} />
+  if (loading) return <p>Memuat...</p>
+  if (error) return <p>Error: {error}</p>
+  return <ul>{data.map(u => <li key={u.id}>{u.name}</li>)}</ul>
+}
+```
+```tsx
+// ⚠️ APA MASALAH DARI KODE DI ATAS?
+// 1. Race Condition: Respon request lama bisa menimpa request baru
+// 2. Tidak Ada Caching: Pindah halaman lalu balik lagi -> fetch ulang dari nol!
+// 3. Tanpa Deduplication: 2 komponen fetch data sama -> 2x network request
+// 4. Tidak Refresh Saat Tab Aktif: Data di layar bisa usang (stale data)
+```
+````
+
+---
+layout: two-cols
+---
+
+### Solusi Komunitas: TanStack Query (React Query)
+
+Standar Industri untuk Pengelolaan Server State di Sisi Klien
+
+::left::
+
+#### Masalah yang Diselesaikan
+
+<v-clicks>
+
+- ⚡ **Auto Caching**: Data tersimpan di memori, perpindahan halaman terasa instan.
+- 🔄 **Window Focus Refetch**: Saat pengguna kembali membuka tab browser, data otomatis diperbarui di latar belakang.
+- 🛑 **Request Deduplication**: Banyak komponen meminta data yang sama? Hanya 1 request yang dikirim ke server.
+- ⏳ **Built-in State**: State `isLoading`, `isError`, `data` sudah langsung tersedia.
+
+</v-clicks>
+
+::right::
+
+#### Contoh dengan `useQuery`
+
+```tsx {1-2|5-8|10-12|all}
+"use client"
+import { useQuery } from "@tanstack/react-query"
+
+export default function UserList() {
+  const { data, isLoading, error } = useQuery({
+    queryKey: ["users"],
+    queryFn: () => fetch("/api/users").then(r => r.json()),
+  })
+
+  if (isLoading) return <p>Memuat data...</p>
+  if (error) return <p>Terjadi kesalahan!</p>
+
+  return (
+    <ul>
+      {data.map(u => <li key={u.id}>{u.name}</li>)}
+    </ul>
+  )
 }
 ```
 
-- ✅ Bisa interaktif (filter, search)
-- ❌ Perlu kelola loading/error manual
+<div v-click class="mt-2 text-xs text-gray-600">
+  💡 Pilihan serupa dari Vercel: <strong>SWR</strong> (Stale-While-Revalidate).
+</div>
 
 ---
 
-### Type-Safe API Response
+### Kapan Pakai Server Fetch vs TanStack Query?
 
-Definisikan TypeScript interface agar data selalu terprediksi
+Panduan Mengambil Keputusan di Next.js App Router
 
-```tsx {1-8|10-13|15-16|all}
-// types/post.ts — Definisikan tipe data
-interface Post {
-  id: number
-  title: string
-  body: string
-  userId: number
-}
+| Skenario | Pendekatan Terbaik | Alasan |
+|:---|:---|:---|
+| **Halaman Publik / Artikel / Profil** | **Server Component (`await fetch()`)** | Cepat, SEO maksimal, tanpa JavaScript ekstra di browser |
+| **Dashboard Interaktif / Admin** | **TanStack Query / SWR** | Butuh auto-refresh, polling berkala, filter data cepat di browser |
+| **Infinite Scroll & Real-Time List** | **TanStack Query (`useInfiniteQuery`)** | Pagination & caching otomatis di memori klien |
 
-// Gunakan tipe saat fetch
-async function getPosts(): Promise<Post[]> {
-  const res = await fetch("https://jsonplaceholder.typicode.com/posts")
-  if (!res.ok) throw new Error("Gagal mengambil data")
-  return res.json()
-}
-
-// Auto-complete dan type checking otomatis!
-const posts = await getPosts()
-posts[0].title  // ✅ TypeScript tahu ini string
-posts[0].harga  // ❌ Error! Property 'harga' tidak ada
-```
+<div v-click class="mt-4 brutal-card bg-yellow-100 p-3 text-xs border-2 border-black">
+  🚀 Di Next.js, mulailah selalu dari <strong>Server Component fetch</strong>. Beralihlah ke <strong>TanStack Query</strong> hanya pada komponen interaktif yang butuh auto-polling atau sinkronisasi client intensif.
+</div>
 
 ---
 
-### Tiga State yang Harus Ditangani
+### Tiga State yang Wajib Ditangani
 
-Setiap halaman yang fetch data wajib menangani 3 kondisi ini
+Apapun Cara Fetch-nya, Jangan Pernah Melewatkan 3 Kondisi Ini!
 
 <v-switch>
 <template #1>
 
-#### ⏳ Loading State
+#### ⏳ 1. Loading State (Skeleton / Spinner)
 
 ```tsx
 function LoadingSkeleton() {
   return (
-    <div className="animate-pulse space-y-3">
+    <div className="animate-pulse space-y-3 p-4">
+      <div className="h-6 bg-gray-200 rounded w-1/3" />
       <div className="h-4 bg-gray-200 rounded w-3/4" />
       <div className="h-4 bg-gray-200 rounded w-1/2" />
-      <div className="h-4 bg-gray-200 rounded w-5/6" />
     </div>
   )
 }
@@ -151,13 +180,13 @@ function LoadingSkeleton() {
 </template>
 <template #2>
 
-#### ❌ Error State
+#### ❌ 2. Error State (Pesan + Tombol Coba Lagi)
 
 ```tsx
-function ErrorState({ message, onRetry }) {
+function ErrorState({ pesan, onRetry }: { pesan: string, onRetry: () => void }) {
   return (
-    <div className="text-center py-8">
-      <p className="text-red-500 mb-4">⚠️ {message}</p>
+    <div className="text-center py-8 brutal-card bg-red-50">
+      <p className="text-red-600 font-bold mb-3">⚠️ {pesan}</p>
       <button onClick={onRetry} className="brutal-btn">
         Coba Lagi
       </button>
@@ -169,15 +198,15 @@ function ErrorState({ message, onRetry }) {
 </template>
 <template #3>
 
-#### 📭 Empty State
+#### 📭 3. Empty State (Pemberitahuan Data Kosong)
 
 ```tsx
 function EmptyState() {
   return (
-    <div className="text-center py-12 text-gray-500">
+    <div className="text-center py-10 text-gray-500 brutal-card bg-white">
       <p className="text-4xl mb-2">📭</p>
-      <p className="font-bold">Belum Ada Data</p>
-      <p className="text-sm">Data yang Antum cari tidak ditemukan.</p>
+      <p className="font-bold text-black">Belum Ada Data</p>
+      <p className="text-xs">Data yang Antum cari belum tersedia saat ini.</p>
     </div>
   )
 }
@@ -188,124 +217,30 @@ function EmptyState() {
 
 ---
 
-### Evolusi Fetch: Basic → Production-Ready
+### Type-Safe API Response dengan TypeScript
 
-Membangun komponen fetch secara bertahap
+Mencegah Bug Salah Ketik Properti Sejak Awal
 
-````md magic-move
-```tsx
-// 1. Basic — tanpa error handling (BAHAYA!)
-"use client"
-export default function UserList() {
-  const [users, setUsers] = useState([])
-
-  useEffect(() => {
-    fetch("/api/users")
-      .then(res => res.json())
-      .then(setUsers)
-  }, [])
-
-  return <ul>{users.map(u => <li key={u.id}>{u.name}</li>)}</ul>
+```tsx {1-7|9-13|15-18|all}
+// types/user.ts
+interface User {
+  id: number
+  name: string
+  email: string
+  role: "admin" | "member"
 }
-```
-```tsx
-// 2. Tambah loading state
-"use client"
-export default function UserList() {
-  const [users, setUsers] = useState([])
-  const [loading, setLoading] = useState(true)
 
-  useEffect(() => {
-    fetch("/api/users")
-      .then(res => res.json())
-      .then(data => { setUsers(data); setLoading(false) })
-  }, [])
-
-  if (loading) return <LoadingSkeleton />
-  return <ul>{users.map(u => <li key={u.id}>{u.name}</li>)}</ul>
+// Fetch dengan penegasan tipe data (Type Assertion)
+async function getUsers(): Promise<User[]> {
+  const res = await fetch("https://api.example.com/users")
+  return res.json()
 }
+
+// Auto-complete editor langsung aktif!
+const users = await getUsers()
+console.log(users[0].name)  // ✅ Terbaca string
+console.log(users[0].saldo) // ❌ TypeScript langsung memunculkan garis merah!
 ```
-```tsx
-// 3. Tambah error + empty state (PRODUCTION READY ✅)
-"use client"
-export default function UserList() {
-  const [users, setUsers] = useState([])
-  const [loading, setLoading] = useState(true)
-  const [error, setError] = useState<string | null>(null)
-
-  useEffect(() => {
-    fetch("/api/users")
-      .then(res => {
-        if (!res.ok) throw new Error("Gagal memuat data")
-        return res.json()
-      })
-      .then(data => { setUsers(data); setLoading(false) })
-      .catch(err => { setError(err.message); setLoading(false) })
-  }, [])
-
-  if (loading) return <LoadingSkeleton />
-  if (error) return <ErrorState message={error} />
-  if (users.length === 0) return <EmptyState />
-  return <ul>{users.map(u => <li key={u.id}>{u.name}</li>)}</ul>
-}
-```
-````
-
----
-
-### Menampilkan Data: Card Grid
-
-Pola umum menampilkan daftar data dalam format kartu
-
-```tsx {3-5|7-15|all}
-export default async function ProductsPage() {
-  const res = await fetch("https://api.example.com/products")
-  const products = await res.json()
-
-  if (products.length === 0) return <EmptyState />
-
-  return (
-    <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
-      {products.map(product => (
-        <div key={product.id} className="border-2 border-black rounded-lg p-4 shadow-sm">
-          <h3 className="font-bold text-lg">{product.name}</h3>
-          <p className="text-gray-600 text-sm mt-1">{product.description}</p>
-          <p className="font-black text-xl mt-3">
-            Rp {product.price.toLocaleString("id-ID")}
-          </p>
-        </div>
-      ))}
-    </div>
-  )
-}
-```
-
----
-
-### Best Practice: loading.tsx + error.tsx
-
-Biarkan Next.js menangani loading dan error secara otomatis di App Router
-
-```text
-app/
-├── products/
-│   ├── page.tsx        ← Komponen utama (fetch data)
-│   ├── loading.tsx     ← Otomatis muncul saat page.tsx loading
-│   └── error.tsx       ← Otomatis menangkap error dari page.tsx
-```
-
-<v-clicks>
-
-- 📦 `page.tsx` cukup fokus fetch data dan render — **tanpa if/else loading/error**
-- ⏳ `loading.tsx` otomatis ditampilkan selama `page.tsx` menunggu `await`
-- ❌ `error.tsx` otomatis menangkap error jika `fetch()` gagal
-- 🔄 Tombol "Coba Lagi" di `error.tsx` memanggil `reset()` untuk re-render
-
-</v-clicks>
-
-<div v-click class="mt-3 brutal-card bg-white p-3 text-sm">
-  🎯 Dengan pattern ini, <code>page.tsx</code> Antum jadi sangat bersih — hanya ada fetch + render!
-</div>
 
 ---
 layout: intro
@@ -315,6 +250,6 @@ badgeColor: "yellow"
 
 ## 3 Hal Penting dari Modul 08
 
-1. **Server Fetch Lebih Simpel**: Di Server Component, cukup `await fetch()` tanpa useState/useEffect. Next.js menangani loading/error via file khusus.
-2. **Selalu Tangani 3 State**: Loading (skeleton/spinner), Error (pesan + tombol retry), Empty (pesan informatif). Jangan pernah abaikan!
-3. **Type-Safe = Aman**: Definisikan TypeScript interface untuk setiap API response agar data selalu terprediksi dan auto-complete bekerja.
+1. **Kenali Pilihan HTTP Client**: Gunakan native `fetch()` untuk solusi tanpa dependensi, `ky` untuk fetch modern ringan dengan retry otomatis, atau `axios` untuk interceptor klasik.
+2. **TanStack Query Mengatasi Keterbatasan Manual**: Gunakan TanStack Query di sisi klien untuk menyelesaikan masalah *race conditions*, ketiadaan *cache*, dan *waterfall requests*.
+3. **Selalu Siapkan 3 State**: Pastikan aplikasi Antum selalu menangani kondisi **Loading**, **Error (dengan tombol retry)**, dan **Empty State** agar ramah bagi pengguna.

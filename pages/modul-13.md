@@ -4,7 +4,7 @@ badge: "MODUL 13"
 badgeColor: "pink"
 ---
 
-## 13. Integrasi API Backend dan Dokumentasi (Swagger/JWT)
+## 13. Integrasi API Backend & Dokumentasi (Swagger/JWT)
 
 Menghubungkan frontend ke API tim backend, membaca dokumentasi Swagger/OpenAPI, serta menerapkan autentikasi JWT.
 

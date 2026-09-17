@@ -6,7 +6,7 @@ badgeColor: "green"
 
 ## 05. State Management Dasar
 
-Memahami cara menyimpan data sementara dengan useState, mengelola efek samping dengan useEffect, dan teknik berbagi state antar komponen.
+Memahami cara menyimpan data sementara dengan useState, mengelola efek samping dengan useEffect, teknik berbagi state, serta menghindari jebakan anti-pattern di React.
 
 ---
 
@@ -77,7 +77,7 @@ export default function Profile() {
 
 ### Update State untuk Array dan Object
 
-Jangan mutasi langsung — selalu buat salinan baru!
+Jangan mutasi langsung — selalu buat salinan baru (Immutability)!
 
 ````md magic-move
 ```tsx
@@ -142,39 +142,40 @@ export default function Clock() {
 
 ---
 
-### useEffect: Fetch Data dari API
+### React Pitfall: Derived State di useEffect
 
-Pola umum mengambil data saat halaman dimuat
+Anti-Pattern Populer yang Harus Antum Hindari Sejak Awal!
 
-```tsx {4-5|7-15|17-18|all}
-"use client"
-import { useState, useEffect } from "react"
+````md magic-move
+```tsx
+// ❌ ANTI-PATTERN: Menyimpan hasil turunan di state + sync via useEffect
+function KeranjangBelanja({ items, diskon }) {
+  const [total, setTotal] = useState(0)
 
-export default function UserList() {
-  const [users, setUsers] = useState([])
-  const [loading, setLoading] = useState(true)
-
+  // Double render & rawan bug desinkronisasi!
   useEffect(() => {
-    async function fetchUsers() {
-      const res = await fetch("https://jsonplaceholder.typicode.com/users")
-      const data = await res.json()
-      setUsers(data)
-      setLoading(false)
-    }
-    fetchUsers()
-  }, []) // Fetch sekali saat halaman dimuat
+    const subtotal = items.reduce((acc, item) => acc + item.harga, 0)
+    setTotal(subtotal - diskon)
+  }, [items, diskon])
 
-  if (loading) return <p>Memuat data...</p>
-
-  return (
-    <ul>
-      {users.map(user => (
-        <li key={user.id}>{user.name}</li>
-      ))}
-    </ul>
-  )
+  return <div>Total Bayar: Rp {total}</div>
 }
 ```
+```tsx
+// ✅ BENAR: Hitung langsung saat render (Derived State)
+function KeranjangBelanja({ items, diskon }) {
+  // Tidak butuh useState & tidak butuh useEffect!
+  const subtotal = items.reduce((acc, item) => acc + item.harga, 0)
+  const total = subtotal - diskon
+
+  return <div>Total Bayar: Rp {total}</div>
+}
+```
+````
+
+<div v-click class="mt-3 brutal-card bg-yellow-100 p-2 text-xs border-2 border-black">
+  💡 <strong>Aturan Emas:</strong> Jika sebuah nilai bisa dihitung dari <code>props</code> atau <code>state</code> yang sudah ada, <strong>jangan taruh di state baru</strong>!
+</div>
 
 ---
 layout: two-cols
@@ -216,20 +217,14 @@ function Parent() {
 
   return (
     <div>
-      {/* Kirim setter via props */}
       <InputNama onNamaChange={setNama} />
-      {/* Kirim value via props */}
       <Greeting nama={nama} />
     </div>
   )
 }
 
 function InputNama({ onNamaChange }) {
-  return (
-    <input onChange={e =>
-      onNamaChange(e.target.value)
-    } />
-  )
+  return <input onChange={e => onNamaChange(e.target.value)} />
 }
 
 function Greeting({ nama }) {
@@ -238,21 +233,53 @@ function Greeting({ nama }) {
 ```
 
 ---
+layout: two-cols
+---
 
-### Props vs State
+### Hindari: "God Component"
 
-Dua konsep yang sering membingungkan pemula
+Ketika Terlalu Banyak State Ditumpuk di Satu Komponen Raksasa
 
-| Aspek | **Props** | **State** |
-|:------|:----------|:----------|
-| **Asal** | Diterima dari komponen parent | Dimiliki oleh komponen itu sendiri |
-| **Bisa diubah?** | ❌ Read-only (immutable) | ✅ Bisa diubah via setter |
-| **Siapa yang kontrol?** | Parent yang mengirim | Komponen yang memiliki |
-| **Re-render?** | Saat parent mengirim props baru | Saat state berubah via setter |
+::left::
 
-<div v-click class="mt-4 brutal-card bg-white p-3 text-sm">
-  🧩 <strong>Analogi:</strong> Props = instruksi dari atasan (tidak bisa diubah bawahan). State = catatan pribadi (bisa Antum ubah sendiri).
-</div>
+#### ❌ The God Component
+
+```tsx
+function Dashboard() {
+  // 15 state berbeda ditumpuk di 1 file!
+  const [user, setUser] = useState()
+  const [theme, setTheme] = useState()
+  const [notif, setNotif] = useState()
+  const [filter, setFilter] = useState()
+  const [page, setPage] = useState()
+  // ... 10 state lainnya
+  // Satu huruf diketik -> 1000 baris re-render!
+}
+```
+
+- Komponen membengkak ribuan baris
+- Re-render tidak terkontrol & berat
+- Sangat sulit di-test dan di-refactor
+
+::right::
+
+#### ✅ Modular & Local State
+
+```tsx
+function Dashboard() {
+  return (
+    <div>
+      <UserSection />    {/* Kelola state user */}
+      <FilterBar />      {/* Kelola state filter */}
+      <DataGrid />       {/* Kelola pagination */}
+    </div>
+  )
+}
+```
+
+- **Colocation**: Taruh state sedekat mungkin dengan tempat ia dipakai
+- Komponen kecil, fokus, dan cepat
+- Hemat beban re-render browser
 
 ---
 layout: intro
@@ -262,6 +289,6 @@ badgeColor: "yellow"
 
 ## 3 Hal Penting dari Modul 05
 
-1. **useState = Data yang Hidup**: Gunakan `useState` agar perubahan data otomatis memperbarui tampilan. Jangan mutasi langsung — selalu buat salinan baru!
-2. **useEffect = Aksi di Luar Render**: Fetch data, timer, dan subscription masuk ke `useEffect`. Selalu sertakan dependency array dan cleanup function.
-3. **Lifting State = Berbagi Data**: Jika dua komponen butuh data yang sama, pindahkan state ke parent terdekat dan kirim via props.
+1. **useState & Immutability**: Gunakan `useState` agar UI reaktif. Jangan mutasi langsung — selalu buat salinan array/object baru dengan spread operator.
+2. **Hindari Derived State di useEffect**: Jangan buat state baru untuk nilai yang bisa dihitung langsung dari props/state lain saat render.
+3. **Lifting State & Colocation**: Angkat state ke parent jika dipakai bersama, tapi hindari *God Component* dengan menaruh state sedekat mungkin dengan komponen pemakainya.

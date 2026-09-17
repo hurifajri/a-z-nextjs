@@ -4,9 +4,9 @@ badge: "MODUL 12"
 badgeColor: "cyan"
 ---
 
-## 12. UI Lanjutan — Data Dinamis, Responsive, dan Figma to Code
+## 12. UI Lanjutan — Data Dinamis, Responsive & Figma to Code
 
-Menampilkan data dinamis (filter, search, pagination), membangun layout responsif, dan menerjemahkan desain Figma ke kode.
+Penyajian data dinamis, alur kerja Figma to Code, bahaya membuat komponen aksesibel dari nol, lanskap UI Library (shadcn/ui vs MUI), serta sejarah pergeseran dari CSS-in-JS ke Tailwind.
 
 ---
 
@@ -48,7 +48,7 @@ Pilih format tampilan yang sesuai dengan jenis data
 ```tsx
 <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
   {products.map(p => (
-    <div key={p.id} className="border-2 border-black rounded-lg p-4">
+    <div key={p.id} className="border-2 border-black rounded-lg p-4 bg-white">
       <img src={p.image} className="w-full h-40 object-cover rounded" />
       <h3 className="font-bold mt-2">{p.name}</h3>
       <p className="text-gray-600">Rp {p.price.toLocaleString()}</p>
@@ -62,209 +62,183 @@ Pilih format tampilan yang sesuai dengan jenis data
 
 ---
 
-### Fitur Search dan Filter
+### Fitur Search, Filter & Pagination
 
-Mencari dan memfilter data secara real-time
+Mengelola Kumpulan Data Besar dengan Nyaman bagi Pengguna
 
 ````md magic-move
 ```tsx
-// 1. State dasar untuk search
+// 1. Filter Real-Time berdasarkan kata kunci & kategori
 "use client"
 export default function ProductList({ products }) {
   const [search, setSearch] = useState("")
+  const [kategori, setKategori] = useState("semua")
 
-  return (
-    <div>
-      <input placeholder="Cari produk..."
-        value={search}
-        onChange={e => setSearch(e.target.value)} />
-    </div>
-  )
-}
-```
-```tsx
-// 2. Filter data berdasarkan search
-"use client"
-export default function ProductList({ products }) {
-  const [search, setSearch] = useState("")
-  const [category, setCategory] = useState("semua")
-
-  const filtered = products.filter(p => {
-    const matchSearch = p.name.toLowerCase().includes(search.toLowerCase())
-    const matchCategory = category === "semua" || p.category === category
-    return matchSearch && matchCategory
+  const hasilFilter = products.filter(p => {
+    const cocokNama = p.name.toLowerCase().includes(search.toLowerCase())
+    const cocokKategori = kategori === "semua" || p.category === kategori
+    return cocokNama && cocokKategori
   })
 
   return (
     <div>
-      <input placeholder="Cari..." value={search}
-        onChange={e => setSearch(e.target.value)} />
-      <select value={category} onChange={e => setCategory(e.target.value)}>
-        <option value="semua">Semua</option>
-        <option value="elektronik">Elektronik</option>
-        <option value="fashion">Fashion</option>
-      </select>
-      <p>{filtered.length} produk ditemukan</p>
+      <input placeholder="Cari barang..." value={search} onChange={e => setSearch(e.target.value)} />
+      <p>{hasilFilter.length} produk ditemukan</p>
     </div>
   )
 }
+```
+```tsx
+// 2. Potong data menjadi beberapa halaman (Pagination)
+const [halaman, setHalaman] = useState(1)
+const perHalaman = 10
+
+const totalHalaman = Math.ceil(hasilFilter.length / perHalaman)
+const dataTampil = hasilFilter.slice((halaman - 1) * perHalaman, halaman * perHalaman)
+
+return (
+  <div>
+    {dataTampil.map(p => <ProductCard key={p.id} item={p} />)}
+    <div className="flex gap-2 justify-center mt-4">
+      <button disabled={halaman <= 1} onClick={() => setHalaman(halaman - 1)}>Sebelumnya</button>
+      <span>{halaman} dari {totalHalaman}</span>
+      <button disabled={halaman >= totalHalaman} onClick={() => setHalaman(halaman + 1)}>Selanjutnya</button>
+    </div>
+  </div>
+)
 ```
 ````
-
----
-
-### Pagination: Navigasi Halaman Data
-
-Menampilkan data dalam beberapa halaman agar tidak terlalu panjang
-
-```tsx {2-4|6-8|10-17|all}
-"use client"
-export default function PaginatedList({ items }) {
-  const [page, setPage] = useState(1)
-  const perPage = 10
-
-  // Potong data sesuai halaman aktif
-  const totalPages = Math.ceil(items.length / perPage)
-  const displayed = items.slice((page - 1) * perPage, page * perPage)
-
-  return (
-    <div>
-      {displayed.map(item => <ItemCard key={item.id} item={item} />)}
-
-      <div className="flex gap-2 mt-4 justify-center">
-        <button disabled={page <= 1} onClick={() => setPage(page - 1)}>
-          ← Sebelumnya
-        </button>
-        <span className="font-bold">{page} / {totalPages}</span>
-        <button disabled={page >= totalPages} onClick={() => setPage(page + 1)}>
-          Selanjutnya →
-        </button>
-      </div>
-    </div>
-  )
-}
-```
-
----
-
-### Loading Skeleton dan Empty State
-
-Komponen pendukung untuk pengalaman pengguna yang baik
-
-```tsx
-// Skeleton loading — placeholder animasi saat data belum siap
-function ProductSkeleton() {
-  return (
-    <div className="animate-pulse space-y-3">
-      <div className="h-40 bg-gray-200 rounded" />
-      <div className="h-4 bg-gray-200 rounded w-3/4" />
-      <div className="h-4 bg-gray-200 rounded w-1/2" />
-    </div>
-  )
-}
-```
-
-```tsx
-// Empty state — pesan informatif saat data kosong
-function EmptyState({ message = "Data tidak ditemukan" }) {
-  return (
-    <div className="text-center py-12">
-      <span className="text-4xl">📭</span>
-      <p className="font-bold mt-2">{message}</p>
-      <p className="text-sm text-gray-500">Coba ubah kata kunci pencarian.</p>
-    </div>
-  )
-}
-```
-
----
-
-### Dari Figma ke Kode
-
-Alur kerja menerjemahkan desain menjadi kode Tailwind
-
-<v-clicks>
-
-1. **Inspect Elemen** — Klik elemen di Figma, lihat panel Properties (ukuran, warna, jarak).
-2. **Catat Spacing** — Padding, margin, gap → terjemahkan ke `p-4`, `m-2`, `gap-3`.
-3. **Catat Warna** — Hex color → cari padanan Tailwind terdekat (`#3B82F6` → `bg-blue-500`).
-4. **Catat Tipografi** — Font size, weight → `text-lg`, `font-bold`.
-5. **Susun Struktur** — Tentukan layout: Flex atau Grid → `flex`, `grid grid-cols-3`.
-6. **Build Responsive** — Mulai dari mobile, tambahkan breakpoint (`md:`, `lg:`).
-
-</v-clicks>
 
 ---
 layout: two-cols
 ---
 
-### Responsive dengan Tailwind
+### Bahaya Membuat Komponen Interaktif dari Nol
 
-Mobile-first: mulai dari layar kecil, lalu perbesar
+Mengapa Bikin Modal, Dropdown, atau Popover Sendiri Sering Menjadi Mimpi Buruk?
 
 ::left::
 
-#### Breakpoints Tailwind
+#### Masalah Aksesibilitas (WAI-ARIA)
 
-| Prefix | Min Width | Contoh |
-|:-------|:----------|:-------|
-| _(tanpa)_ | 0px | Mobile |
-| `sm:` | 640px | Tablet kecil |
-| `md:` | 768px | Tablet |
-| `lg:` | 1024px | Laptop |
-| `xl:` | 1280px | Desktop |
+Bikin kotak modal dengan CSS itu mudah, tetapi:
+- ⌨️ **Keyboard Navigation**: Bisakah dibuka/tutup hanya dengan keyboard (Tab, Enter, Spasi)?
+- 🔒 **Focus Trap**: Apakah kursor keyboard terkurung di dalam modal saat aktif, atau tembus ke halaman belakang?
+- ⎋ **ESC Handler**: Apakah menekan tombol `Escape` otomatis menutup modal?
+- 📢 **Screen Reader**: Apakah tunanetra dapat mendengar status popover "terbuka" atau "tertutup"?
 
 ::right::
 
-#### Contoh Responsive Grid
+#### Standar Industri
 
-```tsx {2|all}
-<div className="
-  grid
-  grid-cols-1
-  sm:grid-cols-2
-  lg:grid-cols-3
-  xl:grid-cols-4
-  gap-4
-">
-  {products.map(p => (
-    <ProductCard key={p.id} product={p} />
-  ))}
+<div class="brutal-card bg-yellow-100 p-3 text-xs border-2 border-black">
+  ⚠️ Mengabaikan aspek aksesibilitas (a11y) membuat website Antum tidak dapat digunakan oleh jutaan penyandang disabilitas dan melanggar standar web internasional.
 </div>
-```
 
-- 📱 Mobile: 1 kolom
-- 📱 Tablet: 2 kolom
-- 💻 Laptop: 3 kolom
-- 🖥️ Desktop: 4 kolom
+<p class="text-xs text-gray-700 mt-4">
+  Oleh karena itu, di industri kita memanfaatkan <strong>Accessible Primitive Libraries</strong> yang telah diuji oleh ribuan pakar!
+</p>
+
+---
+layout: two-cols
+---
+
+### Lanskap UI Library di Dunia React
+
+Dari Komponen Monolitik Menuju Era Headless & Copy-Paste
+
+::left::
+
+#### 🏢 1. Framework Klasik (MUI, Ant Design, Mantine)
+
+- **Kelebihan**: Komponen siap pakai sangat lengkap.
+- **Kekurangan**: Bundle JavaScript besar, styling kaku dengan tema bawaan, dan sulit diubah jika desainer punya aturan ketat di Figma.
+
+#### 🪓 2. Headless UI (Radix UI, React Aria)
+
+- Hanya menyediakan **logika & aksesibilitas 100%** tanpa styling CSS apapun.
+
+::right::
+
+#### 🌟 3. Standar Baru: `shadcn/ui`
+
+- Dibangun di atas **Radix UI** + **Tailwind CSS**.
+- **Bukan package npm black-box**: Kodenya di-copy langsung ke dalam folder `components/ui/` proyek Antum!
+- 🎨 **Kontrol Penuh**: Antum bebas mengedit kode komponen sesuka hati tanpa dibatasi oleh aturan library.
+- ⚡ Sangat digemari di ekosistem Next.js modern!
 
 ---
 
-### Pola Responsive Umum
+### Kilas Balik: Era CSS-in-JS & Mengapa Kini Ditinggalkan
 
-Teknik-teknik yang sering digunakan di project nyata
+Perjalanan Komunitas dari Styled Components Kembali ke Tailwind CSS
 
+````md magic-move
 ```tsx
-{/* 1. Sembunyikan/tampilkan elemen */}
-<div className="hidden md:block">Menu Desktop</div>
-<div className="block md:hidden">☰ Menu Mobile</div>
+// 📜 ERA POPULER (2018–2022): CSS-in-JS (Styled-Components / Emotion)
+import styled from "styled-components"
 
-{/* 2. Ubah arah flex */}
-<div className="flex flex-col md:flex-row gap-4">
-  <aside className="w-full md:w-64">Sidebar</aside>
-  <main className="flex-1">Konten</main>
-</div>
-
-{/* 3. Ukuran teks responsif */}
-<h1 className="text-2xl md:text-4xl lg:text-5xl font-bold">
-  Judul Responsif
-</h1>
-
-{/* 4. Padding responsif */}
-<div className="p-4 md:p-8 lg:p-12">
-  Konten dengan padding yang menyesuaikan layar
-</div>
+const TombolKeren = styled.button`
+  background: ${props => props.$primer ? "#FFE600" : "#FFFFFF"};
+  border: 2px solid #000;
+  padding: 8px 16px;
+  font-weight: bold;
+  &:hover {
+    background: #FFD700;
+  }
+`
+// Dulu disukai karena style bisa dinamis mengikuti props JavaScript!
 ```
+```tsx
+// ⚠️ KENAPA SEKARANG DITINGGALKAN OLEH KOMUNITAS?
+// 1. Runtime Performance: Browser sibuk menghitung CSS saat aplikasi berjalan
+// 2. Ukuran JS Membengkak: Kode CSS dikirim sebagai file JavaScript
+// 3. TIDAK KOMPATIBEL DENGAN SERVER COMPONENTS (RSC)!
+//    CSS-in-JS butuh React Context di browser, sehingga tidak bisa berjalan di server!
+```
+```tsx
+// ⚡ ERA SEKARANG: Tailwind CSS (Zero Runtime, Compile Time)
+export default function TombolKeren({ primer }: { primer?: boolean }) {
+  return (
+    <button className={`border-2 border-black px-4 py-2 font-bold transition-all ${
+      primer ? "bg-[#FFE600] hover:bg-[#FFD700]" : "bg-white hover:bg-gray-100"
+    }`}>
+      Klik Saya
+    </button>
+  )
+}
+// Zero-runtime, dikompilasi saat build time, ukuran CSS statis, 100% kompatibel dengan Server Components!
+```
+````
+
+---
+layout: two-cols
+---
+
+### Menerjemahkan Figma ke Tailwind CSS
+
+Alur Kerja Kolaborasi Bersama Desainer UI/UX
+
+::left::
+
+#### Langkah Penerjemahan
+
+1. **Buka Panel Inspect**: Cek ukuran padding, margin, dan border radius.
+2. **Identifikasi Breakpoints**: Tentukan layout pada layar mobile, tablet, dan desktop.
+3. **Konversi Warna**: Sambungkan warna hex desain ke palet warna Tailwind.
+4. **Gunakan Flexbox & Grid**: Susun tata letak adaptif.
+
+::right::
+
+#### Breakpoints Tailwind (Mobile-First)
+
+| Prefix | Min Width | Target Layar |
+|:---|:---|:---|
+| *(default)* | 0px | 📱 Layar Ponsel |
+| `sm:` | 640px | 📱 Ponsel Lebar / Mini Tablet |
+| `md:` | 768px | 💻 Tablet / iPad |
+| `lg:` | 1024px | 🖥️ Laptop / Desktop |
+| `xl:` | 1280px | 🖥️ Layar Monitor Lebar |
 
 ---
 layout: intro
@@ -274,6 +248,6 @@ badgeColor: "yellow"
 
 ## 3 Hal Penting dari Modul 12
 
-1. **Search + Filter + Pagination**: Kombinasi tiga fitur ini membuat pengelolaan data besar jadi ramah pengguna. Jangan lupa skeleton loading dan empty state!
-2. **Figma → Tailwind**: Inspect elemen di Figma, catat spacing/warna/tipografi, lalu terjemahkan langsung ke utility classes Tailwind.
-3. **Mobile-First**: Tulis class untuk mobile dulu, tambahkan `md:` dan `lg:` untuk layar lebih besar. Tailwind membuat responsive design jadi sangat mudah.
+1. **Manfaatkan Accessible Primitives**: Jangan membuat modal/dropdown kompleks dari nol murni. Manfaatkan *headless UI* seperti Radix UI atau `shadcn/ui` agar website ramah disabilitas dan sesuai standar WAI-ARIA.
+2. **Kemenangan Tailwind atas CSS-in-JS**: Komunitas beralih dari Styled-Components kembali ke Tailwind CSS karena nol runtime, ukuran file lebih kecil, dan kompatibilitas penuh dengan Server Components Next.js.
+3. **Desain Responsif Mobile-First**: Mulai menulis style untuk layar ponsel, lalu gunakan breakpoint (`md:`, `lg:`) untuk menyesuaikan tampilan di layar komputer.

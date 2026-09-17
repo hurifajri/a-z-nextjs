@@ -4,7 +4,7 @@ badge: "MODUL 16"
 badgeColor: "purple"
 ---
 
-## 16. Build, Deploy, dan Monitoring
+## 16. Build, Deploy & Monitoring
 
 Menyiapkan project untuk produksi, deploy ke Vercel, dan memantau performa setelah online.
 

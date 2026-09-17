@@ -4,7 +4,7 @@ badge: "MODUL 10"
 badgeColor: "green"
 ---
 
-## 10. Next.js Fullstack — Route Handlers dan Drizzle ORM
+## 10. Next.js Fullstack — Route Handlers & Drizzle ORM
 
 Membuat API sendiri di Next.js! Selain consume API, Next.js juga bisa menjadi backend fullstack.
 
