@@ -2,6 +2,7 @@
 layout: intro
 badge: "MODUL 16"
 badgeColor: "purple"
+level: 1
 ---
 
 ## 16. Build, Deploy & Monitoring
@@ -129,13 +130,13 @@ Platform resmi buatan tim Next.js — deploy semudah push ke Git
 
 Vercel bukan satu-satunya pilihan
 
-| Platform | Kelebihan | Cocok Untuk |
-|:---------|:----------|:------------|
-| **Vercel** | Paling mudah, auto-deploy, Edge Functions | Semua project Next.js |
-| **Netlify** | Mirip Vercel, banyak plugin | Static sites, JAMstack |
-| **Railway** | Database built-in, mudah scale | Fullstack + database |
-| **Docker** | Kontrol penuh, self-hosted | Enterprise, custom infra |
-| **VPS** | Murah, kontrol total | Budget terbatas |
+| Platform    | Kelebihan                                 | Cocok Untuk              |
+| :---------- | :---------------------------------------- | :----------------------- |
+| **Vercel**  | Paling mudah, auto-deploy, Edge Functions | Semua project Next.js    |
+| **Netlify** | Mirip Vercel, banyak plugin               | Static sites, JAMstack   |
+| **Railway** | Database built-in, mudah scale            | Fullstack + database     |
+| **Docker**  | Kontrol penuh, self-hosted                | Enterprise, custom infra |
+| **VPS**     | Murah, kontrol total                      | Budget terbatas          |
 
 ---
 
@@ -196,6 +197,7 @@ Pastikan semua sudah siap sebelum rilis ke publik
 layout: intro
 badge: "RANGKUMAN"
 badgeColor: "yellow"
+hideInToc: true
 ---
 
 ## 3 Hal Penting dari Modul 16

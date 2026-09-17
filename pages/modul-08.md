@@ -2,9 +2,10 @@
 layout: intro
 badge: "MODUL 08"
 badgeColor: "pink"
+level: 1
 ---
 
-## 08. Konsumsi API (GET) & Loading/Error State
+## 08. Konsumsi API & Data Fetching (TanStack Query)
 
 Mengambil data dari endpoint, perbandingan HTTP Client (fetch, Axios, Ky), masalah fetch manual, serta keunggulan TanStack Query (React Query).
 
@@ -48,8 +49,8 @@ npm install axios
 
 ```tsx
 // Contoh Ky:
-import ky from "ky"
-const users = await ky.get("/api/users").json()
+import ky from "ky";
+const users = await ky.get("/api/users").json();
 ```
 
 ---
@@ -61,24 +62,37 @@ Masalah-Masalah Nyata dari Pola `useEffect + useState + fetch`
 ````md magic-move
 ```tsx
 // ❌ POLA MANUAL: 20 baris hanya untuk 1 fetch sederhana!
-"use client"
+"use client";
 export default function UserList() {
-  const [data, setData] = useState([])
-  const [loading, setLoading] = useState(true)
-  const [error, setError] = useState(null)
+  const [data, setData] = useState([]);
+  const [loading, setLoading] = useState(true);
+  const [error, setError] = useState(null);
 
   useEffect(() => {
     fetch("/api/users")
-      .then(res => res.json())
-      .then(d => { setData(d); setLoading(false) })
-      .catch(err => { setError(err.message); setLoading(false) })
-  }, [])
+      .then((res) => res.json())
+      .then((d) => {
+        setData(d);
+        setLoading(false);
+      })
+      .catch((err) => {
+        setError(err.message);
+        setLoading(false);
+      });
+  }, []);
 
-  if (loading) return <p>Memuat...</p>
-  if (error) return <p>Error: {error}</p>
-  return <ul>{data.map(u => <li key={u.id}>{u.name}</li>)}</ul>
+  if (loading) return <p>Memuat...</p>;
+  if (error) return <p>Error: {error}</p>;
+  return (
+    <ul>
+      {data.map((u) => (
+        <li key={u.id}>{u.name}</li>
+      ))}
+    </ul>
+  );
 }
 ```
+
 ```tsx
 // ⚠️ APA MASALAH DARI KODE DI ATAS?
 // 1. Race Condition: Respon request lama bisa menimpa request baru
@@ -114,23 +128,25 @@ Standar Industri untuk Pengelolaan Server State di Sisi Klien
 #### Contoh dengan `useQuery`
 
 ```tsx {1-2|5-8|10-12|all}
-"use client"
-import { useQuery } from "@tanstack/react-query"
+"use client";
+import { useQuery } from "@tanstack/react-query";
 
 export default function UserList() {
   const { data, isLoading, error } = useQuery({
     queryKey: ["users"],
-    queryFn: () => fetch("/api/users").then(r => r.json()),
-  })
+    queryFn: () => fetch("/api/users").then((r) => r.json()),
+  });
 
-  if (isLoading) return <p>Memuat data...</p>
-  if (error) return <p>Terjadi kesalahan!</p>
+  if (isLoading) return <p>Memuat data...</p>;
+  if (error) return <p>Terjadi kesalahan!</p>;
 
   return (
     <ul>
-      {data.map(u => <li key={u.id}>{u.name}</li>)}
+      {data.map((u) => (
+        <li key={u.id}>{u.name}</li>
+      ))}
     </ul>
-  )
+  );
 }
 ```
 
@@ -144,11 +160,11 @@ export default function UserList() {
 
 Panduan Mengambil Keputusan di Next.js App Router
 
-| Skenario | Pendekatan Terbaik | Alasan |
-|:---|:---|:---|
-| **Halaman Publik / Artikel / Profil** | **Server Component (`await fetch()`)** | Cepat, SEO maksimal, tanpa JavaScript ekstra di browser |
-| **Dashboard Interaktif / Admin** | **TanStack Query / SWR** | Butuh auto-refresh, polling berkala, filter data cepat di browser |
-| **Infinite Scroll & Real-Time List** | **TanStack Query (`useInfiniteQuery`)** | Pagination & caching otomatis di memori klien |
+| Skenario                              | Pendekatan Terbaik                      | Alasan                                                            |
+| :------------------------------------ | :-------------------------------------- | :---------------------------------------------------------------- |
+| **Halaman Publik / Artikel / Profil** | **Server Component (`await fetch()`)**  | Cepat, SEO maksimal, tanpa JavaScript ekstra di browser           |
+| **Dashboard Interaktif / Admin**      | **TanStack Query / SWR**                | Butuh auto-refresh, polling berkala, filter data cepat di browser |
+| **Infinite Scroll & Real-Time List**  | **TanStack Query (`useInfiniteQuery`)** | Pagination & caching otomatis di memori klien                     |
 
 <div v-click class="mt-4 brutal-card bg-yellow-100 p-3 text-xs border-2 border-black">
   🚀 Di Next.js, mulailah selalu dari <strong>Server Component fetch</strong>. Beralihlah ke <strong>TanStack Query</strong> hanya pada komponen interaktif yang butuh auto-polling atau sinkronisasi client intensif.
@@ -173,7 +189,7 @@ function LoadingSkeleton() {
       <div className="h-4 bg-gray-200 rounded w-3/4" />
       <div className="h-4 bg-gray-200 rounded w-1/2" />
     </div>
-  )
+  );
 }
 ```
 
@@ -183,7 +199,13 @@ function LoadingSkeleton() {
 #### ❌ 2. Error State (Pesan + Tombol Coba Lagi)
 
 ```tsx
-function ErrorState({ pesan, onRetry }: { pesan: string, onRetry: () => void }) {
+function ErrorState({
+  pesan,
+  onRetry,
+}: {
+  pesan: string;
+  onRetry: () => void;
+}) {
   return (
     <div className="text-center py-8 brutal-card bg-red-50">
       <p className="text-red-600 font-bold mb-3">⚠️ {pesan}</p>
@@ -191,7 +213,7 @@ function ErrorState({ pesan, onRetry }: { pesan: string, onRetry: () => void }) 
         Coba Lagi
       </button>
     </div>
-  )
+  );
 }
 ```
 
@@ -208,7 +230,7 @@ function EmptyState() {
       <p className="font-bold text-black">Belum Ada Data</p>
       <p className="text-xs">Data yang Antum cari belum tersedia saat ini.</p>
     </div>
-  )
+  );
 }
 ```
 
@@ -224,32 +246,33 @@ Mencegah Bug Salah Ketik Properti Sejak Awal
 ```tsx {1-7|9-13|15-18|all}
 // types/user.ts
 interface User {
-  id: number
-  name: string
-  email: string
-  role: "admin" | "member"
+  id: number;
+  name: string;
+  email: string;
+  role: "admin" | "member";
 }
 
 // Fetch dengan penegasan tipe data (Type Assertion)
 async function getUsers(): Promise<User[]> {
-  const res = await fetch("https://api.example.com/users")
-  return res.json()
+  const res = await fetch("https://api.example.com/users");
+  return res.json();
 }
 
 // Auto-complete editor langsung aktif!
-const users = await getUsers()
-console.log(users[0].name)  // ✅ Terbaca string
-console.log(users[0].saldo) // ❌ TypeScript langsung memunculkan garis merah!
+const users = await getUsers();
+console.log(users[0].name); // ✅ Terbaca string
+console.log(users[0].saldo); // ❌ TypeScript langsung memunculkan garis merah!
 ```
 
 ---
 layout: intro
 badge: "RANGKUMAN"
 badgeColor: "yellow"
+hideInToc: true
 ---
 
 ## 3 Hal Penting dari Modul 08
 
 1. **Kenali Pilihan HTTP Client**: Gunakan native `fetch()` untuk solusi tanpa dependensi, `ky` untuk fetch modern ringan dengan retry otomatis, atau `axios` untuk interceptor klasik.
-2. **TanStack Query Mengatasi Keterbatasan Manual**: Gunakan TanStack Query di sisi klien untuk menyelesaikan masalah *race conditions*, ketiadaan *cache*, dan *waterfall requests*.
+2. **TanStack Query Mengatasi Keterbatasan Manual**: Gunakan TanStack Query di sisi klien untuk menyelesaikan masalah _race conditions_, ketiadaan _cache_, dan _waterfall requests_.
 3. **Selalu Siapkan 3 State**: Pastikan aplikasi Antum selalu menangani kondisi **Loading**, **Error (dengan tombol retry)**, dan **Empty State** agar ramah bagi pengguna.

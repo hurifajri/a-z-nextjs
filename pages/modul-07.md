@@ -2,6 +2,7 @@
 layout: intro
 badge: "MODUL 07"
 badgeColor: "cyan"
+level: 1
 ---
 
 ## 07. Data Fetching di Next.js (SSR/SSG/ISR)
@@ -54,32 +55,34 @@ Di App Router, cukup gunakan `fetch()` langsung di komponen!
 ```tsx
 // 1. SSG: Data di-cache permanen (default)
 export default async function BlogPage() {
-  const res = await fetch("https://api.example.com/posts")
-  const posts = await res.json()
+  const res = await fetch("https://api.example.com/posts");
+  const posts = await res.json();
 
-  return <PostList posts={posts} />
+  return <PostList posts={posts} />;
 }
 ```
+
 ```tsx
 // 2. SSR: Data fresh setiap request
 export default async function DashboardPage() {
   const res = await fetch("https://api.example.com/stats", {
-    cache: "no-store"  // ← Jangan cache!
-  })
-  const stats = await res.json()
+    cache: "no-store", // ← Jangan cache!
+  });
+  const stats = await res.json();
 
-  return <Dashboard stats={stats} />
+  return <Dashboard stats={stats} />;
 }
 ```
+
 ```tsx
 // 3. ISR: Revalidate setiap 60 detik
 export default async function ProductPage() {
   const res = await fetch("https://api.example.com/products", {
-    next: { revalidate: 60 }  // ← Update setiap 60 detik
-  })
-  const products = await res.json()
+    next: { revalidate: 60 }, // ← Update setiap 60 detik
+  });
+  const products = await res.json();
 
-  return <ProductList products={products} />
+  return <ProductList products={products} />;
 }
 ```
 ````
@@ -94,11 +97,11 @@ Pilih strategi yang tepat berdasarkan kebutuhan data
 
 ::left::
 
-| Strategi | Kecepatan | Kesegaran |
-|:---------|:----------|:----------|
-| **SSG** | ⚡⚡⚡ Tercepat | Statis (build time) |
-| **ISR** | ⚡⚡ Cepat | Berkala (N detik) |
-| **SSR** | ⚡ Normal | Selalu fresh |
+| Strategi | Kecepatan       | Kesegaran           |
+| :------- | :-------------- | :------------------ |
+| **SSG**  | ⚡⚡⚡ Tercepat | Statis (build time) |
+| **ISR**  | ⚡⚡ Cepat      | Berkala (N detik)   |
+| **SSR**  | ⚡ Normal       | Selalu fresh        |
 
 ::right::
 
@@ -127,23 +130,30 @@ Men-generate halaman dinamis saat build time
 
 // Beri tahu Next.js: "generate halaman untuk slug-slug ini saat build!"
 export async function generateStaticParams() {
-  const res = await fetch("https://api.example.com/posts")
-  const posts = await res.json()
+  const res = await fetch("https://api.example.com/posts");
+  const posts = await res.json();
 
   return posts.map((post) => ({
-    slug: post.slug,  // Setiap slug jadi halaman statis
-  }))
+    slug: post.slug, // Setiap slug jadi halaman statis
+  }));
 }
 
 // Halaman ini akan di-generate untuk setiap slug
 export default async function BlogPost({
   params,
-}: { params: Promise<{ slug: string }> }) {
-  const { slug } = await params
-  const res = await fetch(`https://api.example.com/posts/${slug}`)
-  const post = await res.json()
+}: {
+  params: Promise<{ slug: string }>;
+}) {
+  const { slug } = await params;
+  const res = await fetch(`https://api.example.com/posts/${slug}`);
+  const post = await res.json();
 
-  return <article><h1>{post.title}</h1><p>{post.content}</p></article>
+  return (
+    <article>
+      <h1>{post.title}</h1>
+      <p>{post.content}</p>
+    </article>
+  );
 }
 ```
 
@@ -161,7 +171,7 @@ export default function Loading() {
       <div className="animate-spin w-8 h-8 border-4 border-blue-500 border-t-transparent rounded-full" />
       <span className="ml-3 text-gray-600">Memuat data...</span>
     </div>
-  )
+  );
 }
 ```
 
@@ -184,14 +194,14 @@ export default function Loading() {
 Halaman tetap bersih meskipun terjadi kesalahan teknis
 
 ```tsx {1-2|5-6|9-13|all}
-"use client" // error.tsx HARUS client component!
+"use client"; // error.tsx HARUS client component!
 
 export default function Error({
   error,
   reset,
 }: {
-  error: Error
-  reset: () => void
+  error: Error;
+  reset: () => void;
 }) {
   return (
     <div className="text-center py-12">
@@ -201,7 +211,7 @@ export default function Error({
         Coba Lagi
       </button>
     </div>
-  )
+  );
 }
 ```
 
@@ -216,7 +226,7 @@ export default function Error({
 Menampilkan bagian halaman yang sudah siap lebih dulu
 
 ```tsx {1|4-6|8|all}
-import { Suspense } from "react"
+import { Suspense } from "react";
 
 export default function DashboardPage() {
   return (
@@ -225,14 +235,14 @@ export default function DashboardPage() {
 
       {/* Bagian yang lambat dibungkus Suspense */}
       <Suspense fallback={<p>Memuat statistik...</p>}>
-        <SlowStatistics />  {/* Async Server Component */}
+        <SlowStatistics /> {/* Async Server Component */}
       </Suspense>
 
       <Suspense fallback={<p>Memuat grafik...</p>}>
-        <SlowChart />  {/* Muncul independen */}
+        <SlowChart /> {/* Muncul independen */}
       </Suspense>
     </div>
-  )
+  );
 }
 ```
 
@@ -244,6 +254,7 @@ export default function DashboardPage() {
 layout: intro
 badge: "RANGKUMAN"
 badgeColor: "yellow"
+hideInToc: true
 ---
 
 ## 3 Hal Penting dari Modul 07

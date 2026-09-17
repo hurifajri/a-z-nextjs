@@ -396,3 +396,79 @@
   transform: translate(2px, 2px);
   box-shadow: 1px 1px 0px #000;
 }
+
+/* ==========================================================================
+   Roadmap Table of Contents (Neobrutalism Box Style)
+   ========================================================================== */
+
+.roadmap-toc {
+  width: 100%;
+  margin-top: 0.5rem;
+}
+
+.roadmap-toc .slidev-toc {
+  column-count: 2 !important;
+  column-gap: 1.25rem !important;
+}
+
+.roadmap-toc ol,
+.roadmap-toc ul,
+.roadmap-toc .slidev-toc-list {
+  list-style: none !important;
+  list-style-type: none !important;
+  padding: 0 !important;
+  margin: 0 !important;
+}
+
+.roadmap-toc li.slidev-toc-item {
+  break-inside: avoid !important;
+  -webkit-column-break-inside: avoid !important;
+  page-break-inside: avoid !important;
+  list-style: none !important;
+  list-style-type: none !important;
+  display: block !important;
+  box-sizing: border-box !important;
+  width: 100% !important;
+  margin-bottom: 0.38rem !important;
+  padding: 0.38rem 0.85rem !important;
+  padding-left: 1.15rem !important;
+  background-color: #ffffff !important;
+  border: 2px solid #000000 !important;
+  border-radius: 0.35rem !important;
+  box-shadow: 2px 2px 0px #000000 !important;
+  transition:
+    transform 0.1s ease,
+    box-shadow 0.1s ease,
+    background-color 0.1s ease !important;
+}
+
+.roadmap-toc li.slidev-toc-item:hover {
+  background-color: var(--brutal-yellow, #ffe600) !important;
+  transform: translate(-1.5px, -1.5px) !important;
+  box-shadow: 3.5px 3.5px 0px #000000 !important;
+}
+
+.roadmap-toc li.slidev-toc-item::marker {
+  display: none !important;
+  content: "" !important;
+}
+
+.roadmap-toc li.slidev-toc-item a {
+  display: block !important;
+  width: 100% !important;
+  box-sizing: border-box !important;
+  padding: 0 !important;
+  margin: 0 !important;
+  font-weight: 700 !important;
+  font-size: 0.74rem !important;
+  line-height: 1.35 !important;
+  color: #000000 !important;
+  text-decoration: none !important;
+  text-align: left !important;
+}
+
+.roadmap-toc li.slidev-toc-item a * {
+  margin: 0 !important;
+  padding: 0 !important;
+  display: inline !important;
+}

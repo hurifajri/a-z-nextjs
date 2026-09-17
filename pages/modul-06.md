@@ -2,9 +2,10 @@
 layout: intro
 badge: "MODUL 06"
 badgeColor: "purple"
+level: 1
 ---
 
-## 06. State Management Lanjutan
+## 06. State Management Lanjutan: Context & Zustand
 
 Mengatasi Prop Drilling & Callback Hell, Mengenal Context API, Evolusi State (Redux → Context → Zustand), serta Pola Pikir Engineer: Reinventing the Wheel vs Cargo-Culting.
 
@@ -57,24 +58,24 @@ Jalan Pintas Berbagi Data ke Seluruh Komponen Tanpa Prop Drilling
 </v-clicks>
 
 ```tsx {1,3|5-11|13-14|all}
-"use client"
-import { createContext, useContext, useState } from "react"
+"use client";
+import { createContext, useContext, useState } from "react";
 
-const ThemeContext = createContext<"light" | "dark">("light")
+const ThemeContext = createContext<"light" | "dark">("light");
 
 export function ThemeProvider({ children }: { children: React.ReactNode }) {
-  const [theme, setTheme] = useState<"light" | "dark">("light")
-  const toggle = () => setTheme(t => t === "light" ? "dark" : "light")
+  const [theme, setTheme] = useState<"light" | "dark">("light");
+  const toggle = () => setTheme((t) => (t === "light" ? "dark" : "light"));
 
   return (
     <ThemeContext.Provider value={{ theme, toggle }}>
       {children}
     </ThemeContext.Provider>
-  )
+  );
 }
 
 // Custom hook ramah pengembang
-export const useTheme = () => useContext(ThemeContext)
+export const useTheme = () => useContext(ThemeContext);
 ```
 
 ---
@@ -87,19 +88,20 @@ Lihat Bagaimana Kode Menjadi Jauh Lebih Rapi dan Terpelihara!
 ```tsx
 // ❌ SEBELUM: Prop Drilling — props user menembus 4 level
 function App() {
-  const [user] = useState({ name: "Fulan" })
-  return <Header user={user} />
+  const [user] = useState({ name: "Fulan" });
+  return <Header user={user} />;
 }
 function Header({ user }) {
-  return <Nav user={user} />
+  return <Nav user={user} />;
 }
 function Nav({ user }) {
-  return <Profile user={user} />
+  return <Profile user={user} />;
 }
 function Profile({ user }) {
-  return <div>Halo, {user.name}</div>
+  return <div>Halo, {user.name}</div>;
 }
 ```
+
 ```tsx
 // ✅ SESUDAH: Context — ambil langsung di komponen yang butuh!
 function App() {
@@ -135,7 +137,7 @@ Bagaimana Komunitas Menemukan Cara Terbaik Mengelola State
 #### 📜 1. Era Redux (Masa Lalu)
 
 - Pernah menjadi standar wajib di industri
-- **Masalah**: *Boilerplate* raksasa! Untuk satu toggle boolean sederhana butuh *Action Types, Action Creators, Reducers, Dispatchers, dan Store config*.
+- **Masalah**: _Boilerplate_ raksasa! Untuk satu toggle boolean sederhana butuh _Action Types, Action Creators, Reducers, Dispatchers, dan Store config_.
 - Terlalu berat dan melelahkan untuk proyek modern.
 
 #### 📦 2. Era React Context (Solusi Bawaan)
@@ -169,35 +171,36 @@ npm install zustand
 ````md magic-move
 ```tsx
 // 1. Buat store terpusat (hanya butuh 10 baris!)
-import { create } from "zustand"
+import { create } from "zustand";
 
 interface CartStore {
-  totalItem: number
-  tambahItem: () => void
-  resetCart: () => void
+  totalItem: number;
+  tambahItem: () => void;
+  resetCart: () => void;
 }
 
 export const useCartStore = create<CartStore>((set) => ({
   totalItem: 0,
   tambahItem: () => set((state) => ({ totalItem: state.totalItem + 1 })),
   resetCart: () => set({ totalItem: 0 }),
-}))
+}));
 ```
+
 ```tsx
 // 2. Gunakan di komponen manapun — TANPA PROVIDER!
-"use client"
-import { useCartStore } from "@/stores/cart"
+"use client";
+import { useCartStore } from "@/stores/cart";
 
 export default function TombolBeli() {
   // Komponen ini HANYA re-render saat totalItem berubah
-  const totalItem = useCartStore((state) => state.totalItem)
-  const tambahItem = useCartStore((state) => state.tambahItem)
+  const totalItem = useCartStore((state) => state.totalItem);
+  const tambahItem = useCartStore((state) => state.tambahItem);
 
   return (
     <button onClick={tambahItem} className="brutal-btn">
       Keranjang: {totalItem} item
     </button>
-  )
+  );
 }
 ```
 ````
@@ -214,7 +217,7 @@ Keseimbangan Bijak Seorang Software Engineer
 
 #### 🚫 Reinventing the Wheel
 
-*Membuat roda dari awal lagi padahal roda bundar sudah tersedia.*
+_Membuat roda dari awal lagi padahal roda bundar sudah tersedia._
 
 - **Gejala**: Memaksa membuat sistem global state rumit atau event bus manual dengan 500 baris kode sendiri.
 - **Dampak**: Penuh bug tersembunyi, boros waktu, dan sulit dipahami oleh programmer lain di tim.
@@ -224,7 +227,7 @@ Keseimbangan Bijak Seorang Software Engineer
 
 #### 🚫 Cargo-Culting
 
-*Meniru kebiasaan tanpa memahami alasan sebenarnya.*
+_Meniru kebiasaan tanpa memahami alasan sebenarnya._
 
 - **Gejala**: Aplikasi baru punya 2 halaman form, tapi langsung install Redux Toolkit, Redux Saga, dan puluhan library lain "karena tutorial bilang begitu".
 - **Dampak**: Proyek jadi lambat, bundle membengkak, dan kompleksitas kode meledak tanpa alasan.
@@ -234,10 +237,11 @@ Keseimbangan Bijak Seorang Software Engineer
 layout: intro
 badge: "RANGKUMAN"
 badgeColor: "yellow"
+hideInToc: true
 ---
 
 ## 3 Hal Penting dari Modul 06
 
 1. **Context Mengatasi Prop Drilling**: Gunakan Context API untuk data global yang jarang berubah seperti tema, data profil user, dan bahasa.
 2. **Zustand untuk State Reaktif**: Saat aplikasi membutuhkan global state dengan pembaruan frekuensi tinggi, Zustand adalah standar modern yang ringan, cepat, dan minim boilerplate.
-3. **Pahami Masalah Sebelum Memilih Tools**: Hindari *Reinventing the Wheel* dengan memanfaatkan karya open source, namun jauhi *Cargo-Culting* dengan tidak memasang library tanpa alasan yang jelas.
+3. **Pahami Masalah Sebelum Memilih Tools**: Hindari _Reinventing the Wheel_ dengan memanfaatkan karya open source, namun jauhi _Cargo-Culting_ dengan tidak memasang library tanpa alasan yang jelas.

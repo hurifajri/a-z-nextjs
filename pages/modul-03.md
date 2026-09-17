@@ -2,6 +2,7 @@
 layout: intro
 badge: "MODUL 03"
 badgeColor: "pink"
+level: 1
 ---
 
 ## 03. Navigasi & Routing Dinamis
@@ -39,18 +40,18 @@ Cukup buat folder dengan kurung siku: `app/produk/[id]/page.tsx`
 ```tsx {1-3|5-12|all}
 // app/produk/[id]/page.tsx
 interface PageProps {
-  params: Promise<{ id: string }>
+  params: Promise<{ id: string }>;
 }
 
 export default async function DetailProduk({ params }: PageProps) {
-  const { id } = await params
+  const { id } = await params;
 
   return (
     <div>
       <h1 className="text-2xl font-bold">Produk ID: {id}</h1>
       <p>Data barang diambil berdasarkan parameter URL di atas.</p>
     </div>
-  )
+  );
 }
 ```
 
@@ -64,11 +65,11 @@ export default async function DetailProduk({ params }: PageProps) {
 
 Pilihan Pola Dynamic Routes Sesuai Kebutuhan Aplikasi
 
-| Pola Folder | Contoh URL yang Cocok | Nilai `params` yang Diterima |
-|:---|:---|:---|
-| `produk/[id]` | `/produk/buku-react` | `{ id: 'buku-react' }` |
-| `blog/[...slug]` *(Catch-all)* | `/blog/2026/09/tips-next` | `{ slug: ['2026', '09', 'tips-next'] }` |
-| `docs/[[...slug]]` *(Optional)* | `/docs` atau `/docs/instalasi` | `{ slug: undefined }` atau `{ slug: ['instalasi'] }` |
+| Pola Folder                     | Contoh URL yang Cocok          | Nilai `params` yang Diterima                         |
+| :------------------------------ | :----------------------------- | :--------------------------------------------------- |
+| `produk/[id]`                   | `/produk/buku-react`           | `{ id: 'buku-react' }`                               |
+| `blog/[...slug]` _(Catch-all)_  | `/blog/2026/09/tips-next`      | `{ slug: ['2026', '09', 'tips-next'] }`              |
+| `docs/[[...slug]]` _(Optional)_ | `/docs` atau `/docs/instalasi` | `{ slug: undefined }` atau `{ slug: ['instalasi'] }` |
 
 <div v-click class="mt-4 brutal-card bg-white p-3 text-xs">
   📌 Gunakan <code>[...slug]</code> saat rute memiliki kedalaman bertingkat yang bervariasi (seperti rubrik artikel atau struktur dokumentasi panduan).
@@ -101,9 +102,9 @@ Cara Standar dan Optimal Berpindah Halaman di Next.js
 
 ```tsx
 // ✅ Gunakan komponen Link bawaan
-import Link from "next/link"
+import Link from "next/link";
 
-<Link href="/tentang">Tentang</Link>
+<Link href="/tentang">Tentang</Link>;
 ```
 
 - ⚡ Navigasi instan di sisi klien
@@ -123,6 +124,7 @@ Melakukan Perpindahan Halaman Melalui Logika Kode (Event/Fungsi)
 #### Kapan Menggunakan `useRouter`?
 
 Gunakan saat navigasi harus menunggu sebuah proses selesai:
+
 - Setelah pengguna selesai klik tombol submit login
 - Setelah data form berhasil disimpan ke backend
 - Saat terjadi redirect akibat error atau validasi
@@ -132,22 +134,22 @@ Gunakan saat navigasi harus menunggu sebuah proses selesai:
 #### Contoh Implementasi
 
 ```tsx {1-2|6|9|all}
-"use client"
-import { useRouter } from "next/navigation"
+"use client";
+import { useRouter } from "next/navigation";
 
 export default function FormPembayaran() {
-  const router = useRouter()
+  const router = useRouter();
 
   async function prosesBayar() {
-    await kirimPembayaran()
-    router.push("/sukses") // Pindah rute!
+    await kirimPembayaran();
+    router.push("/sukses"); // Pindah rute!
   }
 
   return (
     <button onClick={prosesBayar} className="brutal-btn">
       Bayar Sekarang
     </button>
-  )
+  );
 }
 ```
 
@@ -160,31 +162,33 @@ Hook Pendukung dari Paket `next/navigation` untuk Client Component
 ````md magic-move
 ```tsx
 // 1. useRouter — Mengendalikan navigasi secara programatik
-"use client"
-import { useRouter } from "next/navigation"
+"use client";
+import { useRouter } from "next/navigation";
 
-const router = useRouter()
-router.push("/halaman-baru")  // Pindah halaman
-router.replace("/beranda")     // Pindah tanpa menyimpan history mundur
-router.back()                 // Kembali ke halaman sebelumnya
-router.refresh()              // Muat ulang data rute saat ini
+const router = useRouter();
+router.push("/halaman-baru"); // Pindah halaman
+router.replace("/beranda"); // Pindah tanpa menyimpan history mundur
+router.back(); // Kembali ke halaman sebelumnya
+router.refresh(); // Muat ulang data rute saat ini
 ```
+
 ```tsx
 // 2. usePathname — Mengetahui alamat URL yang sedang aktif
-"use client"
-import { usePathname } from "next/navigation"
+"use client";
+import { usePathname } from "next/navigation";
 
-const pathname = usePathname()
+const pathname = usePathname();
 // Jika browser di /produk/laptop-gaming → pathname bernilai "/produk/laptop-gaming"
 ```
+
 ```tsx
 // 3. useSearchParams — Mengambil parameter query (?kategori=elektronik)
-"use client"
-import { useSearchParams } from "next/navigation"
+"use client";
+import { useSearchParams } from "next/navigation";
 
-const searchParams = useSearchParams()
-const cari = searchParams.get("q")
-const urutkan = searchParams.get("sort")
+const searchParams = useSearchParams();
+const cari = searchParams.get("q");
+const urutkan = searchParams.get("sort");
 ```
 ````
 
@@ -195,23 +199,23 @@ const urutkan = searchParams.get("sort")
 Memberi Tanda Visual pada Menu Navigasi yang Sedang Aktif
 
 ```tsx {1-3|6|8|12-14|all}
-"use client"
-import Link from "next/link"
-import { usePathname } from "next/navigation"
+"use client";
+import Link from "next/link";
+import { usePathname } from "next/navigation";
 
 export default function Navbar() {
-  const pathname = usePathname()
+  const pathname = usePathname();
 
   const links = [
     { href: "/", label: "Beranda" },
     { href: "/produk", label: "Katalog Produk" },
     { href: "/tentang", label: "Tentang Kami" },
-  ]
+  ];
 
   return (
     <nav className="flex gap-4 p-4 border-2 border-black bg-white">
       {links.map((item) => {
-        const isActive = pathname === item.href
+        const isActive = pathname === item.href;
         return (
           <Link
             key={item.href}
@@ -224,10 +228,10 @@ export default function Navbar() {
           >
             {item.label}
           </Link>
-        )
+        );
       })}
     </nav>
-  )
+  );
 }
 ```
 
@@ -235,6 +239,7 @@ export default function Navbar() {
 layout: intro
 badge: "RANGKUMAN"
 badgeColor: "yellow"
+hideInToc: true
 ---
 
 ## 3 Hal Penting dari Modul 03

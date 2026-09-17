@@ -2,6 +2,7 @@
 layout: intro
 badge: "MODUL 02"
 badgeColor: "cyan"
+level: 1
 ---
 
 ## 02. Struktur App Router & Routing
@@ -132,7 +133,7 @@ File Wajib yang Menjadi Fondasi HTML Seluruh Website
 export default function RootLayout({
   children,
 }: {
-  children: React.ReactNode
+  children: React.ReactNode;
 }) {
   return (
     <html lang="id">
@@ -142,7 +143,7 @@ export default function RootLayout({
         <footer className="border-t p-4 text-center">Footer © 2026</footer>
       </body>
     </html>
-  )
+  );
 }
 ```
 
@@ -223,6 +224,7 @@ src/app/dashboard/
 ├── tombol-export.tsx      → Komponen helper (Bukan rute!)
 └── use-dashboard.ts       → Custom hook (Bukan rute!)
 ```
+
 ```text
 // 2. Private Folders: Folder berawalan underscore diabaikan dari routing
 src/app/
@@ -243,6 +245,7 @@ src/app/
 layout: intro
 badge: "RANGKUMAN"
 badgeColor: "yellow"
+hideInToc: true
 ---
 
 ## 3 Hal Penting dari Modul 02

@@ -2,9 +2,10 @@
 layout: intro
 badge: "MODUL 09"
 badgeColor: "yellow"
+level: 1
 ---
 
-## 09. Form, Validasi & Konsumsi API (POST/PUT/DELETE)
+## 09. Form Management, Validasi (Valibot) & Mutasi API
 
 Pengelolaan Form Modern, Mengatasi Masalah Form Manual dengan React Hook Form & TanStack Form, Skema Validasi dengan Valibot (vs Zod), serta Mutasi Data API.
 
@@ -91,7 +92,7 @@ Validasi Data Runtime yang Ringan dan Modular
 
 #### 🪶 Valibot _(Pilihan Utama Kita)_
 
-- 📦 **Ukuran Mini**: Kurang dari **1 kB** (karena fungsi didesain *modular & tree-shakable*).
+- 📦 **Ukuran Mini**: Kurang dari **1 kB** (karena fungsi didesain _modular & tree-shakable_).
 - ⚡ Mengurangi beban bundle website hingga **98%** dibanding library validasi tradisional!
 - 🎯 Syntax deklaratif yang sangat bersih.
 
@@ -118,18 +119,21 @@ npm install valibot @hookform/resolvers
 Mendefinisikan Aturan Validasi Secara Deklaratif
 
 ```tsx {1-2|4-10|12-13|all}
-import * as v from "valibot"
+import * as v from "valibot";
 
 // 1. Definisikan aturan skema
 export const RegisterSchema = v.object({
   nama: v.pipe(v.string(), v.minLength(3, "Nama minimal 3 karakter")),
   email: v.pipe(v.string(), v.email("Format email tidak sah")),
   password: v.pipe(v.string(), v.minLength(8, "Password minimal 8 karakter")),
-  umur: v.pipe(v.number("Umur harus angka"), v.minValue(17, "Minimal 17 tahun")),
-})
+  umur: v.pipe(
+    v.number("Umur harus angka"),
+    v.minValue(17, "Minimal 17 tahun"),
+  ),
+});
 
 // 2. Ekstrak tipe TypeScript otomatis (Infer Type)!
-export type RegisterFormValues = v.InferOutput<typeof RegisterSchema>
+export type RegisterFormValues = v.InferOutput<typeof RegisterSchema>;
 // RegisterFormValues otomatis punya properti { nama, email, password, umur }
 ```
 
@@ -140,30 +144,43 @@ export type RegisterFormValues = v.InferOutput<typeof RegisterSchema>
 Kombinasi Sempurna untuk Form Cepat, Hemat Memori, dan Type-Safe
 
 ```tsx {3-5|7-10|12-14|17-21|all}
-"use client"
-import { useForm } from "react-hook-form"
-import { valibotResolver } from "@hookform/resolvers/valibot"
-import { RegisterSchema, type RegisterFormValues } from "./schema"
+"use client";
+import { useForm } from "react-hook-form";
+import { valibotResolver } from "@hookform/resolvers/valibot";
+import { RegisterSchema, type RegisterFormValues } from "./schema";
 
 export default function RegisterForm() {
-  const { register, handleSubmit, formState: { errors, isSubmitting } } = useForm<RegisterFormValues>({
+  const {
+    register,
+    handleSubmit,
+    formState: { errors, isSubmitting },
+  } = useForm<RegisterFormValues>({
     resolver: valibotResolver(RegisterSchema),
-  })
+  });
 
   async function onSubmit(data: RegisterFormValues) {
-    await fetch("/api/auth/register", { method: "POST", body: JSON.stringify(data) })
+    await fetch("/api/auth/register", {
+      method: "POST",
+      body: JSON.stringify(data),
+    });
   }
 
   return (
     <form onSubmit={handleSubmit(onSubmit)} className="space-y-3">
-      <input {...register("nama")} placeholder="Nama Lengkap" className="border p-2 w-full rounded" />
-      {errors.nama && <p className="text-red-500 text-xs">{errors.nama.message}</p>}
+      <input
+        {...register("nama")}
+        placeholder="Nama Lengkap"
+        className="border p-2 w-full rounded"
+      />
+      {errors.nama && (
+        <p className="text-red-500 text-xs">{errors.nama.message}</p>
+      )}
 
       <button disabled={isSubmitting} className="brutal-btn">
         {isSubmitting ? "Mendaftarkan..." : "Daftar Akun"}
       </button>
     </form>
-  )
+  );
 }
 ```
 
@@ -179,32 +196,32 @@ Mengirim Perubahan Data ke Endpoint Backend
 
 #### Tiga Aksi Utama
 
-- **POST**: Menambah data baru (*Create*)
-- **PUT / PATCH**: Memperbarui data yang ada (*Update*)
-- **DELETE**: Menghapus data (*Delete*)
+- **POST**: Menambah data baru (_Create_)
+- **PUT / PATCH**: Memperbarui data yang ada (_Update_)
+- **DELETE**: Menghapus data (_Delete_)
 
 ```tsx
 // Contoh PUT: Update data
 await fetch(`/api/todos/${id}`, {
   method: "PUT",
   headers: {
-    "Content-Type": "application/json"
+    "Content-Type": "application/json",
   },
   body: JSON.stringify({ done: true }),
-})
+});
 ```
 
 ::right::
 
 #### Status Code yang Wajib Dipahami
 
-| Kode | Kategori | Arti |
-|:---|:---|:---|
-| **200 / 201** | ✅ Sukses | Data diproses / dibuat |
-| **400** | ⚠️ Validasi Gagal | Data input tidak sesuai skema |
-| **401** | 🔒 Unauthorized | Token sesi habis / belum login |
-| **404** | ❓ Not Found | Data yang mau diubah tidak ada |
-| **500** | 💥 Server Error | Kendala teknis di backend |
+| Kode          | Kategori          | Arti                           |
+| :------------ | :---------------- | :----------------------------- |
+| **200 / 201** | ✅ Sukses         | Data diproses / dibuat         |
+| **400**       | ⚠️ Validasi Gagal | Data input tidak sesuai skema  |
+| **401**       | 🔒 Unauthorized   | Token sesi habis / belum login |
+| **404**       | ❓ Not Found      | Data yang mau diubah tidak ada |
+| **500**       | 💥 Server Error   | Kendala teknis di backend      |
 
 <div v-click class="mt-2 brutal-card bg-white p-2 text-xs">
   💡 Selalu periksa <code>if (!res.ok)</code> sebelum menampilkan notifikasi sukses ke user!
@@ -214,10 +231,11 @@ await fetch(`/api/todos/${id}`, {
 layout: intro
 badge: "RANGKUMAN"
 badgeColor: "yellow"
+hideInToc: true
 ---
 
 ## 3 Hal Penting dari Modul 09
 
-1. **React Hook Form Mencegah Re-render Berlebih**: Menggunakan pendekatan *uncontrolled* sehingga pengetikan input form besar tetap mulus dan cepat.
+1. **React Hook Form Mencegah Re-render Berlebih**: Menggunakan pendekatan _uncontrolled_ sehingga pengetikan input form besar tetap mulus dan cepat.
 2. **Valibot sebagai Skema Validasi Super Ringan**: Memberikan validasi data yang aman, deklaratif, dan auto-generate tipe TypeScript dengan ukuran bundle kurang dari 1 kB (dibandingkan Zod yang lebih berat).
 3. **Pahami Metode & Status Respon HTTP**: Padukan validasi frontend dengan respon status code yang tepat (201, 400, 401, 500) untuk pengalaman pengguna yang andal.

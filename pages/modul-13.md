@@ -2,6 +2,7 @@
 layout: intro
 badge: "MODUL 13"
 badgeColor: "pink"
+level: 1
 ---
 
 ## 13. Integrasi API Backend & Dokumentasi (Swagger/JWT)
@@ -65,10 +66,10 @@ Pisahkan logika fetch API ke file tersendiri agar rapi
 
 ```tsx {1-6|8-16|18-24|all}
 // lib/api.ts — Satu tempat untuk semua panggilan API
-const BASE_URL = process.env.NEXT_PUBLIC_API_URL || "https://api.example.com"
+const BASE_URL = process.env.NEXT_PUBLIC_API_URL || "https://api.example.com";
 
 async function apiClient(endpoint: string, options?: RequestInit) {
-  const token = localStorage.getItem("token")
+  const token = localStorage.getItem("token");
 
   const res = await fetch(`${BASE_URL}${endpoint}`, {
     ...options,
@@ -77,22 +78,23 @@ async function apiClient(endpoint: string, options?: RequestInit) {
       ...(token && { Authorization: `Bearer ${token}` }),
       ...options?.headers,
     },
-  })
+  });
 
   if (res.status === 401) {
     // Token expired — redirect ke login
-    window.location.href = "/login"
-    throw new Error("Sesi habis")
+    window.location.href = "/login";
+    throw new Error("Sesi habis");
   }
 
-  if (!res.ok) throw new Error(`API Error: ${res.status}`)
-  return res.json()
+  if (!res.ok) throw new Error(`API Error: ${res.status}`);
+  return res.json();
 }
 
 export const api = {
   getProducts: () => apiClient("/api/products"),
-  createProduct: (data) => apiClient("/api/products", { method: "POST", body: JSON.stringify(data) }),
-}
+  createProduct: (data) =>
+    apiClient("/api/products", { method: "POST", body: JSON.stringify(data) }),
+};
 ```
 
 ---
@@ -155,38 +157,46 @@ Dari form login hingga akses halaman terlindungi
 Form login dan penyimpanan token
 
 ```tsx {4-13|15-17|all}
-"use client"
+"use client";
 export default function LoginPage() {
-  const [form, setForm] = useState({ email: "", password: "" })
-  const router = useRouter()
+  const [form, setForm] = useState({ email: "", password: "" });
+  const router = useRouter();
 
   async function handleLogin(e: React.FormEvent) {
-    e.preventDefault()
+    e.preventDefault();
 
     const res = await fetch("/api/auth/login", {
       method: "POST",
       headers: { "Content-Type": "application/json" },
       body: JSON.stringify(form),
-    })
+    });
 
     if (res.ok) {
-      const { token } = await res.json()
-      localStorage.setItem("token", token)  // Simpan token
-      router.push("/dashboard")
+      const { token } = await res.json();
+      localStorage.setItem("token", token); // Simpan token
+      router.push("/dashboard");
     } else {
-      alert("Email atau password salah!")
+      alert("Email atau password salah!");
     }
   }
 
   return (
     <form onSubmit={handleLogin}>
-      <input type="email" placeholder="Email" value={form.email}
-        onChange={e => setForm({...form, email: e.target.value})} />
-      <input type="password" placeholder="Password" value={form.password}
-        onChange={e => setForm({...form, password: e.target.value})} />
+      <input
+        type="email"
+        placeholder="Email"
+        value={form.email}
+        onChange={(e) => setForm({ ...form, email: e.target.value })}
+      />
+      <input
+        type="password"
+        placeholder="Password"
+        value={form.password}
+        onChange={(e) => setForm({ ...form, password: e.target.value })}
+      />
       <button type="submit">Login</button>
     </form>
-  )
+  );
 }
 ```
 
@@ -199,23 +209,23 @@ Sertakan token di header Authorization
 ```tsx {3-4|6-12|14-15|all}
 // Contoh: Fetch data yang butuh autentikasi
 async function fetchProtectedData() {
-  const token = localStorage.getItem("token")
+  const token = localStorage.getItem("token");
 
   const res = await fetch("https://api.example.com/api/profile", {
     headers: {
       "Content-Type": "application/json",
-      Authorization: `Bearer ${token}`,  // ← Token di sini!
+      Authorization: `Bearer ${token}`, // ← Token di sini!
     },
-  })
+  });
 
   if (res.status === 401) {
     // Token expired atau tidak valid
-    localStorage.removeItem("token")
-    window.location.href = "/login"
-    return
+    localStorage.removeItem("token");
+    window.location.href = "/login";
+    return;
   }
 
-  return res.json()
+  return res.json();
 }
 ```
 
@@ -239,6 +249,7 @@ Komunikasi efektif antara frontend dan backend
 layout: intro
 badge: "RANGKUMAN"
 badgeColor: "yellow"
+hideInToc: true
 ---
 
 ## 3 Hal Penting dari Modul 13

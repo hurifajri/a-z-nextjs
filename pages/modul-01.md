@@ -2,6 +2,7 @@
 layout: intro
 badge: "MODUL 01"
 badgeColor: "yellow"
+level: 1
 ---
 
 ## 01. Pengenalan Next.js & Setup Project
@@ -63,14 +64,14 @@ Memahami Perbedaan Cara Menampilkan Halaman ke Pengunjung
 
 Tabel Komparasi Sederhana untuk Memilih Pendekatan yang Pas
 
-| Aspek | React Biasa (Vite / CRA) | Next.js (App Router) |
-| :--- | :--- | :--- |
-| **Cara Tampil** | Browser merakit halaman sendiri dari nol | Server mengirim halaman yang sudah jadi |
-| **Kecepatan Buka Awal** | Muncul layar kosong atau spinner sesaat | Konten langsung terbaca dalam hitungan milidetik |
-| **Beban di HP Pengguna** | Makin banyak halaman, file JS makin besar | Ringan, hanya mengirim kode yang dipakai |
-| **Bikin Halaman Baru** | Harus install library tambahan (`react-router`) | Cukup buat folder baru di dalam `app/` |
-| **Optimasi Gambar** | Harus compress gambar manual satu per satu | Otomatis dioptimalkan lewat `next/image` |
-| **SEO & Social Share** | Butuh pengaturan rumit tambahan | Bawaan otomatis lewat fitur Metadata |
+| Aspek                    | React Biasa (Vite / CRA)                        | Next.js (App Router)                             |
+| :----------------------- | :---------------------------------------------- | :----------------------------------------------- |
+| **Cara Tampil**          | Browser merakit halaman sendiri dari nol        | Server mengirim halaman yang sudah jadi          |
+| **Kecepatan Buka Awal**  | Muncul layar kosong atau spinner sesaat         | Konten langsung terbaca dalam hitungan milidetik |
+| **Beban di HP Pengguna** | Makin banyak halaman, file JS makin besar       | Ringan, hanya mengirim kode yang dipakai         |
+| **Bikin Halaman Baru**   | Harus install library tambahan (`react-router`) | Cukup buat folder baru di dalam `app/`           |
+| **Optimasi Gambar**      | Harus compress gambar manual satu per satu      | Otomatis dioptimalkan lewat `next/image`         |
+| **SEO & Social Share**   | Butuh pengaturan rumit tambahan                 | Bawaan otomatis lewat fitur Metadata             |
 
 ---
 
@@ -88,16 +89,19 @@ npx create-next-app@latest my-next-app
 ```bash
 ✔ What is your project named? … my-next-app
 ```
+
 ```bash
 ✔ What is your project named? … my-next-app
 ✔ Would you like to use TypeScript? … Yes
 ```
+
 ```bash
 ✔ What is your project named? … my-next-app
 ✔ Would you like to use TypeScript? … Yes
 ✔ Would you like to use ESLint? … Yes
 ✔ Would you like to use Tailwind CSS? … Yes
 ```
+
 ```bash
 ✔ What is your project named? … my-next-app
 ✔ Would you like to use TypeScript? … Yes
@@ -135,6 +139,7 @@ Mendeteksi **kesalahan logika dan bug** sebelum dijalankan:
 ```
 
 Jalankan audit kode:
+
 ```bash
 npx next lint
 ```
@@ -150,6 +155,7 @@ npm install -D prettier prettier-plugin-tailwindcss
 ```
 
 Buat file `.prettierrc`:
+
 ```json {3|4|all}
 {
   "semi": false,
@@ -167,12 +173,13 @@ Menulis CSS Langsung di Atribut `className` Tanpa Berpindah File
 ````md magic-move
 ```tsx
 // ❌ Cara Lama: Bikin file CSS terpisah & pusing mikir nama class
-import "./tombol.css"
+import "./tombol.css";
 
 export default function Tombol() {
-  return <button className="tombol-biru-utama">Daftar Sekarang</button>
+  return <button className="tombol-biru-utama">Daftar Sekarang</button>;
 }
 ```
+
 ```tsx
 // ✅ Tailwind CSS: Utility class langsung di elemen!
 export default function Tombol() {
@@ -180,7 +187,7 @@ export default function Tombol() {
     <button className="bg-blue-600 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded-lg shadow-md transition-all">
       Daftar Sekarang
     </button>
-  )
+  );
 }
 ```
 ````
@@ -213,7 +220,7 @@ npm run dev
 
 1. 🌐 Buka browser dan kunjungi alamat `http://localhost:3000`
 2. 🎉 Halaman pembuka Next.js siap menyambut Antum!
-3. ⚡ Coba edit file `src/app/page.tsx`, tekan **Save**, dan perhatikan perubahannya muncul seketika tanpa refresh manual (*Fast Refresh*).
+3. ⚡ Coba edit file `src/app/page.tsx`, tekan **Save**, dan perhatikan perubahannya muncul seketika tanpa refresh manual (_Fast Refresh_).
 
 </v-clicks>
 
@@ -230,6 +237,7 @@ npm run dev
 layout: intro
 badge: "RANGKUMAN"
 badgeColor: "yellow"
+hideInToc: true
 ---
 
 ## 3 Hal Penting dari Modul 01

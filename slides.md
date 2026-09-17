@@ -3,6 +3,7 @@ theme: none
 layout: cover
 badgeLeft: "✦ SANDBOX IT HSI 2026"
 badgeRight: "KELAS NEXT.JS"
+hideInToc: true
 ---
 
 # Next.js: <span v-mark.underline.orange>Framework</span> React untuk <span v-mark.underline.orange>Web</span>

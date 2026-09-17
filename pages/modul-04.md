@@ -2,6 +2,7 @@
 layout: intro
 badge: "MODUL 04"
 badgeColor: "yellow"
+level: 1
 ---
 
 ## 04. Server Components vs Client Components
@@ -29,7 +30,7 @@ Di App Router, setiap komponen otomatis berjalan di server!
 **Sekarang (App Router)**
 
 - Komponen dirender di **server** secara default
-- *Zero client-side JavaScript* untuk komponen statis!
+- _Zero client-side JavaScript_ untuk komponen statis!
 - Hanya kode yang benar-benar interaktif dikirim ke browser ⚡
 
 </template>
@@ -82,18 +83,16 @@ Mari bandingkan keduanya secara langsung
 Cukup tambahkan `"use client"` di baris paling atas!
 
 ```tsx {1|3|5-6|all}
-"use client" // 👈 Baris ini mengubah Server → Client!
+"use client"; // 👈 Baris ini mengubah Server → Client!
 
-import { useState } from "react"
+import { useState } from "react";
 
 export default function Counter() {
-  const [count, setCount] = useState(0)
+  const [count, setCount] = useState(0);
 
   return (
-    <button onClick={() => setCount(count + 1)}>
-      Diklik: {count} kali
-    </button>
-  )
+    <button onClick={() => setCount(count + 1)}>Diklik: {count} kali</button>
+  );
 }
 ```
 
@@ -116,38 +115,40 @@ export default function SearchBar() {
       <input type="text" placeholder="Cari barang..." />
       <button>Cari</button>
     </div>
-  )
+  );
 }
 ```
+
 ```tsx
 // 2. Butuh menyimpan input! useState = ERROR di server ❌
-import { useState } from "react"
+import { useState } from "react";
 
 export default function SearchBar() {
-  const [query, setQuery] = useState("")
+  const [query, setQuery] = useState("");
 
   return (
     <div>
       <input onChange={(e) => setQuery(e.target.value)} />
       <button>Cari: {query}</button>
     </div>
-  )
+  );
 }
 ```
+
 ```tsx
 // 3. Solusi: tambahkan "use client" di paling atas ✅
-"use client"
-import { useState } from "react"
+"use client";
+import { useState } from "react";
 
 export default function SearchBar() {
-  const [query, setQuery] = useState("")
+  const [query, setQuery] = useState("");
 
   return (
     <div>
       <input onChange={(e) => setQuery(e.target.value)} />
       <button>Cari: {query}</button>
     </div>
-  )
+  );
 }
 ```
 ````
@@ -160,9 +161,9 @@ Aturan praktis yang sederhana
 
 <v-clicks>
 
-1. **Apakah butuh interaksi user?** (Klik, Ketik, Hover) → *Client Component*
-2. **Apakah butuh State atau Lifecycle?** (`useState`, `useEffect`) → *Client Component*
-3. **Apakah pakai Browser APIs?** (Geolocation, localStorage) → *Client Component*
+1. **Apakah butuh interaksi user?** (Klik, Ketik, Hover) → _Client Component_
+2. **Apakah butuh State atau Lifecycle?** (`useState`, `useEffect`) → _Client Component_
+3. **Apakah pakai Browser APIs?** (Geolocation, localStorage) → _Client Component_
 4. **Selain di atas?** → Biarkan tetap sebagai **Server Component**!
 
 </v-clicks>
@@ -185,17 +186,17 @@ Pisahkan bagian statis (server) dan interaktif (client)
 
 ```tsx {2,5-6|8-11|all}
 // app/produk/[id]/page.tsx
-import AddToCart from "./AddToCart"
+import AddToCart from "./AddToCart";
 
 export default async function Product({
   params,
-}: { params: Promise<{ id: string }> }) {
-  const { id } = await params
+}: {
+  params: Promise<{ id: string }>;
+}) {
+  const { id } = await params;
   // Ambil data langsung dari server!
-  const res = await fetch(
-    `https://api.example.com/produk/${id}`
-  )
-  const produk = await res.json()
+  const res = await fetch(`https://api.example.com/produk/${id}`);
+  const produk = await res.json();
 
   return (
     <div>
@@ -203,7 +204,7 @@ export default async function Product({
       <p>Rp {produk.price}</p>
       <AddToCart id={produk.id} />
     </div>
-  )
+  );
 }
 ```
 
@@ -212,29 +213,27 @@ export default async function Product({
 #### Client Component (`AddToCart.tsx`)
 
 ```tsx {1|3|5-7|all}
-"use client"
+"use client";
 
-import { useState } from "react"
+import { useState } from "react";
 
-export default function AddToCart({ id }: {
-  id: string
-}) {
-  const [loading, setLoading] = useState(false)
+export default function AddToCart({ id }: { id: string }) {
+  const [loading, setLoading] = useState(false);
 
   async function handleAdd() {
-    setLoading(true)
+    setLoading(true);
     await fetch("/api/cart", {
       method: "POST",
       body: JSON.stringify({ id }),
-    })
-    setLoading(false)
+    });
+    setLoading(false);
   }
 
   return (
     <button onClick={handleAdd}>
       {loading ? "Menambahkan..." : "🛒 Beli"}
     </button>
-  )
+  );
 }
 ```
 
@@ -245,20 +244,20 @@ export default function AddToCart({ id }: {
 Memasukkan Server Component ke dalam Client Component
 
 ```tsx {1|4,10|all}
-"use client"
+"use client";
 
 // Client Layout bisa menerima Server Component sebagai children!
 export default function InteractiveLayout({
   children,
 }: {
-  children: React.ReactNode
+  children: React.ReactNode;
 }) {
   return (
     <div className="flex">
       <Sidebar /> {/* Sidebar interaktif */}
       <main>{children}</main> {/* children tetap Server! */}
     </div>
-  )
+  );
 }
 ```
 
@@ -285,6 +284,7 @@ Pesan error yang mungkin Antum temui dan cara mengatasinya
 layout: intro
 badge: "RANGKUMAN"
 badgeColor: "yellow"
+hideInToc: true
 ---
 
 ## 3 Hal Penting dari Modul 04

@@ -1,3 +1,7 @@
+---
+hideInToc: true
+---
+
 ## APA SAJA YANG BISA DIBUAT DENGAN NEXT.JS?
 
 <p>

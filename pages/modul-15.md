@@ -2,9 +2,10 @@
 layout: intro
 badge: "MODUL 15"
 badgeColor: "green"
+level: 1
 ---
 
-## 15. Unit Testing
+## 15. Testing: Unit & Integration Testing (MSW)
 
 Menjamin Kualitas Kode dengan Testing Trophy, Menguji Komponen Klien, Menulis Integration Test yang Bernilai Tinggi, serta Mocking API dengan MSW.
 
@@ -19,24 +20,25 @@ Sebuah Contoh Bug Sederhana yang Bisa Merugikan Bisnis Jutaan Rupiah
 // ❌ FUNGSI TANPA TESTING: Kelihatannya baik-baik saja...
 export function hitungTotal(harga: number, diskonPersen: number) {
   // Developer salah ketik tanda kurung atau operator!
-  return harga - harga * diskonPersen // Jika diskon 20%, dikira diskonPersen = 20 (bukan 0.2)!
+  return harga - harga * diskonPersen; // Jika diskon 20%, dikira diskonPersen = 20 (bukan 0.2)!
 }
 
 // Saat dipanggil: hitungTotal(100_000, 20)
 // Hasilnya: 100.000 - 2.000.000 = -1.900.000 (Pelanggan malah dapat uang!) 😱
 ```
+
 ```tsx
 // ✅ DENGAN TESTING OTOMATIS: Tertangkap dalam hitungan milidetik sebelum deploy!
-import { describe, it, expect } from "vitest"
-import { hitungTotal } from "./transaksi"
+import { describe, it, expect } from "vitest";
+import { hitungTotal } from "./transaksi";
 
 describe("hitungTotal", () => {
   it("menghitung diskon 20% dengan benar", () => {
-    const total = hitungTotal(100_000, 20)
+    const total = hitungTotal(100_000, 20);
     // Test langsung GAGAL! Bug dicegah sebelum rilis ke pengguna nyata.
-    expect(total).toBe(80_000)
-  })
-})
+    expect(total).toBe(80_000);
+  });
+});
 ```
 ````
 
@@ -90,8 +92,8 @@ npm install -D vitest @testing-library/react @testing-library/jest-dom @testing-
 
 ```tsx
 // vitest.config.ts
-import { defineConfig } from "vitest/config"
-import react from "@vitejs/plugin-react"
+import { defineConfig } from "vitest/config";
+import react from "@vitejs/plugin-react";
 
 export default defineConfig({
   plugins: [react()],
@@ -100,12 +102,12 @@ export default defineConfig({
     globals: true,
     setupFiles: "./vitest.setup.ts",
   },
-})
+});
 ```
 
 ```tsx
 // vitest.setup.ts
-import "@testing-library/jest-dom"
+import "@testing-library/jest-dom";
 ```
 
 ---
@@ -115,24 +117,24 @@ import "@testing-library/jest-dom"
 Struktur Universal dalam Menulis Setiap Skenario Pengujian
 
 ```tsx {1-4|6-7|9-10|12-13|all}
-import { render, screen } from "@testing-library/react"
-import userEvent from "@testing-library/user-event"
-import Counter from "./Counter"
+import { render, screen } from "@testing-library/react";
+import userEvent from "@testing-library/user-event";
+import Counter from "./Counter";
 
 describe("Counter", () => {
   it("menambah angka saat tombol diklik", async () => {
     // 1. ARRANGE: Siapkan komponen ke layar virtual
-    const user = userEvent.setup()
-    render(<Counter />)
+    const user = userEvent.setup();
+    render(<Counter />);
 
     // 2. ACT: Lakukan interaksi selayaknya pengguna nyata
-    const tombol = screen.getByRole("button", { name: /tambah/i })
-    await user.click(tombol)
+    const tombol = screen.getByRole("button", { name: /tambah/i });
+    await user.click(tombol);
 
     // 3. ASSERT: Periksa apakah hasilnya sesuai harapan
-    expect(screen.getByText("Total: 1")).toBeInTheDocument()
-  })
-})
+    expect(screen.getByText("Total: 1")).toBeInTheDocument();
+  });
+});
 ```
 
 ---
@@ -150,12 +152,11 @@ Perbedaan Lingkup Pengujian dalam Praktik
 Menguji satu fungsi kecil tanpa melibatkan UI:
 
 ```tsx
-import { formatRupiah } from "./format"
+import { formatRupiah } from "./format";
 
 test("formatRupiah memformat angka dengan benar", () => {
-  expect(formatRupiah(50000))
-    .toBe("Rp 50.000")
-})
+  expect(formatRupiah(50000)).toBe("Rp 50.000");
+});
 ```
 
 - Cepat dieksekusi
@@ -169,16 +170,15 @@ Menguji alur interaksi pengguna yang utuh:
 
 ```tsx
 test("Pengguna mengisi form dan melihat pesan sukses", async () => {
-  const user = userEvent.setup()
-  render(<FormPendaftaran />)
+  const user = userEvent.setup();
+  render(<FormPendaftaran />);
 
-  await user.type(screen.getByLabelText("Nama"), "Ahmad")
-  await user.type(screen.getByLabelText("Email"), "ahmad@mail.com")
-  await user.click(screen.getByRole("button", { name: /daftar/i }))
+  await user.type(screen.getByLabelText("Nama"), "Ahmad");
+  await user.type(screen.getByLabelText("Email"), "ahmad@mail.com");
+  await user.click(screen.getByRole("button", { name: /daftar/i }));
 
-  expect(await screen.findByText("Pendaftaran Berhasil!"))
-    .toBeInTheDocument()
-})
+  expect(await screen.findByText("Pendaftaran Berhasil!")).toBeInTheDocument();
+});
 ```
 
 ---
@@ -194,36 +194,38 @@ npm install -D msw
 ````md magic-move
 ```tsx
 // 1. Definisikan Mock Handler dengan MSW
-import { http, HttpResponse } from "msw"
+import { http, HttpResponse } from "msw";
 
 export const handlers = [
   http.get("https://api.example.com/products", () => {
     return HttpResponse.json([
       { id: 1, name: "Buku React Next.js", price: 120_000 },
-    ])
+    ]);
   }),
-]
+];
 ```
+
 ```tsx
 // 2. Jalankan Server Mock di Lingkungan Test
-import { setupServer } from "msw/node"
-import { handlers } from "./handlers"
+import { setupServer } from "msw/node";
+import { handlers } from "./handlers";
 
-export const server = setupServer(...handlers)
+export const server = setupServer(...handlers);
 
 // Di vitest.setup.ts:
-beforeAll(() => server.listen())
-afterEach(() => server.resetHandlers())
-afterAll(() => server.close())
+beforeAll(() => server.listen());
+afterEach(() => server.resetHandlers());
+afterAll(() => server.close());
 ```
+
 ```tsx
 // 3. Komponen Antum di-test tanpa tahu kalau API sedang di-mock!
 test("Menampilkan daftar produk dari backend", async () => {
-  render(<ProductList />)
+  render(<ProductList />);
 
   // Data dari mock MSW akan otomatis muncul di antarmuka!
-  expect(await screen.findByText("Buku React Next.js")).toBeInTheDocument()
-})
+  expect(await screen.findByText("Buku React Next.js")).toBeInTheDocument();
+});
 ```
 ````
 
@@ -231,6 +233,7 @@ test("Menampilkan daftar produk dari backend", async () => {
 layout: intro
 badge: "RANGKUMAN"
 badgeColor: "yellow"
+hideInToc: true
 ---
 
 ## 3 Hal Penting dari Modul 15

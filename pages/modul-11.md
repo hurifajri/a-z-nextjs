@@ -2,6 +2,7 @@
 layout: intro
 badge: "MODUL 11"
 badgeColor: "purple"
+level: 1
 ---
 
 ## 11. Mini Project: Todo App (Fullstack)
@@ -77,24 +78,18 @@ Route Handler untuk CRUD Todo
 
 ```tsx {3-6|8-16|all}
 // app/api/todos/route.ts
-import { db } from "@/db"
-import { todos } from "@/db/schema"
+import { db } from "@/db";
+import { todos } from "@/db/schema";
 
 export async function GET() {
-  const all = await db.select()
-    .from(todos)
-  return NextResponse.json(all)
+  const all = await db.select().from(todos);
+  return NextResponse.json(all);
 }
 
 export async function POST(req: Request) {
-  const { title } = await req.json()
-  const [todo] = await db
-    .insert(todos)
-    .values({ title })
-    .returning()
-  return NextResponse.json(
-    todo, { status: 201 }
-  )
+  const { title } = await req.json();
+  const [todo] = await db.insert(todos).values({ title }).returning();
+  return NextResponse.json(todo, { status: 201 });
 }
 ```
 
@@ -106,24 +101,24 @@ export async function POST(req: Request) {
 // app/api/todos/[id]/route.ts
 export async function PUT(
   req: Request,
-  { params }: { params: Promise<{ id: string }> }
+  { params }: { params: Promise<{ id: string }> },
 ) {
-  const { id } = await params
-  const body = await req.json()
-  await db.update(todos)
+  const { id } = await params;
+  const body = await req.json();
+  await db
+    .update(todos)
     .set(body)
-    .where(eq(todos.id, Number(id)))
-  return NextResponse.json({ ok: true })
+    .where(eq(todos.id, Number(id)));
+  return NextResponse.json({ ok: true });
 }
 
 export async function DELETE(
   req: Request,
-  { params }: { params: Promise<{ id: string }> }
+  { params }: { params: Promise<{ id: string }> },
 ) {
-  const { id } = await params
-  await db.delete(todos)
-    .where(eq(todos.id, Number(id)))
-  return NextResponse.json({ ok: true })
+  const { id } = await params;
+  await db.delete(todos).where(eq(todos.id, Number(id)));
+  return NextResponse.json({ ok: true });
 }
 ```
 
@@ -135,9 +130,13 @@ Kerangka halaman yang konsisten di semua halaman
 
 ```tsx
 // app/layout.tsx
-import Navbar from "@/components/Navbar"
+import Navbar from "@/components/Navbar";
 
-export default function RootLayout({ children }: { children: React.ReactNode }) {
+export default function RootLayout({
+  children,
+}: {
+  children: React.ReactNode;
+}) {
   return (
     <html lang="id">
       <body className="bg-gray-50 min-h-screen">
@@ -145,25 +144,31 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
         <main className="max-w-2xl mx-auto p-6">{children}</main>
       </body>
     </html>
-  )
+  );
 }
 ```
 
 ```tsx
 // components/Navbar.tsx
-"use client"
-import Link from "next/link"
-import { usePathname } from "next/navigation"
+"use client";
+import Link from "next/link";
+import { usePathname } from "next/navigation";
 
 export default function Navbar() {
-  const path = usePathname()
+  const path = usePathname();
   return (
     <nav className="flex gap-4 p-4 border-b-2 border-black bg-white">
-      <Link href="/" className={path === "/" ? "font-bold" : ""}>Beranda</Link>
-      <Link href="/todos" className={path === "/todos" ? "font-bold" : ""}>Todos</Link>
-      <Link href="/about" className={path === "/about" ? "font-bold" : ""}>Tentang</Link>
+      <Link href="/" className={path === "/" ? "font-bold" : ""}>
+        Beranda
+      </Link>
+      <Link href="/todos" className={path === "/todos" ? "font-bold" : ""}>
+        Todos
+      </Link>
+      <Link href="/about" className={path === "/about" ? "font-bold" : ""}>
+        Tentang
+      </Link>
     </nav>
-  )
+  );
 }
 ```
 
@@ -175,14 +180,14 @@ Server Component yang fetch data dan render daftar
 
 ```tsx {1-5|7-14|all}
 // app/todos/page.tsx (Server Component)
-import TodoForm from "@/components/TodoForm"
-import TodoItem from "@/components/TodoItem"
+import TodoForm from "@/components/TodoForm";
+import TodoItem from "@/components/TodoItem";
 
 export default async function TodosPage() {
   const res = await fetch("http://localhost:3000/api/todos", {
     cache: "no-store",
-  })
-  const todos = await res.json()
+  });
+  const todos = await res.json();
 
   return (
     <div>
@@ -190,12 +195,12 @@ export default async function TodosPage() {
       <TodoForm />
       <div className="mt-4 space-y-2">
         {todos.length === 0 && <p className="text-gray-500">Belum ada todo.</p>}
-        {todos.map(todo => (
+        {todos.map((todo) => (
           <TodoItem key={todo.id} todo={todo} />
         ))}
       </div>
     </div>
-  )
+  );
 }
 ```
 
@@ -208,65 +213,76 @@ Client Components untuk form dan aksi
 ````md magic-move
 ```tsx
 // components/TodoForm.tsx — Form tambah todo
-"use client"
-import { useState } from "react"
-import { useRouter } from "next/navigation"
+"use client";
+import { useState } from "react";
+import { useRouter } from "next/navigation";
 
 export default function TodoForm() {
-  const [title, setTitle] = useState("")
-  const router = useRouter()
+  const [title, setTitle] = useState("");
+  const router = useRouter();
 
   async function handleSubmit(e: React.FormEvent) {
-    e.preventDefault()
+    e.preventDefault();
     await fetch("/api/todos", {
       method: "POST",
       headers: { "Content-Type": "application/json" },
       body: JSON.stringify({ title }),
-    })
-    setTitle("")
-    router.refresh()  // Refresh Server Component!
+    });
+    setTitle("");
+    router.refresh(); // Refresh Server Component!
   }
 
   return (
     <form onSubmit={handleSubmit} className="flex gap-2">
-      <input value={title} onChange={e => setTitle(e.target.value)}
-        placeholder="Tulis todo baru..." className="flex-1 border-2 p-2 rounded" />
-      <button className="bg-black text-white px-4 py-2 rounded font-bold">Tambah</button>
+      <input
+        value={title}
+        onChange={(e) => setTitle(e.target.value)}
+        placeholder="Tulis todo baru..."
+        className="flex-1 border-2 p-2 rounded"
+      />
+      <button className="bg-black text-white px-4 py-2 rounded font-bold">
+        Tambah
+      </button>
     </form>
-  )
+  );
 }
 ```
+
 ```tsx
 // components/TodoItem.tsx — Item todo dengan toggle dan delete
-"use client"
-import { useRouter } from "next/navigation"
+"use client";
+import { useRouter } from "next/navigation";
 
 export default function TodoItem({ todo }) {
-  const router = useRouter()
+  const router = useRouter();
 
   async function toggleDone() {
     await fetch(`/api/todos/${todo.id}`, {
       method: "PUT",
       headers: { "Content-Type": "application/json" },
       body: JSON.stringify({ done: !todo.done }),
-    })
-    router.refresh()
+    });
+    router.refresh();
   }
 
   async function deleteTodo() {
-    await fetch(`/api/todos/${todo.id}`, { method: "DELETE" })
-    router.refresh()
+    await fetch(`/api/todos/${todo.id}`, { method: "DELETE" });
+    router.refresh();
   }
 
   return (
     <div className="flex items-center gap-3 p-3 border-2 rounded">
       <button onClick={toggleDone}>{todo.done ? "✅" : "⬜"}</button>
-      <span className={todo.done ? "line-through text-gray-400 flex-1" : "flex-1"}>
+      <span
+        className={todo.done ? "line-through text-gray-400 flex-1" : "flex-1"}
+      >
         {todo.title}
       </span>
-      <button onClick={deleteTodo} className="text-red-500">🗑️</button>
+      <button onClick={deleteTodo} className="text-red-500">
+        🗑️
+      </button>
     </div>
-  )
+  );
 }
 ```
 ````
@@ -295,6 +311,7 @@ Checklist materi dari Modul 01–10 yang diterapkan di project ini
 layout: intro
 badge: "RANGKUMAN"
 badgeColor: "yellow"
+hideInToc: true
 ---
 
 ## Selamat! Antum Baru Saja Membangun Aplikasi Fullstack! 🎉

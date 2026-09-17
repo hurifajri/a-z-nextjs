@@ -2,6 +2,7 @@
 layout: intro
 badge: "MODUL 10"
 badgeColor: "green"
+level: 1
 ---
 
 ## 10. Next.js Fullstack — Route Handlers & Drizzle ORM
@@ -53,23 +54,23 @@ Buat file `route.ts` di folder `app/api/` — otomatis jadi endpoint!
 
 ```tsx {1-2|4-8|10-18|all}
 // app/api/hello/route.ts
-import { NextResponse } from "next/server"
+import { NextResponse } from "next/server";
 
 // GET /api/hello
 export async function GET() {
   return NextResponse.json({
-    message: "Assalamu'alaikum dari API Next.js!"
-  })
+    message: "Assalamu'alaikum dari API Next.js!",
+  });
 }
 
 // POST /api/hello
 export async function POST(request: Request) {
-  const body = await request.json()
+  const body = await request.json();
 
   return NextResponse.json(
     { message: `Ahlan, ${body.nama}!` },
-    { status: 201 }
-  )
+    { status: 201 },
+  );
 }
 ```
 
@@ -86,50 +87,50 @@ Semua operasi data dalam satu file route
 ````md magic-move
 ```tsx
 // app/api/todos/route.ts — GET: Ambil semua todos
-import { NextResponse } from "next/server"
+import { NextResponse } from "next/server";
 
-const todos = [
-  { id: 1, title: "Belajar Next.js", done: false },
-]
+const todos = [{ id: 1, title: "Belajar Next.js", done: false }];
 
 export async function GET() {
-  return NextResponse.json(todos)
+  return NextResponse.json(todos);
 }
 ```
+
 ```tsx
 // app/api/todos/route.ts — POST: Tambah todo baru
 export async function POST(request: Request) {
-  const body = await request.json()
+  const body = await request.json();
 
   const newTodo = {
     id: todos.length + 1,
     title: body.title,
     done: false,
-  }
-  todos.push(newTodo)
+  };
+  todos.push(newTodo);
 
-  return NextResponse.json(newTodo, { status: 201 })
+  return NextResponse.json(newTodo, { status: 201 });
 }
 ```
+
 ```tsx
 // app/api/todos/[id]/route.ts — PUT + DELETE per item
 export async function PUT(
   request: Request,
-  { params }: { params: Promise<{ id: string }> }
+  { params }: { params: Promise<{ id: string }> },
 ) {
-  const { id } = await params
-  const body = await request.json()
+  const { id } = await params;
+  const body = await request.json();
   // Update todo by id...
-  return NextResponse.json({ id, ...body })
+  return NextResponse.json({ id, ...body });
 }
 
 export async function DELETE(
   request: Request,
-  { params }: { params: Promise<{ id: string }> }
+  { params }: { params: Promise<{ id: string }> },
 ) {
-  const { id } = await params
+  const { id } = await params;
   // Delete todo by id...
-  return NextResponse.json({ deleted: id })
+  return NextResponse.json({ deleted: id });
 }
 ```
 ````
@@ -163,7 +164,7 @@ Mendefinisikan struktur tabel database
 
 ```tsx {1-2|4-10|12-16|all}
 // db/schema.ts
-import { sqliteTable, text, integer } from "drizzle-orm/sqlite-core"
+import { sqliteTable, text, integer } from "drizzle-orm/sqlite-core";
 
 // Definisi tabel "todos"
 export const todos = sqliteTable("todos", {
@@ -171,15 +172,15 @@ export const todos = sqliteTable("todos", {
   title: text("title").notNull(),
   done: integer("done", { mode: "boolean" }).default(false),
   createdAt: text("created_at").default("CURRENT_TIMESTAMP"),
-})
+});
 
 // Setup koneksi database
 // db/index.ts
-import { drizzle } from "drizzle-orm/better-sqlite3"
-import Database from "better-sqlite3"
+import { drizzle } from "drizzle-orm/better-sqlite3";
+import Database from "better-sqlite3";
 
-const sqlite = new Database("local.db")
-export const db = drizzle(sqlite)
+const sqlite = new Database("local.db");
+export const db = drizzle(sqlite);
 ```
 
 ---
@@ -189,26 +190,26 @@ export const db = drizzle(sqlite)
 Operasi database dengan sintaks yang mudah dibaca
 
 ```tsx {1-4|6-9|11-16|18-21|all}
-import { db } from "@/db"
-import { todos } from "@/db/schema"
-import { eq } from "drizzle-orm"
+import { db } from "@/db";
+import { todos } from "@/db/schema";
+import { eq } from "drizzle-orm";
 
 // CREATE: Tambah todo baru
-const newTodo = await db.insert(todos).values({
-  title: "Belajar Drizzle ORM",
-}).returning()
+const newTodo = await db
+  .insert(todos)
+  .values({
+    title: "Belajar Drizzle ORM",
+  })
+  .returning();
 
 // READ: Ambil semua todos
-const allTodos = await db.select().from(todos)
+const allTodos = await db.select().from(todos);
 
 // UPDATE: Tandai selesai
-await db.update(todos)
-  .set({ done: true })
-  .where(eq(todos.id, 1))
+await db.update(todos).set({ done: true }).where(eq(todos.id, 1));
 
 // DELETE: Hapus todo
-await db.delete(todos)
-  .where(eq(todos.id, 1))
+await db.delete(todos).where(eq(todos.id, 1));
 ```
 
 ---
@@ -219,25 +220,23 @@ API fullstack yang nyata dalam satu project Next.js!
 
 ```tsx {1-4|6-9|11-20|all}
 // app/api/todos/route.ts
-import { db } from "@/db"
-import { todos } from "@/db/schema"
-import { NextResponse } from "next/server"
+import { db } from "@/db";
+import { todos } from "@/db/schema";
+import { NextResponse } from "next/server";
 
 // GET /api/todos — ambil semua dari database
 export async function GET() {
-  const allTodos = await db.select().from(todos)
-  return NextResponse.json(allTodos)
+  const allTodos = await db.select().from(todos);
+  return NextResponse.json(allTodos);
 }
 
 // POST /api/todos — simpan ke database
 export async function POST(request: Request) {
-  const { title } = await request.json()
+  const { title } = await request.json();
 
-  const [newTodo] = await db.insert(todos)
-    .values({ title })
-    .returning()
+  const [newTodo] = await db.insert(todos).values({ title }).returning();
 
-  return NextResponse.json(newTodo, { status: 201 })
+  return NextResponse.json(newTodo, { status: 201 });
 }
 ```
 
@@ -249,23 +248,23 @@ Alternatif selain Route Handler — langsung panggil fungsi server dari client!
 
 ```tsx {1-2|4-8|10-16|all}
 // app/actions/todo.ts
-"use server"
+"use server";
 
 export async function addTodo(formData: FormData) {
-  const title = formData.get("title") as string
-  await db.insert(todos).values({ title })
-  revalidatePath("/todos")
+  const title = formData.get("title") as string;
+  await db.insert(todos).values({ title });
+  revalidatePath("/todos");
 }
 
 // Di Client Component:
-"use client"
+("use client");
 export default function AddForm() {
   return (
     <form action={addTodo}>
       <input name="title" />
       <button type="submit">Tambah</button>
     </form>
-  )
+  );
 }
 ```
 
@@ -277,6 +276,7 @@ export default function AddForm() {
 layout: intro
 badge: "RANGKUMAN"
 badgeColor: "yellow"
+hideInToc: true
 ---
 
 ## 3 Hal Penting dari Modul 10

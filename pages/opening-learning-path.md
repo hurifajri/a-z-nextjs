@@ -1,3 +1,7 @@
+---
+hideInToc: true
+---
+
 ## BAGAIMANA TANGGA BELAJAR MENUJU NEXT.JS?
 
 <p>

@@ -2,6 +2,7 @@
 layout: intro
 badge: "MODUL 14"
 badgeColor: "yellow"
+level: 1
 ---
 
 ## 14. Middleware & Auth Pattern
@@ -41,29 +42,29 @@ File `middleware.ts` di root project
 
 ```tsx {1-3|5-10|12-18|all}
 // middleware.ts
-import { NextResponse } from "next/server"
-import type { NextRequest } from "next/server"
+import { NextResponse } from "next/server";
+import type { NextRequest } from "next/server";
 
 export function middleware(request: NextRequest) {
-  const token = request.cookies.get("token")?.value
+  const token = request.cookies.get("token")?.value;
 
   // Jika belum login dan coba akses halaman terlindungi
   if (!token && request.nextUrl.pathname.startsWith("/dashboard")) {
-    return NextResponse.redirect(new URL("/login", request.url))
+    return NextResponse.redirect(new URL("/login", request.url));
   }
 
   // Jika sudah login dan coba akses halaman login
   if (token && request.nextUrl.pathname === "/login") {
-    return NextResponse.redirect(new URL("/dashboard", request.url))
+    return NextResponse.redirect(new URL("/dashboard", request.url));
   }
 
-  return NextResponse.next() // Lanjutkan ke halaman
+  return NextResponse.next(); // Lanjutkan ke halaman
 }
 
 // Tentukan rute mana yang dilindungi
 export const config = {
   matcher: ["/dashboard/:path*", "/settings/:path*", "/login"],
-}
+};
 ```
 
 ---
@@ -75,12 +76,12 @@ Menentukan halaman mana yang diproses oleh middleware
 ```tsx {2|3|4|5|all}
 export const config = {
   matcher: [
-    "/dashboard/:path*",    // /dashboard dan semua sub-halaman
-    "/settings/:path*",     // /settings dan semua sub-halaman
-    "/profile",             // Hanya /profile
+    "/dashboard/:path*", // /dashboard dan semua sub-halaman
+    "/settings/:path*", // /settings dan semua sub-halaman
+    "/profile", // Hanya /profile
     "/((?!api|_next|favicon.ico).*)", // Semua kecuali API dan asset
   ],
-}
+};
 ```
 
 <div v-click class="mt-4 grid grid-cols-2 gap-3 text-xs">
@@ -111,15 +112,13 @@ Dua lapisan perlindungan: Middleware + Client Check
 ```tsx
 // middleware.ts — Server-side guard
 export function middleware(req: NextRequest) {
-  const token = req.cookies.get("token")
+  const token = req.cookies.get("token");
 
   if (!token) {
-    return NextResponse.redirect(
-      new URL("/login", req.url)
-    )
+    return NextResponse.redirect(new URL("/login", req.url));
   }
 
-  return NextResponse.next()
+  return NextResponse.next();
 }
 ```
 
@@ -131,22 +130,21 @@ Redirect SEBELUM halaman dirender!
 
 ```tsx
 // hooks/useAuth.ts — Client-side check
-"use client"
+"use client";
 export function useAuth() {
-  const router = useRouter()
-  const [user, setUser] = useState(null)
+  const router = useRouter();
+  const [user, setUser] = useState(null);
 
   useEffect(() => {
-    const token = localStorage
-      .getItem("token")
+    const token = localStorage.getItem("token");
     if (!token) {
-      router.push("/login")
-      return
+      router.push("/login");
+      return;
     }
     // Fetch user data...
-  }, [])
+  }, []);
 
-  return { user }
+  return { user };
 }
 ```
 
@@ -160,21 +158,21 @@ Menambahkan informasi ke setiap request
 
 ```tsx {3-6|8-11|all}
 export function middleware(request: NextRequest) {
-  const response = NextResponse.next()
+  const response = NextResponse.next();
 
   // Tambah custom header
-  response.headers.set("x-request-id", crypto.randomUUID())
-  response.headers.set("x-pathname", request.nextUrl.pathname)
+  response.headers.set("x-request-id", crypto.randomUUID());
+  response.headers.set("x-pathname", request.nextUrl.pathname);
 
   // Set cookie
   if (!request.cookies.has("visited")) {
     response.cookies.set("visited", "true", {
       httpOnly: true,
       maxAge: 60 * 60 * 24, // 1 hari
-    })
+    });
   }
 
-  return response
+  return response;
 }
 ```
 
@@ -189,40 +187,42 @@ Alur autentikasi end-to-end yang aman
 // 1. Login: Simpan token di cookie (bukan localStorage!)
 // app/api/auth/login/route.ts
 export async function POST(req: Request) {
-  const { email, password } = await req.json()
+  const { email, password } = await req.json();
   // ... validasi kredensial
 
-  const token = generateJWT({ userId: user.id })
+  const token = generateJWT({ userId: user.id });
 
-  const response = NextResponse.json({ success: true })
+  const response = NextResponse.json({ success: true });
   response.cookies.set("token", token, {
-    httpOnly: true,     // Tidak bisa diakses via JavaScript
-    secure: true,       // Hanya via HTTPS
-    maxAge: 60 * 60 * 8 // 8 jam
-  })
-  return response
+    httpOnly: true, // Tidak bisa diakses via JavaScript
+    secure: true, // Hanya via HTTPS
+    maxAge: 60 * 60 * 8, // 8 jam
+  });
+  return response;
 }
 ```
+
 ```tsx
 // 2. Middleware: Cek cookie di setiap request
 // middleware.ts
 export function middleware(request: NextRequest) {
-  const token = request.cookies.get("token")?.value
+  const token = request.cookies.get("token")?.value;
 
   if (!token && request.nextUrl.pathname.startsWith("/dashboard")) {
-    return NextResponse.redirect(new URL("/login", request.url))
+    return NextResponse.redirect(new URL("/login", request.url));
   }
 
-  return NextResponse.next()
+  return NextResponse.next();
 }
 ```
+
 ```tsx
 // 3. Logout: Hapus cookie
 // app/api/auth/logout/route.ts
 export async function POST() {
-  const response = NextResponse.json({ success: true })
-  response.cookies.delete("token")
-  return response
+  const response = NextResponse.json({ success: true });
+  response.cookies.delete("token");
+  return response;
 }
 ```
 ````
@@ -235,6 +235,7 @@ export async function POST() {
 layout: intro
 badge: "RANGKUMAN"
 badgeColor: "yellow"
+hideInToc: true
 ---
 
 ## 3 Hal Penting dari Modul 14

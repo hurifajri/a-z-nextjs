@@ -2,6 +2,7 @@
 layout: cover
 badgeLeft: "✦ TERIMA KASIH"
 badgeRight: "SIAP PRAKTEK"
+hideInToc: true
 ---
 
 # SEMANGAT BERKARYA!
