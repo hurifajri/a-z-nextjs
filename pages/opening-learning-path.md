@@ -102,13 +102,13 @@ hideInToc: true
       </p>
     </div>
     <div class="mt-2 pt-1.5 border-t border-dashed border-black/30 text-[10px] font-black text-black">
-      🎯 Tujuan kita
+      <span v-mark.circle.orange="6">🎯 Tujuan kita</span>
     </div>
   </div>
 </div>
 
 <!-- Bottom Strategy Box (Revealed on click 6) -->
-<div v-click="6" class="flow-card mt-6 px-4 py-2 border-2 border-black rounded bg-white shadow-[3px_3px_0px_#000]">
+<div v-click="7" class="flow-card mt-6 px-4 py-2 border-2 border-black rounded bg-white shadow-[3px_3px_0px_#000]">
   <div class="flex items-center gap-2 font-black text-xs text-black mb-1">
     <span class="bg-[#2ED573] text-black px-2 py-0.5 border border-black rounded text-xs uppercase font-black">
       💡 REALITAS BOOTCAMP 4 BULAN
@@ -116,7 +116,7 @@ hideInToc: true
     <span>Prinsip Pareto (80/20)</span>
   </div>
   <p class="text-xs text-gray-700 leading-snug">
-    Belajar keempat tangga secara terpisah dari nol butuh waktu lebih dari setahun. Di bootcamp intensif ini, kita langsung fokus ke <b>Next.js</b> sambil menyerap intisari HTML, CSS, JS, dan React yang <b>benar-benar dipakai di 80% proyek nyata</b>!
+    Belajar keempat tangga secara terpisah dari nol butuh waktu lebih dari setahun. Di bootcamp intensif ini, kita langsung fokus ke <b>Next.js</b> sambil menyerap <b><span v-mark.underline.orange="8">20%</span> intisari</b> HTML, CSS, JS, dan React yang <b>benar-benar dipakai di <span v-mark.underline.orange="9">80%</span> proyek nyata</b>!
   </p>
 </div>
 
