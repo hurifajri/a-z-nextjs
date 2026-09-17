@@ -5,7 +5,7 @@ hideInToc: true
 ## APA SAJA YANG BISA DIBUAT DENGAN NEXT.JS?
 
 <p>
-  Dari <span v-mark.circle.orange="1">landing page</span> sederhana hingga <span v-mark.circle.orange="2">marketplace</span> — apa pun yang bisa diakses melalui browser, insyaa Allah bisa Antum buat.
+  Dari <span v-mark.underline.orange="1">landing page</span> sederhana hingga <span v-mark.underline.orange="2">marketplace</span> — apa pun yang bisa diakses melalui browser, insyaa Allah bisa Antum buat.
 </p>
 
 <!-- 4 Columns × 2 Rows Showcase Grid with Rotated Neobrutalist Cards (Click Animation Fade-In) -->

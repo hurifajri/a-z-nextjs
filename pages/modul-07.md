@@ -5,9 +5,9 @@ badgeColor: "cyan"
 level: 1
 ---
 
-## 07. Data Fetching di Next.js (SSR/SSG/ISR)
+## 07. Data Fetching & Server Rendering
 
-Memahami SSR, SSG, dan ISR — cara Next.js mengambil dan meng-cache data secara otomatis untuk performa optimal.
+Menguasai strategi rendering modern di Next.js — dari SSG, SSR, ISR (Time & On-Demand), Streaming Suspense, hingga Partial Prerendering (PPR).
 
 ---
 
@@ -117,6 +117,57 @@ Pilih strategi yang tepat berdasarkan kebutuhan data
 
 <div v-click class="mt-4 brutal-card bg-white p-2 text-xs">
   💡 Di App Router, <strong>SSG adalah default</strong>. Antum hanya perlu menambahkan opsi jika butuh SSR atau ISR.
+</div>
+
+---
+layout: two-cols
+---
+
+### Dua Tipe ISR: Waktu vs On-Demand
+
+Memperbarui Halaman Statis Tanpa Build Ulang Seluruh Website
+
+::left::
+
+<div class="brutal-card bg-white p-3 border-2 border-black shadow-[3px_3px_0px_#000] mb-2">
+  <div class="font-black text-xs uppercase mb-1 flex items-center gap-1.5">
+    <span class="bg-[#FFE600] px-1.5 py-0.5 border border-black rounded text-[10px]">TIME-BASED</span>
+    <span>Interval Waktu Berkala</span>
+  </div>
+  <p class="text-[11px] text-gray-700 mb-2">Next.js mengecek kesegaran data secara berkala sesuai interval detik yang ditentukan.</p>
+
+```ts
+// Update paling cepat tiap 60 detik
+fetch("https://api.com/items", {
+  next: { revalidate: 60 },
+});
+```
+
+</div>
+
+::right::
+
+<div class="brutal-card bg-white p-3 border-2 border-black shadow-[3px_3px_0px_#000] mb-2">
+  <div class="font-black text-xs uppercase mb-1 flex items-center gap-1.5">
+    <span class="bg-[#00E5FF] px-1.5 py-0.5 border border-black rounded text-[10px]">ON-DEMAND</span>
+    <span>Event / Webhook Trigger</span>
+  </div>
+  <p class="text-[11px] text-gray-700 mb-2">Update instan seketika saat ada perubahan data di CMS atau Server Action.</p>
+
+```ts
+import { revalidatePath, revalidateTag } from "next/cache";
+
+// Purge cache rute atau tag seketika:
+revalidatePath("/blog");
+revalidateTag("products");
+```
+
+</div>
+
+::bottom::
+
+<div class="mt-1 p-2 brutal-card bg-emerald-50 border-2 border-black shadow-[2px_2px_0px_#000] text-[11px] text-gray-800">
+  💡 <strong>Best Practice Industri:</strong> Gunakan <strong>On-Demand Revalidation</strong> agar halaman secepat SSG di CDN, namun konten langsung segar seketika saat data diubah <em>(Akan kita pakai intensif di Modul 09)</em>.
 </div>
 
 ---
@@ -251,6 +302,42 @@ export default function DashboardPage() {
 </div>
 
 ---
+
+### Masa Depan Rendering: Partial Prerendering (PPR)
+
+Menggabungkan Kecepatan SSG Statis + Fleksibilitas SSR Dinamis dalam 1 Halaman
+
+<div class="grid grid-cols-2 gap-4 mt-2">
+  <div class="brutal-card bg-white p-3 border-2 border-black shadow-[3px_3px_0px_#000]">
+    <div class="font-black text-xs uppercase mb-1 text-black flex items-center gap-1.5">
+      <span class="bg-[#FFE600] px-1.5 py-0.5 border border-black rounded text-[10px]">SHELL STATIS (SSG)</span>
+      <span>Instan dari CDN Edge</span>
+    </div>
+    <ul class="text-xs text-gray-700 space-y-1.5 mt-2">
+      <li>• <strong>Navbar, Layout, Info Produk:</strong> Di-prerender saat build time.</li>
+      <li>• Loading time: <strong>0ms</strong> (secepat halaman statis biasa).</li>
+      <li>• Dikirim instan ke user tanpa menunggu server query database.</li>
+    </ul>
+  </div>
+
+  <div class="brutal-card bg-white p-3 border-2 border-black shadow-[3px_3px_0px_#000]">
+    <div class="font-black text-xs uppercase mb-1 text-black flex items-center gap-1.5">
+      <span class="bg-[#FF6B6B] text-white px-1.5 py-0.5 border border-black rounded text-[10px]">HOLE DINAMIS (SSR)</span>
+      <span>Streaming via Suspense</span>
+    </div>
+    <ul class="text-xs text-gray-700 space-y-1.5 mt-2">
+      <li>• <strong>Cart, Profil User, Rekomendasi:</strong> Dibungkus <code>&lt;Suspense&gt;</code>.</li>
+      <li>• Di-stream paralel dalam <strong>satu HTTP request</strong> yang sama.</li>
+      <li>• Tidak ada waterfall request tambahan di browser client!</li>
+    </ul>
+  </div>
+</div>
+
+<div class="mt-3 p-2.5 brutal-card bg-purple-50 border-2 border-black shadow-[2px_2px_0px_#000] text-xs">
+  🚀 <strong>Next.js 14/15 Innovation:</strong> Antum tidak perlu memilih <em>"Halaman ini SSG atau SSR?"</em>. Dengan PPR, halaman adalah <strong>statis secara default</strong>, dengan "lubang dinamis" yang mengalir otomatis sesuai batas <code>&lt;Suspense&gt;</code>!
+</div>
+
+---
 layout: intro
 badge: "RANGKUMAN"
 badgeColor: "yellow"
@@ -258,8 +345,9 @@ hideInToc: true
 transition: slide-up
 ---
 
-## 3 Hal Penting dari Modul 07
+## 4 Hal Penting dari Modul 07
 
-1. **Tiga Strategi Rendering**: SSG (build time, default), ISR (revalidate berkala), SSR (setiap request). Pilih berdasarkan seberapa sering data berubah.
-2. **Special Files Otomatis**: `loading.tsx` untuk skeleton loading, `error.tsx` untuk error boundary, `not-found.tsx` untuk halaman 404 — semuanya bekerja otomatis!
-3. **Suspense = Streaming**: Bungkus komponen lambat dengan `<Suspense>` agar bagian halaman yang sudah siap bisa tampil duluan.
+1. **Strategi Rendering Server**: SSG (default build time), ISR (revalidate berkala atau on-demand via `revalidatePath`), dan SSR (request time).
+2. **Special Files Otomatis**: `loading.tsx` untuk skeleton loading, `error.tsx` untuk error boundary, `not-found.tsx` untuk halaman 404.
+3. **Suspense & Streaming**: Mengalirkan potongan halaman secara independen (fondasi dari Partial Prerendering / PPR).
+4. **Jembatan ke CSR**: Data fetching di server tuntas di sini. Untuk data interaktif di browser (_Client-Side Rendering_), kita lanjut ke **Modul 08 (TanStack Query)**!
