@@ -166,6 +166,84 @@ Buat file `.prettierrc`:
 
 ---
 
+### Ekosistem Linter: ESLint vs Oxlint vs Biome
+
+Kecepatan Kompilasi Rust vs Kekuatan Plugin Spesifik Framework
+
+<div class="grid grid-cols-3 gap-3 mt-2 text-xs">
+  <!-- ESLint Card -->
+  <div class="brutal-card bg-white p-3 border-2 border-black shadow-[3px_3px_0px_#000] flex flex-col justify-between">
+    <div>
+      <div class="flex items-center justify-between mb-1.5">
+        <span class="font-black text-sm text-black">ESLint</span>
+        <span class="bg-[#FFE600] text-[10px] font-black px-1.5 py-0.5 border border-black rounded">Standar Industri</span>
+      </div>
+      <div class="text-[11px] text-gray-600 mb-2 font-mono">Engine: Node.js (JS/TS)</div>
+      <ul class="space-y-1 text-[11px] text-gray-800 leading-snug">
+        <li>⚡ <strong>Kecepatan:</strong> Baseline (~1x, terasa lambat di monorepo raksasa).</li>
+        <li>🔌 <strong>Ekosistem:</strong> <strong>Tak tertandingi</strong>. Ribuan plugin komunitas matang.</li>
+        <li>🎯 <strong>Cocok untuk:</strong> Proyek Next.js nyata yang butuh aturan framework khusus.</li>
+      </ul>
+    </div>
+    <div class="mt-2 pt-2 border-t border-dashed border-gray-300 font-bold text-[10px] text-green-700">
+      ✅ Bawaan resmi <code>create-next-app</code>
+    </div>
+  </div>
+
+  <!-- Oxlint Card -->
+  <div class="brutal-card bg-white p-3 border-2 border-black shadow-[3px_3px_0px_#000] flex flex-col justify-between">
+    <div>
+      <div class="flex items-center justify-between mb-1.5">
+        <span class="font-black text-sm text-black">Oxlint (Oxc)</span>
+        <span class="bg-[#00E5FF] text-[10px] font-black px-1.5 py-0.5 border border-black rounded">Pre-Commit Tool</span>
+      </div>
+      <div class="text-[11px] text-gray-600 mb-2 font-mono">Engine: Rust</div>
+      <ul class="space-y-1 text-[11px] text-gray-800 leading-snug">
+        <li>⚡ <strong>Kecepatan:</strong> <strong>50x – 100x</strong> lebih cepat dari ESLint.</li>
+        <li>🔌 <strong>Ekosistem:</strong> Fokus aturan inti (correctness). Bukan pengganti plugin kustom.</li>
+        <li>🎯 <strong>Cocok untuk:</strong> Pre-commit git hook kilat & filter cepat di pipeline CI.</li>
+      </ul>
+    </div>
+    <div class="mt-2 pt-2 border-t border-dashed border-gray-300 font-bold text-[10px] text-cyan-800">
+      🤝 Sinergi via <code>eslint-plugin-oxlint</code>
+    </div>
+  </div>
+
+  <!-- Biome Card -->
+  <div class="brutal-card bg-white p-3 border-2 border-black shadow-[3px_3px_0px_#000] flex flex-col justify-between">
+    <div>
+      <div class="flex items-center justify-between mb-1.5">
+        <span class="font-black text-sm text-black">Biome (ex-Rome)</span>
+        <span class="bg-[#FF6B8B] text-white text-[10px] font-black px-1.5 py-0.5 border border-black rounded">All-in-One</span>
+      </div>
+      <div class="text-[11px] text-gray-600 mb-2 font-mono">Engine: Rust</div>
+      <ul class="space-y-1 text-[11px] text-gray-800 leading-snug">
+        <li>⚡ <strong>Kecepatan:</strong> <strong>25x – 35x</strong> lebih cepat (Linter + Formatter Prettier).</li>
+        <li>🔌 <strong>Ekosistem:</strong> Tertutup/mandiri. <strong>Tidak bisa</strong> install arbitrary ESLint plugin.</li>
+        <li>🎯 <strong>Cocok untuk:</strong> Proyek mandiri yang ingin zero-config dan super ringkas.</li>
+      </ul>
+    </div>
+    <div class="mt-2 pt-2 border-t border-dashed border-gray-300 font-bold text-[10px] text-red-700">
+      ⚠️ Tidak support plugin AST eksternal
+    </div>
+  </div>
+</div>
+
+<!-- Highlight TanStack Query + ESLint -->
+<div v-click class="mt-3 p-2.5 brutal-card bg-[#FFE600]/20 border-2 border-black shadow-[2px_2px_0px_#000]">
+  <div class="flex items-center gap-2 mb-1">
+    <span class="bg-[#FFE600] text-black text-[10px] font-black px-2 py-0.5 border border-black rounded shadow-[1px_1px_0px_#000]">
+      💡 KENAPA PENGGUNA TANSTACK QUERY WAJIB ESLINT?
+    </span>
+    <span class="text-xs font-black text-black">Kasus Nyata di Modul 08</span>
+  </div>
+  <p class="text-[11px] text-gray-800 leading-relaxed">
+    TanStack Query memiliki plugin resmi <code>@tanstack/eslint-plugin-query</code> untuk mencegah bug berbahaya: memastikan <strong>dependensi queryKey lengkap</strong> (mencegah data stale/basi), mencegah instansiasi ganda <code>QueryClient</code> di render loop, serta melarang destructuring yang merusak reactivity tracking. <strong>Aturan AST spesifik ini belum ada di Biome maupun Oxlint</strong> — inilah alasan tim industri Next.js tetap mempertahankan ESLint!
+  </p>
+</div>
+
+---
+
 ### Tailwind CSS: Styling Cepat
 
 Menulis CSS Langsung di Atribut `className` Tanpa Berpindah File

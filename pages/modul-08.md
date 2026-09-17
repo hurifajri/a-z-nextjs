@@ -150,8 +150,9 @@ export default function UserList() {
 }
 ```
 
-<div v-click class="mt-2 text-xs text-gray-600">
-  💡 Pilihan serupa dari Vercel: <strong>SWR</strong> (Stale-While-Revalidate).
+<div v-click class="mt-2 flex items-center justify-between text-[11px] text-gray-800 bg-yellow-50 p-2 border border-black rounded shadow-[2px_2px_0px_#000]">
+  <span>🛡️ <strong>Wajib Pasang:</strong> <code>@tanstack/eslint-plugin-query</code></span>
+  <span class="text-[10px] text-gray-600">Otomatis cegah bug queryKey & reactivity</span>
 </div>
 
 ---

@@ -139,49 +139,85 @@ export async function DELETE(
 
 ### Pengenalan Drizzle ORM
 
-ORM modern yang ringan dan type-safe untuk TypeScript
+ORM Modern yang Ringan, Type-Safe, dan Mendukung Multi-Database
 
-<v-clicks>
+<div class="grid grid-cols-2 gap-4 mt-2">
+  <div class="brutal-card bg-white p-3 border-2 border-black shadow-[3px_3px_0px_#000]">
+    <div class="font-black text-xs uppercase mb-1.5 text-black flex items-center gap-1.5">
+      <span>🪶 Keunggulan Utama Drizzle</span>
+    </div>
+    <ul class="space-y-1 text-xs text-gray-700">
+      <li>• <strong>Sangat Ringan:</strong> Tanpa binary engine besar seperti Prisma.</li>
+      <li>• <strong>Type-Safe Otomatis:</strong> Tipe TypeScript langsung dari schema.</li>
+      <li>• <strong>Dekat dengan SQL:</strong> Query intuitif, performa maksimal.</li>
+    </ul>
+  </div>
 
-- 🪶 **Ringan**: Ukuran bundle sangat kecil dibanding Prisma
-- 🔒 **Type-Safe**: Tipe data otomatis dari schema — tanpa codegen
-- 🗄️ **Multi-Database**: SQLite, PostgreSQL, MySQL
-- ⚡ **Mirip SQL**: Syntaxnya dekat dengan SQL asli, mudah dipahami
+  <div class="brutal-card bg-white p-3 border-2 border-black shadow-[3px_3px_0px_#000]">
+    <div class="font-black text-xs uppercase mb-1.5 text-black flex items-center gap-1.5">
+      <span>🗄️ Pilihan Driver Database</span>
+    </div>
+    <ul class="space-y-1 text-xs text-gray-700">
+      <li>• <strong>SQLite</strong> (<code>better-sqlite3</code>): Cocok untuk demo & belajar (0 setup).</li>
+      <li>• <strong>PostgreSQL</strong> (<code>postgres</code> / Neon / Supabase): Standar industri.</li>
+      <li>• <strong>MySQL</strong> (<code>mysql2</code> / PlanetScale): Kompatibel penuh.</li>
+    </ul>
+  </div>
+</div>
 
-</v-clicks>
-
-```bash {1|2|all}
-# Instalasi
-npm install drizzle-orm better-sqlite3
-npm install -D drizzle-kit @types/better-sqlite3
-```
+<div class="mt-3 p-2.5 brutal-card bg-yellow-50 border-2 border-black shadow-[2px_2px_0px_#000] text-xs">
+  💡 <strong>Presentasi & Praktek Kita:</strong> Menggunakan <strong>SQLite</strong> karena <em>zero-setup</em>, 100% offline tanpa instal server database eksternal. Namun seluruh sintaks query-nya <strong>100% identik</strong> saat Antum beralih ke <strong>PostgreSQL</strong> di industri!
+</div>
 
 ---
+layout: two-cols
+---
 
-### Definisi Schema dengan Drizzle
+### Definisi Schema: SQLite vs PostgreSQL
 
-Mendefinisikan struktur tabel database
+Struktur Schema Serupa, Logika Query CRUD 100% Sama
 
-```tsx {1-2|4-10|12-16|all}
-// db/schema.ts
+::left::
+
+<div class="font-black text-xs mb-1 text-black flex items-center gap-1">
+  <span class="bg-[#FFE600] px-1.5 py-0.5 border border-black rounded text-[10px]">PILIHAN DEMO</span>
+  <span>SQLite (`better-sqlite3`)</span>
+</div>
+
+```ts
 import { sqliteTable, text, integer } from "drizzle-orm/sqlite-core";
 
-// Definisi tabel "todos"
 export const todos = sqliteTable("todos", {
-  id: integer("id").primaryKey({ autoIncrement: true }),
+  id: integer("id").primaryKey({
+    autoIncrement: true,
+  }),
   title: text("title").notNull(),
   done: integer("done", { mode: "boolean" }).default(false),
-  createdAt: text("created_at").default("CURRENT_TIMESTAMP"),
 });
-
-// Setup koneksi database
-// db/index.ts
-import { drizzle } from "drizzle-orm/better-sqlite3";
-import Database from "better-sqlite3";
-
-const sqlite = new Database("local.db");
-export const db = drizzle(sqlite);
 ```
+
+::right::
+
+<div class="font-black text-xs mb-1 text-black flex items-center gap-1">
+  <span class="bg-[#00E5FF] px-1.5 py-0.5 border border-black rounded text-[10px]">OPSI PRODUKSI</span>
+  <span>PostgreSQL (Supabase / Neon)</span>
+</div>
+
+```ts
+import { pgTable, text, serial, boolean } from "drizzle-orm/pg-core";
+
+export const todos = pgTable("todos", {
+  id: serial("id").primaryKey(),
+  title: text("title").notNull(),
+  done: boolean("done").default(false),
+});
+```
+
+::bottom::
+
+<div class="mt-2 p-2 brutal-card bg-white border border-black shadow-[2px_2px_0px_#000] text-[11px] text-gray-800">
+  🔍 <strong>Perhatikan:</strong> Cukup ganti modul core (<code>sqlite-core</code> ➔ <code>pg-core</code>) dan tipe auto-increment (<code>integer</code> ➔ <code>serial</code>). Logika CRUD setelahnya (<code>db.select()</code>, <code>db.insert()</code>) <strong>tidak berubah sama sekali</strong>!
+</div>
 
 ---
 
