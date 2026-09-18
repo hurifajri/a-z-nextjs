@@ -1,37 +1,35 @@
 <script setup lang="ts">
-import { handleBackground } from "@slidev/client";
-import { computed } from "vue";
+import { type BadgeColor } from "../components/BrutalBadge.vue";
 
 const props = withDefaults(
   defineProps<{
-    background?: string;
-    badge?: string | false;
-    badgeColor?: "cyan" | "pink" | "yellow" | "green" | "purple" | "white";
+    badge?: string;
+    badgeColor?: BadgeColor;
   }>(),
   {
-    background: undefined,
     badge: "SPEAKER / INTRO",
     badgeColor: "green",
   },
 );
-
-const style = computed(() => handleBackground(props.background));
 </script>
 
 <template>
-  <div
-    class="slidev-layout intro flex flex-col justify-center h-full"
-    :style="style"
-  >
-    <div class="brutal-card bg-white max-w-220">
-      <div v-if="$slots['badge'] || (badge !== false && badge)" class="mb-4">
+  <div class="flex flex-col justify-center h-full p-16">
+    <BrutalCard class="p-6 flex flex-col gap-2">
+      <div v-if="$slots['badge'] || badge">
         <slot name="badge">
-          <span class="brutal-badge" :class="`brutal-badge-${badgeColor}`">
+          <BrutalBadge :color="badgeColor">
             {{ badge }}
-          </span>
+          </BrutalBadge>
         </slot>
       </div>
       <slot />
-    </div>
+    </BrutalCard>
   </div>
 </template>
+
+<style scoped>
+:deep(h2) {
+  @apply text-brutal-black text-4xl font-black leading-tight tracking-tight;
+}
+</style>

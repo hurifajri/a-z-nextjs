@@ -16,32 +16,32 @@ Mengatasi Prop Drilling & Callback Hell, Mengenal Context API, Evolusi State (Re
 Ketika Aplikasi Membesar dan Komponen Semakin Bersarang
 
 <div class="grid grid-cols-2 gap-4 mt-2">
-  <div class="brutal-card bg-white p-3 text-xs" v-click>
+  <BrutalCard class="text-xs" v-click>
     <div class="font-black text-sm mb-1 text-red-600">📉 Prop Drilling</div>
     <p class="text-gray-600 mb-2">Melempar data melewati banyak level komponen yang sebenarnya tidak membutuhkannya.</p>
-    <div class="bg-gray-100 p-1.5 rounded font-mono text-[11px] leading-relaxed">
+    <div class="bg-gray-100 p-1.5 rounded font-mono text-xs leading-relaxed">
       App (punya data user)<br/>
       └─ Header (cuma numpang lewat)<br/>
       &nbsp;&nbsp;&nbsp;└─ Nav (masih numpang)<br/>
       &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;└─ UserAvatar (akhirnya dipakai!)
     </div>
-  </div>
+  </BrutalCard>
 
-  <div class="brutal-card bg-white p-3 text-xs" v-click>
+  <BrutalCard class="text-xs" v-click>
     <div class="font-black text-sm mb-1 text-red-600">🌪️ Callback Hell</div>
     <p class="text-gray-600 mb-2">Melempar fungsi update/setter dari komponen terbawah kembali ke atas melalui banyak tingkatan.</p>
-    <div class="bg-gray-100 p-1.5 rounded font-mono text-[11px] leading-relaxed">
+    <div class="bg-gray-100 p-1.5 rounded font-mono text-xs leading-relaxed">
       &lt;Page onUpdate={...}&gt;<br/>
       &nbsp;&nbsp;&lt;Table onUpdate={onUpdate}&gt;<br/>
       &nbsp;&nbsp;&nbsp;&nbsp;&lt;Row onUpdate={onUpdate}&gt;<br/>
       &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&lt;Button onClick={onUpdate} /&gt;
     </div>
-  </div>
+  </BrutalCard>
 </div>
 
-<div v-click class="mt-3 brutal-card bg-yellow-100 p-2 text-xs border-2 border-black text-center">
+<BrutalCard v-click class="mt-3 bg-yellow-100 text-xs text-center">
   😵 Jika salah satu nama props diubah di tengah jalan, seluruh rantai komponen akan patah dan error!
-</div>
+</BrutalCard>
 
 ---
 
@@ -154,9 +154,9 @@ Bagaimana Komunitas Menemukan Cara Terbaik Mengelola State
 - 🎯 **Selector-Based**: Hanya me-re-render komponen yang benar-benar menggunakan field tersebut!
 - 🔌 Bisa diakses di luar komponen React (di helper utility atau API interceptor).
 
-<div v-click class="mt-2 brutal-card bg-white p-2 text-xs">
+<BrutalCard v-click class="mt-2 text-xs">
   💡 Pilihan lain di ekosistem: <strong>Jotai / Recoil</strong> (berbasis <em>Atomic state</em>).
-</div>
+</BrutalCard>
 
 ---
 
@@ -196,11 +196,7 @@ export default function BuyButton() {
   const totalItems = useCartStore((state) => state.totalItems);
   const addItem = useCartStore((state) => state.addItem);
 
-  return (
-    <button onClick={addItem} className="brutal-btn">
-      Cart: {totalItems} items
-    </button>
-  );
+  return <button onClick={addItem}>Cart: {totalItems} items</button>;
 }
 ```
 ````

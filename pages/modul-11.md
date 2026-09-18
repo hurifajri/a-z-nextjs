@@ -16,23 +16,23 @@ Praktek langsung membangun aplikasi Todo fullstack — menggabungkan semua konse
 Aplikasi Todo fullstack dengan fitur lengkap
 
 <div class="grid grid-cols-3 gap-3 mt-6">
-  <div class="brutal-card bg-white p-3 text-sm" v-click>
+  <BrutalCard v-click>
     <div class="font-black text-lg mb-1">📝 CRUD Todo</div>
     <p class="text-xs text-gray-600">Tambah, tandai selesai, dan hapus catatan tugas.</p>
-  </div>
-  <div class="brutal-card bg-white p-3 text-sm" v-click>
+  </BrutalCard>
+  <BrutalCard v-click>
     <div class="font-black text-lg mb-1">🗄️ Database</div>
     <p class="text-xs text-gray-600">Data tersimpan di SQLite via Drizzle ORM + Route Handlers.</p>
-  </div>
-  <div class="brutal-card bg-white p-3 text-sm" v-click>
+  </BrutalCard>
+  <BrutalCard v-click>
     <div class="font-black text-lg mb-1">🎨 Multi Halaman</div>
     <p class="text-xs text-gray-600">Navigasi antar halaman dengan layout bersama dan styling Tailwind.</p>
-  </div>
+  </BrutalCard>
 </div>
 
-<div v-click class="mt-6 brutal-card bg-yellow-100 p-3 text-sm text-center border-2 border-black">
+<BrutalCard v-click class="mt-6 bg-yellow-100 text-center">
   🎯 Ini adalah <strong>checkpoint</strong> — kita akan menggunakan konsep dari <strong>Modul 01 sampai 10</strong> dalam satu project nyata!
-</div>
+</BrutalCard>
 
 ---
 

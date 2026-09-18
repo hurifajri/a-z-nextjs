@@ -155,9 +155,9 @@ Bikin kotak modal dengan CSS itu mudah, tetapi:
 
 #### Standar Industri
 
-<div class="brutal-card bg-yellow-100 p-3 text-xs border-2 border-black">
+<BrutalCard class="bg-yellow-100 text-xs">
   ⚠️ Mengabaikan aspek aksesibilitas (a11y) membuat website Antum tidak dapat digunakan oleh jutaan penyandang disabilitas dan melanggar standar web internasional.
-</div>
+</BrutalCard>
 
 <p class="text-xs text-gray-700 mt-4">
   Oleh karena itu, di industri kita memanfaatkan <strong>Accessible Primitive Libraries</strong> yang telah diuji oleh ribuan pakar!
@@ -229,7 +229,7 @@ export default function CustomButton({ primary }: { primary?: boolean }) {
     <button
       className={`border-2 border-black px-4 py-2 font-bold transition-all ${
         primary
-          ? "bg-[#FFE600] hover:bg-[#FFD700]"
+          ? "bg-yellow-400 hover:bg-yellow-500"
           : "bg-white hover:bg-gray-100"
       }`}
     >

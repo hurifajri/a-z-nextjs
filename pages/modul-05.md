@@ -112,9 +112,9 @@ setUser({ ...user, age: 26 });
 ```
 ````
 
-<div v-click class="mt-4 brutal-card bg-white p-3 text-sm">
+<BrutalCard v-click class="mt-4">
   🔑 <strong>Prinsip Immutability:</strong> React membandingkan referensi object/array lama vs baru. Jika referensinya sama (mutasi langsung), React menganggap tidak ada perubahan!
-</div>
+</BrutalCard>
 
 ---
 
@@ -144,9 +144,9 @@ export default function Clock() {
 ```
 
 <div v-click class="mt-3 grid grid-cols-3 gap-2 text-xs">
-  <div class="brutal-card bg-white p-2 text-center"><code>[]</code><br/>Jalankan <strong>1x</strong> saat mount</div>
-  <div class="brutal-card bg-white p-2 text-center"><code>[value]</code><br/>Jalankan saat <strong>value berubah</strong></div>
-  <div class="brutal-card bg-white p-2 text-center"><em>tanpa array</em><br/>Jalankan <strong>setiap render</strong></div>
+  <BrutalCard class="text-center"><code>[]</code><br/>Jalankan <strong>1x</strong> saat mount</BrutalCard>
+  <BrutalCard class="text-center"><code>[value]</code><br/>Jalankan saat <strong>value berubah</strong></BrutalCard>
+  <BrutalCard class="text-center"><em>tanpa array</em><br/>Jalankan <strong>setiap render</strong></BrutalCard>
 </div>
 
 ---
@@ -195,9 +195,9 @@ function ShoppingCart({
 ```
 ````
 
-<div v-click class="mt-3 brutal-card bg-yellow-100 p-2 text-xs border-2 border-black">
+<BrutalCard v-click class="mt-3 bg-yellow-100 text-xs">
   💡 <strong>Aturan Emas:</strong> Jika sebuah nilai bisa dihitung dari <code>props</code> atau <code>state</code> yang sudah ada, <strong>jangan taruh di state baru</strong>!
-</div>
+</BrutalCard>
 
 ---
 layout: two-cols

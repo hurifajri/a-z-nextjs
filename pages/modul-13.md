@@ -25,9 +25,9 @@ Swagger/OpenAPI adalah kontrak antara frontend dan backend
 
 </v-clicks>
 
-<div v-click class="mt-4 brutal-card bg-white p-3 text-sm">
+<BrutalCard v-click class="mt-4 ">
   💡 Swagger UI biasanya bisa diakses di <code>https://api.example.com/docs</code> atau <code>/swagger</code>. Minta URL-nya ke tim backend!
-</div>
+</BrutalCard>
 
 ---
 
@@ -36,26 +36,26 @@ Swagger/OpenAPI adalah kontrak antara frontend dan backend
 Memahami setiap bagian di halaman dokumentasi
 
 <div class="grid grid-cols-2 gap-4 mt-4">
-  <div class="brutal-card bg-white p-3 text-sm" v-click>
-    <span class="brutal-badge brutal-badge-green mb-2">GET</span>
-    <div class="font-bold">/api/products</div>
-    <p class="text-xs text-gray-600 mt-1">Ambil daftar produk. Bisa filter dengan query: <code>?category=elektronik</code></p>
-  </div>
-  <div class="brutal-card bg-white p-3 text-sm" v-click>
-    <span class="brutal-badge brutal-badge-yellow mb-2">POST</span>
-    <div class="font-bold">/api/products</div>
-    <p class="text-xs text-gray-600 mt-1">Buat produk baru. Body: <code>{ name, price, category }</code></p>
-  </div>
-  <div class="brutal-card bg-white p-3 text-sm" v-click>
-    <span class="brutal-badge brutal-badge-cyan mb-2">PUT</span>
+  <BrutalCard class="flex flex-col gap-2 items-start" v-click>
+    <BrutalBadge color="green">GET</BrutalBadge>
+    <p class="font-bold">/api/products</p>
+    <p class="text-xs text-gray-600">Ambil daftar produk. Bisa filter dengan query: <code>?category=elektronik</code></p>
+  </BrutalCard>
+  <BrutalCard class="flex flex-col gap-2 items-start" v-click>
+    <BrutalBadge color="yellow">POST</BrutalBadge>
+    <p class="font-bold">/api/products</p>
+    <p class="text-xs text-gray-600">Buat produk baru. Body: <code>{ name, price, category }</code></p>
+  </BrutalCard>
+  <BrutalCard class="flex flex-col gap-2 items-start" v-click>
+    <BrutalBadge color="cyan">PUT</BrutalBadge>
+    <p class="font-bold">/api/products/{id}</p>
+    <p class="text-xs text-gray-600">Update produk. Body: <code>{ name?, price? }</code></p>
+  </BrutalCard>
+  <BrutalCard class="flex flex-col gap-2 items-start" v-click>
+    <BrutalBadge color="pink">DELETE</BrutalBadge>
     <div class="font-bold">/api/products/{id}</div>
-    <p class="text-xs text-gray-600 mt-1">Update produk. Body: <code>{ name?, price? }</code></p>
-  </div>
-  <div class="brutal-card bg-white p-3 text-sm" v-click>
-    <span class="brutal-badge brutal-badge-pink mb-2">DELETE</span>
-    <div class="font-bold">/api/products/{id}</div>
-    <p class="text-xs text-gray-600 mt-1">Hapus produk berdasarkan ID.</p>
-  </div>
+    <p class="text-xs text-gray-600">Hapus produk berdasarkan ID.</p>
+  </BrutalCard>
 </div>
 
 ---
@@ -112,23 +112,23 @@ eyJhbGciOiJIUzI1NiJ9.eyJ1c2VySWQiOjEsInJvbGUiOiJhZG1pbiJ9.SflKxwRJSMeKKF2QT4fwpM
 </div>
 
 <div class="grid grid-cols-3 gap-3 mt-4 text-xs">
-  <div class="brutal-card bg-red-100 p-2 text-center" v-click>
+  <BrutalCard class="bg-red-100 text-center" v-click>
     <strong>Header</strong><br/>
     Algoritma + Tipe Token
-  </div>
-  <div class="brutal-card bg-purple-100 p-2 text-center" v-click>
+  </BrutalCard>
+  <BrutalCard class="bg-purple-100 text-center" v-click>
     <strong>Payload</strong><br/>
     Data user (id, role, exp)
-  </div>
-  <div class="brutal-card bg-blue-100 p-2 text-center" v-click>
+  </BrutalCard>
+  <BrutalCard class="bg-blue-100 text-center" v-click>
     <strong>Signature</strong><br/>
     Tanda tangan digital
-  </div>
+  </BrutalCard>
 </div>
 
-<div v-click class="mt-4 brutal-card bg-white p-3 text-sm">
+<BrutalCard v-click class="mt-4">
   🔐 Token dikirim di setiap request via header: <code>Authorization: Bearer eyJhbG...</code>
-</div>
+</BrutalCard>
 
 ---
 

@@ -49,21 +49,21 @@ Route (app)
 Memahami klasifikasi halaman di Next.js 16
 
 <div class="grid grid-cols-2 gap-4 mt-6">
-  <div class="brutal-card bg-white p-3 text-center" v-click>
+  <BrutalCard class="text-center" v-click>
     <div class="text-3xl mb-2">○</div>
     <strong>Static (Prerendered)</strong>
     <p class="text-xs text-gray-600 mt-1">Di-generate saat build / di-cache. Siap dikirim 0ms dari CDN Edge.</p>
-  </div>
-  <div class="brutal-card bg-white p-3 text-center" v-click>
+  </BrutalCard>
+  <BrutalCard class="text-center" v-click>
     <div class="text-3xl mb-2">ƒ</div>
     <strong>Dynamic (Server-Rendered)</strong>
     <p class="text-xs text-gray-600 mt-1">Diproses di server pada setiap request pengguna (atau via streaming).</p>
-  </div>
+  </BrutalCard>
 </div>
 
-<div v-click class="mt-6 brutal-card bg-white p-3 text-sm">
+<BrutalCard v-click class="mt-6">
   💡 <strong>Next.js 16 Update:</strong> Kolom <code>Size</code> dan <code>First Load JS</code> telah dihapus dari build output karena tidak lagi akurat untuk React Server Components (RSC). Tolok ukur performa kini dinilai langsung dari <strong>Core Web Vitals</strong> di browser pengguna nyata!
-</div>
+</BrutalCard>
 
 ---
 
@@ -82,21 +82,21 @@ JWT_SECRET=production-secret-key-very-long
 ```
 
 <div v-click class="mt-4 grid grid-cols-2 gap-3 text-xs">
-  <div class="brutal-card bg-white p-2">
+  <BrutalCard>
     <strong>Server-only (default)</strong><br/>
     <code>DATABASE_URL</code><br/>
     Hanya bisa diakses di server
-  </div>
-  <div class="brutal-card bg-white p-2">
+  </BrutalCard>
+  <BrutalCard>
     <strong>Public (exposed ke client)</strong><br/>
     <code>NEXT_PUBLIC_API_URL</code><br/>
     Bisa diakses di browser
-  </div>
+  </BrutalCard>
 </div>
 
-<div v-click class="mt-3 brutal-card bg-white p-3 text-sm">
+<BrutalCard v-click class="mt-3">
   ⚠️ Prefix <code>NEXT_PUBLIC_</code> = terekspos ke browser! JANGAN taruh secret key dengan prefix ini.
-</div>
+</BrutalCard>
 
 ---
 
@@ -115,9 +115,9 @@ Platform resmi buatan tim Next.js — deploy semudah push ke Git
 
 </v-clicks>
 
-<div v-click class="mt-4 brutal-card bg-white p-3 text-sm text-center">
+<BrutalCard v-click class="mt-4 text-center">
   🎉 Setiap push ke branch <code>main</code> akan otomatis trigger <strong>auto-deploy</strong>!
-</div>
+</BrutalCard>
 
 ---
 
@@ -149,9 +149,9 @@ Memantau kesehatan aplikasi yang sudah online
 
 </v-clicks>
 
-<div v-click class="mt-4 brutal-card bg-white p-3 text-sm">
+<BrutalCard v-click class="mt-4">
   🎯 <strong>Target Core Web Vitals (Standar Google):</strong> LCP &lt; 2.5 detik, INP &lt; 200ms, CLS &lt; 0.1 untuk pengalaman browsing yang mulus.
-</div>
+</BrutalCard>
 
 ---
 

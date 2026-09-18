@@ -24,10 +24,10 @@ Bayangkan Antum punya 1.000 produk di toko online:
 ... 997 other products
 ```
 
-<div v-click class="mt-4 brutal-card bg-yellow-100 p-4 border-2 border-black">
+<BrutalCard v-click class="mt-4 bg-yellow-100">
   🤔 <strong>Apakah kita harus membuat 1.000 folder satu per satu?</strong><br/>
   Tentu tidak! Di sinilah kita menggunakan fitur <strong>Dynamic Routes</strong> dengan tanda kurung siku <code>[id]</code>.
-</div>
+</BrutalCard>
 
 ---
 
@@ -55,9 +55,9 @@ export default async function ProductDetail({ params }: PageProps) {
 }
 ```
 
-<div v-click class="mt-4 brutal-card bg-white p-3 text-sm">
+<BrutalCard v-click class="mt-4">
   💡 Di Next.js terbaru, properti <code>params</code> bersifat <code>Promise</code> sehingga perlu di-<code>await</code> terlebih dahulu sebelum diambil nilainya.
-</div>
+</BrutalCard>
 
 ---
 
@@ -71,9 +71,9 @@ Pilihan Pola Dynamic Routes Sesuai Kebutuhan Aplikasi
 | `blog/[...slug]` _(Catch-all)_  | `/blog/2026/09/nextjs-tips`       | `{ slug: ['2026', '09', 'nextjs-tips'] }`               |
 | `docs/[[...slug]]` _(Optional)_ | `/docs` atau `/docs/installation` | `{ slug: undefined }` atau `{ slug: ['installation'] }` |
 
-<div v-click class="mt-4 brutal-card bg-white p-3 text-xs">
+<BrutalCard v-click class="mt-4 text-xs">
   📌 Gunakan <code>[...slug]</code> saat rute memiliki kedalaman bertingkat yang bervariasi (seperti rubrik artikel atau struktur dokumentasi panduan).
-</div>
+</BrutalCard>
 
 ---
 layout: two-cols
@@ -145,11 +145,7 @@ export default function CheckoutForm() {
     router.push("/success"); // Navigate!
   }
 
-  return (
-    <button onClick={handlePayment} className="brutal-btn">
-      Pay Now
-    </button>
-  );
+  return <button onClick={handlePayment}>Pay Now</button>;
 }
 ```
 

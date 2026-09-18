@@ -30,9 +30,9 @@ User request → Proxy / Middleware → Page/Route Handler
 
 </v-clicks>
 
-<div v-click class="mt-4 brutal-card bg-white p-3 text-sm">
+<BrutalCard v-click class="mt-4">
   📁 <strong>Evolusi Next.js 16:</strong> File kini dinamai <code>proxy.ts</code> di <strong>root project</strong> (menggantikan <code>middleware.ts</code> di Next.js 12–15) untuk memperjelas perannya sebagai batas jaringan (network boundary).
-</div>
+</BrutalCard>
 
 ---
 
@@ -85,16 +85,16 @@ export const config = {
 ```
 
 <div v-click class="mt-4 grid grid-cols-2 gap-3 text-xs">
-  <div class="brutal-card bg-white p-2">
+  <BrutalCard>
     <strong>:path*</strong><br/>
     Cocokkan semua sub-path<br/>
     <code>/dashboard/settings/...</code>
-  </div>
-  <div class="brutal-card bg-white p-2">
+  </BrutalCard>
+  <BrutalCard>
     <strong>((?!pattern).*)</strong><br/>
     Cocokkan semua kecuali pattern<br/>
     Exclude API routes, assets
-  </div>
+  </BrutalCard>
 </div>
 
 ---
@@ -227,9 +227,9 @@ export async function POST() {
 ```
 ````
 
-<div v-click class="mt-3 brutal-card bg-white p-3 text-sm">
+<BrutalCard v-click class="mt-3">
   🔐 <strong>httpOnly cookie</strong> lebih aman daripada localStorage karena tidak bisa diakses oleh JavaScript (XSS attack proof).
-</div>
+</BrutalCard>
 
 ---
 layout: intro

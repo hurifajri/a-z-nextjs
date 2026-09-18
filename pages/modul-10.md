@@ -24,26 +24,20 @@ Selama ini kita **consume** API yang sudah dibuat orang lain...
 
 </div>
 
-<div
-  v-click
-  v-motion
-  :initial="{ scale: 0.8, opacity: 0 }"
-  :enter="{ scale: 1, opacity: 1 }"
-  class="mt-6 brutal-card bg-yellow-100 p-4 text-center border-3 border-black"
->
+<BrutalCard v-click v-motion :initial="{ scale: 0.8, opacity: 0 }" :enter="{ scale: 1, opacity: 1 }" class="mt-6 bg-yellow-100 text-center">
   🚀 Tapi Next.js juga bisa <strong>MEMBUAT</strong> API sendiri!<br/>
   <span class="text-sm">Frontend + Backend dalam satu project — itulah <strong>Fullstack</strong>.</span>
-</div>
+</BrutalCard>
 
 <div v-click class="mt-4 grid grid-cols-2 gap-4 text-sm">
-  <div class="brutal-card bg-white p-3 text-center">
+  <BrutalCard class="text-center">
     <strong>Consume API</strong><br/>
     <code>fetch("https://api-orang.com")</code>
-  </div>
-  <div class="brutal-card bg-white p-3 text-center">
+  </BrutalCard>
+  <BrutalCard class="text-center">
     <strong>Buat API Sendiri</strong><br/>
     <code>app/api/users/route.ts</code>
-  </div>
+  </BrutalCard>
 </div>
 
 ---
@@ -74,9 +68,9 @@ export async function POST(request: Request) {
 }
 ```
 
-<div v-click class="mt-3 brutal-card bg-white p-3 text-sm">
+<BrutalCard v-click class="mt-3">
   📁 Struktur folder menentukan URL: <code>app/api/hello/route.ts</code> → <code>/api/hello</code>
-</div>
+</BrutalCard>
 
 ---
 
@@ -142,8 +136,8 @@ export async function DELETE(
 ORM Modern yang Ringan, Type-Safe, dan Mendukung Multi-Database
 
 <div class="grid grid-cols-2 gap-4 mt-2">
-  <div class="brutal-card bg-white p-3 border-2 border-black shadow-[3px_3px_0px_#000]">
-    <div class="font-black text-xs uppercase mb-1.5 text-black flex items-center gap-1.5">
+  <BrutalCard>
+    <div class="font-black text-xs uppercase mb-1.5 text-brutal-black flex items-center gap-1.5">
       <span>🪶 Keunggulan Utama Drizzle</span>
     </div>
     <ul class="space-y-1 text-xs text-gray-700">
@@ -151,10 +145,10 @@ ORM Modern yang Ringan, Type-Safe, dan Mendukung Multi-Database
       <li>• <strong>Type-Safe Otomatis:</strong> Tipe TypeScript langsung dari schema.</li>
       <li>• <strong>Dekat dengan SQL:</strong> Query intuitif, performa maksimal.</li>
     </ul>
-  </div>
+  </BrutalCard>
 
-  <div class="brutal-card bg-white p-3 border-2 border-black shadow-[3px_3px_0px_#000]">
-    <div class="font-black text-xs uppercase mb-1.5 text-black flex items-center gap-1.5">
+  <BrutalCard>
+    <div class="font-black text-xs uppercase mb-1.5 text-brutal-black flex items-center gap-1.5">
       <span>🗄️ Pilihan Driver Database</span>
     </div>
     <ul class="space-y-1 text-xs text-gray-700">
@@ -162,12 +156,12 @@ ORM Modern yang Ringan, Type-Safe, dan Mendukung Multi-Database
       <li>• <strong>PostgreSQL</strong> (<code>postgres</code> / Neon / Supabase): Standar industri.</li>
       <li>• <strong>MySQL</strong> (<code>mysql2</code> / PlanetScale): Kompatibel penuh.</li>
     </ul>
-  </div>
+  </BrutalCard>
 </div>
 
-<div class="mt-3 p-2.5 brutal-card bg-yellow-50 border-2 border-black shadow-[2px_2px_0px_#000] text-xs">
+<BrutalCard class="mt-3 bg-yellow-50 text-xs">
   💡 <strong>Presentasi & Praktek Kita:</strong> Menggunakan <strong>SQLite</strong> karena <em>zero-setup</em>, 100% offline tanpa instal server database eksternal. Namun seluruh sintaks query-nya <strong>100% identik</strong> saat Antum beralih ke <strong>PostgreSQL</strong> di industri!
-</div>
+</BrutalCard>
 
 ---
 layout: two-cols
@@ -179,8 +173,8 @@ Struktur Schema Serupa, Logika Query CRUD 100% Sama
 
 ::left::
 
-<div class="font-black text-xs mb-1 text-black flex items-center gap-1">
-  <span class="bg-[#FFE600] px-1.5 py-0.5 border border-black rounded text-[10px]">PILIHAN DEMO</span>
+<div class="font-black text-xs mb-1 text-brutal-black flex items-center gap-1">
+  <span class="bg-brutal-yellow px-1.5 py-0.5 border border-brutal-black rounded text-xs">PILIHAN DEMO</span>
   <span>SQLite (`better-sqlite3`)</span>
 </div>
 
@@ -198,8 +192,8 @@ export const todos = sqliteTable("todos", {
 
 ::right::
 
-<div class="font-black text-xs mb-1 text-black flex items-center gap-1">
-  <span class="bg-[#00E5FF] px-1.5 py-0.5 border border-black rounded text-[10px]">OPSI PRODUKSI</span>
+<div class="font-black text-xs mb-1 text-brutal-black flex items-center gap-1">
+  <span class="bg-brutal-cyan px-1.5 py-0.5 border border-brutal-black rounded text-xs">OPSI PRODUKSI</span>
   <span>PostgreSQL (Supabase / Neon)</span>
 </div>
 
@@ -215,9 +209,9 @@ export const todos = pgTable("todos", {
 
 ::bottom::
 
-<div class="mt-2 p-2 brutal-card bg-white border border-black shadow-[2px_2px_0px_#000] text-[11px] text-gray-800">
+<BrutalCard class="mt-2 text-xs text-gray-800">
   🔍 <strong>Perhatikan:</strong> Cukup ganti modul core (<code>sqlite-core</code> ➔ <code>pg-core</code>) dan tipe auto-increment (<code>integer</code> ➔ <code>serial</code>). Logika CRUD setelahnya (<code>db.select()</code>, <code>db.insert()</code>) <strong>tidak berubah sama sekali</strong>!
-</div>
+</BrutalCard>
 
 ---
 
@@ -304,9 +298,9 @@ export default function AddForm() {
 }
 ```
 
-<div v-click class="mt-3 brutal-card bg-white p-3 text-sm">
+<BrutalCard v-click class="mt-3">
   📌 Server Actions adalah fitur baru Next.js. Untuk saat ini, kita fokus ke <strong>Route Handlers</strong> dulu karena lebih mirip dengan REST API yang umum digunakan.
-</div>
+</BrutalCard>
 
 ---
 layout: intro

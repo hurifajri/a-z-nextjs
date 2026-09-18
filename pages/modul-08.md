@@ -150,9 +150,9 @@ export default function UserList() {
 }
 ```
 
-<div v-click class="mt-2 flex items-center justify-between text-[11px] text-gray-800 bg-yellow-50 p-2 border border-black rounded shadow-[2px_2px_0px_#000]">
+<div v-click class="mt-2 flex items-center justify-between text-xs text-gray-800 bg-yellow-50 p-2 border border-brutal-black rounded shadow-brutal-sm">
   <span>🛡️ <strong>Wajib Pasang:</strong> <code>@tanstack/eslint-plugin-query</code></span>
-  <span class="text-[10px] text-gray-600">Otomatis cegah bug queryKey & reactivity</span>
+  <span class="text-xs text-gray-600">Otomatis cegah bug queryKey & reactivity</span>
 </div>
 
 ---
@@ -167,9 +167,9 @@ Panduan Mengambil Keputusan di Next.js App Router
 | **Dashboard Interaktif / Admin**      | **TanStack Query / SWR**                | Butuh auto-refresh, polling berkala, filter data cepat di browser |
 | **Infinite Scroll & Real-Time List**  | **TanStack Query (`useInfiniteQuery`)** | Pagination & caching otomatis di memori klien                     |
 
-<div v-click class="mt-4 brutal-card bg-yellow-100 p-3 text-xs border-2 border-black">
+<BrutalCard v-click class="mt-4 bg-yellow-100 text-xs">
   🚀 Di Next.js, mulailah selalu dari <strong>Server Component fetch</strong>. Beralihlah ke <strong>TanStack Query</strong> hanya pada komponen interaktif yang butuh auto-polling atau sinkronisasi client intensif.
-</div>
+</BrutalCard>
 
 ---
 
@@ -210,9 +210,7 @@ function ErrorState({
   return (
     <div className="text-center py-8 brutal-card bg-red-50">
       <p className="text-red-600 font-bold mb-3">⚠️ {message}</p>
-      <button onClick={onRetry} className="brutal-btn">
-        Try Again
-      </button>
+      <button onClick={onRetry}>Try Again</button>
     </div>
   );
 }

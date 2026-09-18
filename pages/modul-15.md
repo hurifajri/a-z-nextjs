@@ -66,16 +66,16 @@ Pola Modern yang Direkomendasikan di Ekosistem React (Kent C. Dodds)
 ::right::
 
 <div class="space-y-2 text-xs">
-  <div class="p-2 border-2 border-black rounded bg-white">
+  <div class="p-2 border-2 border-brutal-black rounded bg-brutal-white">
     <strong>1. Static Analysis</strong>: Menangkap salah ketik & tipe data via TypeScript.
   </div>
-  <div class="p-2 border-2 border-black rounded bg-white">
+  <div class="p-2 border-2 border-brutal-black rounded bg-brutal-white">
     <strong>2. Unit Tests</strong>: Menguji fungsi murni / kalkulasi matematika terisolasi.
   </div>
-  <div class="p-2 border-2 border-black rounded bg-yellow-100 font-bold shadow-[2px_2px_0px_#000]">
+  <div class="p-2 border-2 border-brutal-black rounded bg-yellow-100 font-bold shadow-brutal-sm">
     <strong>3. Integration Tests</strong>: Menguji beberapa komponen bekerja sama (Form + Tombol + Validasi + Tampilan).
   </div>
-  <div class="p-2 border-2 border-black rounded bg-white">
+  <div class="p-2 border-2 border-brutal-black rounded bg-brutal-white">
     <strong>4. E2E Tests</strong>: Simulasi alur penuh di browser asli (Playwright/Cypress).
   </div>
 </div>

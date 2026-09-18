@@ -96,9 +96,9 @@ export default function Counter() {
 }
 ```
 
-<div v-click class="mt-4 brutal-card bg-white p-3 text-sm">
+<BrutalCard v-click class="mt-4">
   ⚠️ <strong>Tanpa</strong> <code>"use client"</code>, kode di atas akan ERROR karena <code>useState</code> dan <code>onClick</code> tidak tersedia di Server Components!
-</div>
+</BrutalCard>
 
 ---
 
@@ -168,9 +168,9 @@ Aturan praktis yang sederhana
 
 </v-clicks>
 
-<div v-click class="mt-6 brutal-card bg-white p-4 text-center">
+<BrutalCard v-click class="mt-6 text-center">
   💡 <strong>Tips Emas:</strong> Dorong Client Component sejauh mungkin ke <em>"daun"</em> terkecil di component tree Antum!
-</div>
+</BrutalCard>
 
 ---
 layout: two-cols
@@ -261,9 +261,9 @@ export default function InteractiveLayout({
 }
 ```
 
-<div v-click class="mt-4 brutal-card bg-white p-3 text-sm">
+<BrutalCard v-click class="mt-4 text-sm">
   ⚠️ Jika Antum <strong>import langsung</strong> Server Component di dalam file Client Component, dia ikut berubah jadi Client. Solusinya: kirim sebagai <code>children</code> (props).
-</div>
+</BrutalCard>
 
 ---
 

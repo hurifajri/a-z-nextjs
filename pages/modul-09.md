@@ -58,24 +58,24 @@ const inputRef = useRef<HTMLInputElement>(null);
 Tantangan Nyata Saat Mengelola Form Kompleks Hanya dengan `useState`
 
 <div class="grid grid-cols-2 gap-4 mt-4">
-  <div class="brutal-card bg-white p-3 text-xs" v-click>
+  <BrutalCard class="text-xs" v-click>
     <div class="font-black text-sm mb-1 text-red-600">💥 Masalah Performa</div>
     <p class="text-gray-600">Form dengan 15 input berarti 15 state. Setiap kali pengguna mengetik di satu kolom, <strong>ke-15 kolom lainnya ikut ter-render ulang</strong>.</p>
-  </div>
-  <div class="brutal-card bg-white p-3 text-xs" v-click>
+  </BrutalCard>
+  <BrutalCard class="text-xs" v-click>
     <div class="font-black text-sm mb-1 text-red-600">🍝 Validasi Rumit</div>
     <p class="text-gray-600">Puluhan baris <code>if-else</code> manual untuk cek email, minimal karakter, konfirmasi password, hingga field bersarang.</p>
-  </div>
+  </BrutalCard>
 </div>
 
-<div v-click class="mt-4 brutal-card bg-white p-3 text-sm">
+<BrutalCard v-click class="mt-4">
   🌟 <strong>Solusi Komunitas Open Source:</strong>
   <div class="grid grid-cols-3 gap-2 mt-2 text-xs">
     <div><strong>React Hook Form (RHF)</strong><br/>Standar industri, uncontrolled & super cepat</div>
     <div><strong>TanStack Form</strong><br/>Modern, type-safe lintas framework</div>
     <div><strong>Formik</strong><br/>Library populer era lama</div>
   </div>
-</div>
+</BrutalCard>
 
 ---
 layout: two-cols
@@ -105,9 +105,9 @@ npm install valibot @hookform/resolvers
 - **Yup**: Populer di masa lalu bersama Formik.
 - **TypeBox**: Berfokus pada integrasi JSON Schema murni.
 
-<div v-click class="mt-2 brutal-card bg-yellow-100 p-2 text-xs border-2 border-black">
+<BrutalCard v-click class="mt-2 bg-yellow-100 text-xs">
   💡 Prinsip Valibot & Zod sama: Antum menulis aturan validasi satu kali, lalu otomatis mendapatkan <strong>TypeScript Type</strong> gratis!
-</div>
+</BrutalCard>
 
 ---
 
@@ -179,7 +179,7 @@ export default function RegisterForm() {
         <p className="text-red-500 text-xs">{errors.fullName.message}</p>
       )}
 
-      <button disabled={isSubmitting} className="brutal-btn">
+      <button disabled={isSubmitting}>
         {isSubmitting ? "Registering..." : "Register Account"}
       </button>
     </form>
@@ -226,9 +226,9 @@ await fetch(`/api/todos/${id}`, {
 | **404**       | ❓ Not Found      | Data yang mau diubah tidak ada |
 | **500**       | 💥 Server Error   | Kendala teknis di backend      |
 
-<div v-click class="mt-2 brutal-card bg-white p-2 text-xs">
+<BrutalCard v-click class="mt-2 text-xs">
   💡 Selalu periksa <code>if (!res.ok)</code> sebelum menampilkan notifikasi sukses ke user!
-</div>
+</BrutalCard>
 
 ---
 layout: intro

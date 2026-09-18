@@ -76,9 +76,9 @@ src/app/
     └── page.tsx           → URL: /services
 ```
 
-<div v-click class="mt-4 brutal-card bg-white p-3 text-sm">
+<BrutalCard v-click class="mt-4">
   📌 <strong>Aturan Emas:</strong> Suatu rute hanya dapat diakses pengunjung jika di dalam folder tersebut terdapat file bernama <code>page.tsx</code>!
-</div>
+</BrutalCard>
 
 ---
 layout: two-cols
@@ -91,16 +91,16 @@ Nama-Nama File dengan Peran Otomatis Tanpa Perlu Setup Tambahan
 ::left::
 
 <div class="space-y-3 text-sm">
-  <div class="p-3 border-2 border-black rounded bg-white shadow-[2px_2px_0px_#000]">
-    <span class="font-black text-[#FFE600] bg-black px-1.5 py-0.5 rounded text-xs mr-2">page.tsx</span>
+  <div class="p-3 border-2 border-brutal-black rounded bg-brutal-white shadow-brutal-sm">
+    <span class="font-black text-brutal-yellow bg-brutal-black px-1.5 py-0.5 rounded text-xs mr-2">page.tsx</span>
     Tampilan utama halaman yang dapat diakses oleh pengunjung website.
   </div>
-  <div class="p-3 border-2 border-black rounded bg-white shadow-[2px_2px_0px_#000]">
-    <span class="font-black text-[#00E5FF] bg-black px-1.5 py-0.5 rounded text-xs mr-2">layout.tsx</span>
+  <div class="p-3 border-2 border-brutal-black rounded bg-brutal-white shadow-brutal-sm">
+    <span class="font-black text-brutal-cyan bg-brutal-black px-1.5 py-0.5 rounded text-xs mr-2">layout.tsx</span>
     Kerangka bersama (navbar/footer) yang tetap bertahan saat ganti halaman.
   </div>
-  <div class="p-3 border-2 border-black rounded bg-white shadow-[2px_2px_0px_#000]">
-    <span class="font-black text-[#FF6B8B] bg-black px-1.5 py-0.5 rounded text-xs mr-2">loading.tsx</span>
+  <div class="p-3 border-2 border-brutal-black rounded bg-brutal-white shadow-brutal-sm">
+    <span class="font-black text-brutal-pink bg-brutal-black px-1.5 py-0.5 rounded text-xs mr-2">loading.tsx</span>
     Tampilan sementara otomatis (skeleton/spinner) saat data sedang dimuat.
   </div>
 </div>
@@ -108,25 +108,25 @@ Nama-Nama File dengan Peran Otomatis Tanpa Perlu Setup Tambahan
 ::right::
 
 <div class="space-y-3 text-sm">
-  <div class="p-3 border-2 border-black rounded bg-white shadow-[2px_2px_0px_#000]">
-    <span class="font-black text-[#2ED573] bg-black px-1.5 py-0.5 rounded text-xs mr-2">error.tsx</span>
+  <div class="p-3 border-2 border-brutal-black rounded bg-brutal-white shadow-brutal-sm">
+    <span class="font-black text-brutal-green bg-brutal-black px-1.5 py-0.5 rounded text-xs mr-2">error.tsx</span>
     Penanganan kendala teknis secara elegan agar seluruh web tidak crash.
   </div>
-  <div class="p-3 border-2 border-black rounded bg-white shadow-[2px_2px_0px_#000]">
-    <span class="font-black text-[#B388EB] bg-black px-1.5 py-0.5 rounded text-xs mr-2">not-found.tsx</span>
+  <div class="p-3 border-2 border-brutal-black rounded bg-brutal-white shadow-brutal-sm">
+    <span class="font-black text-brutal-purple bg-brutal-black px-1.5 py-0.5 rounded text-xs mr-2">not-found.tsx</span>
     Tampilan ramah 404 jika halaman yang dicari pengunjung tidak ditemukan.
   </div>
-  <div class="p-3 border-2 border-black rounded bg-white shadow-[2px_2px_0px_#000]">
-    <span class="font-black text-white bg-black px-1.5 py-0.5 rounded text-xs mr-2">route.ts</span>
+  <div class="p-3 border-2 border-brutal-black rounded bg-brutal-white shadow-brutal-sm">
+    <span class="font-black text-brutal-white bg-brutal-black px-1.5 py-0.5 rounded text-xs mr-2">route.ts</span>
     Jalur penyedia API jika ingin membuat endpoint data backend sendiri.
   </div>
 </div>
 
 ::bottom::
 
-<div v-click class="mt-3 p-2 brutal-card bg-purple-50 border-2 border-black shadow-[2px_2px_0px_#000] text-xs">
+<BrutalCard v-click class="mt-3 bg-purple-50 text-xs">
   🛡️ <strong>Next.js 16 File:</strong> File <code>proxy.ts</code> di root (pengganti <code>middleware.ts</code>) berfungsi sebagai gerbang penengah untuk auth guard & redirect sebelum request sampai ke halaman.
-</div>
+</BrutalCard>
 
 ---
 
@@ -153,9 +153,9 @@ export default function RootLayout({
 }
 ```
 
-<div v-click class="mt-4 brutal-card bg-white p-3 text-sm">
+<BrutalCard v-click class="mt-4">
   💡 Root Layout bersifat <strong>wajib</strong> dan harus mendefinisikan tag <code>&lt;html&gt;</code> dan <code>&lt;body&gt;</code>. File ini membungkus semua halaman yang ada di website Antum.
-</div>
+</BrutalCard>
 
 ---
 
@@ -177,9 +177,9 @@ Saat pengunjung membuka sebuah alamat rute, Next.js menyusun komponen secara ber
 </RootLayout>
 ```
 
-<div v-click class="mt-4 brutal-card bg-yellow-100 p-3 text-sm border-2 border-black">
+<BrutalCard v-click class="mt-4 bg-yellow-100">
   ⚡ Saat berpindah menu, komponen <code>&lt;RootLayout&gt;</code> dan <code>&lt;NestedLayout&gt;</code> <strong>tidak akan dimuat ulang (re-rendered)</strong>. Hanya bagian <code>&lt;Page&gt;</code> yang berganti!
-</div>
+</BrutalCard>
 
 ---
 layout: two-cols
@@ -243,9 +243,9 @@ src/app/
 ```
 ````
 
-<div v-click class="mt-3 brutal-card bg-white p-3 text-sm">
+<BrutalCard v-click class="mt-3">
   🛡️ Folder yang diawali garis bawah `_nama` secara otomatis dikecualikan dari sistem routing Next.js.
-</div>
+</BrutalCard>
 
 ---
 layout: two-cols
@@ -290,9 +290,9 @@ Menyepakati Standar Agar Satu Tim Tidak Beda Gaya
 
 </v-clicks>
 
-<div v-click class="mt-3 brutal-card bg-white p-2 text-xs">
+<BrutalCard v-click class="mt-3 text-xs">
   💡 Tidak ada aturan mutlak — yang penting <strong>konsisten dalam satu proyek</strong>. Sepakati di awal bersama tim!
-</div>
+</BrutalCard>
 
 ---
 
@@ -366,9 +366,9 @@ export { Tabs } from "./Tabs";
 
 </v-clicks>
 
-<div v-click class="mt-2 brutal-card bg-green-100 p-2 text-xs border-2 border-black">
+<BrutalCard v-click class="mt-2 bg-green-100 text-xs">
   ✅ <strong>Solusi:</strong> Import langsung dari file aslinya → <code>import { Button } from '@/components/Button'</code>
-</div>
+</BrutalCard>
 
 ---
 layout: intro

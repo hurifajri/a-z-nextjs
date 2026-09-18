@@ -131,9 +131,9 @@ Pilih strategi yang tepat berdasarkan kebutuhan data
 
 </v-clicks>
 
-<div v-click class="mt-4 brutal-card bg-white p-2 text-xs">
+<BrutalCard v-click class="mt-4 text-xs">
   💡 Di Next.js 15 & 16, <strong>fetch() bersifat uncached secara default</strong>. Caching kini eksplisit (opt-in via <code>force-cache</code>, ISR, atau <code>'use cache'</code>) demi mencegah bug data usang.
-</div>
+</BrutalCard>
 
 ---
 layout: two-cols
@@ -145,12 +145,12 @@ Memperbarui Halaman Statis Tanpa Build Ulang Seluruh Website
 
 ::left::
 
-<div class="brutal-card bg-white p-3 border-2 border-black shadow-[3px_3px_0px_#000] mb-2">
+<BrutalCard class="mb-2">
   <div class="font-black text-xs uppercase mb-1 flex items-center gap-1.5">
-    <span class="bg-[#FFE600] px-1.5 py-0.5 border border-black rounded text-[10px]">TIME-BASED</span>
+    <span class="bg-brutal-yellow px-1.5 py-0.5 border border-brutal-black rounded text-xs">TIME-BASED</span>
     <span>Interval Waktu Berkala</span>
   </div>
-  <p class="text-[11px] text-gray-700 mb-2">Next.js mengecek kesegaran data secara berkala sesuai interval detik yang ditentukan.</p>
+  <p class="text-xs text-gray-700 mb-2">Next.js mengecek kesegaran data secara berkala sesuai interval detik yang ditentukan.</p>
 
 ```ts
 // Fastest revalidation every 60 seconds
@@ -159,16 +159,16 @@ fetch("https://api.com/items", {
 });
 ```
 
-</div>
+</BrutalCard>
 
 ::right::
 
-<div class="brutal-card bg-white p-3 border-2 border-black shadow-[3px_3px_0px_#000] mb-2">
+<BrutalCard class="mb-2">
   <div class="font-black text-xs uppercase mb-1 flex items-center gap-1.5">
-    <span class="bg-[#00E5FF] px-1.5 py-0.5 border border-black rounded text-[10px]">ON-DEMAND</span>
+    <span class="bg-brutal-cyan px-1.5 py-0.5 border border-brutal-black rounded text-xs">ON-DEMAND</span>
     <span>Event / Webhook Trigger</span>
   </div>
-  <p class="text-[11px] text-gray-700 mb-2">Update instan seketika saat ada perubahan data di CMS atau Server Action.</p>
+  <p class="text-xs text-gray-700 mb-2">Update instan seketika saat ada perubahan data di CMS atau Server Action.</p>
 
 ```ts
 import { revalidatePath, revalidateTag, updateTag } from "next/cache";
@@ -181,13 +181,13 @@ revalidateTag("products", "max");
 updateTag("products");
 ```
 
-</div>
+</BrutalCard>
 
 ::bottom::
 
-<div class="mt-1 p-2 brutal-card bg-emerald-50 border-2 border-black shadow-[2px_2px_0px_#000] text-[11px] text-gray-800">
+<BrutalCard class="mt-1 bg-emerald-50 text-xs text-gray-800">
   💡 <strong>Best Practice Next.js 16:</strong> Gunakan <code>revalidateTag(tag, profile)</code> untuk update berkala, atau <code>updateTag(tag)</code> di Server Actions agar perubahan user langsung muncul instan tanpa menunggu revalidasi latar belakang.
-</div>
+</BrutalCard>
 
 ---
 
@@ -246,15 +246,15 @@ export default function Loading() {
 ```
 
 <div v-click class="mt-4 grid grid-cols-3 gap-3 text-xs">
-  <div class="brutal-card bg-white p-2 text-center">
+  <BrutalCard class="text-center">
     <strong>loading.tsx</strong><br/>Tampilan loading otomatis
-  </div>
-  <div class="brutal-card bg-white p-2 text-center">
+  </BrutalCard>
+  <BrutalCard class="text-center">
     <strong>error.tsx</strong><br/>Menangkap error runtime
-  </div>
-  <div class="brutal-card bg-white p-2 text-center">
+  </BrutalCard>
+  <BrutalCard class="text-center">
     <strong>not-found.tsx</strong><br/>Halaman 404 kustom
-  </div>
+  </BrutalCard>
 </div>
 
 ---
@@ -277,17 +277,15 @@ export default function Error({
     <div className="text-center py-12">
       <h2 className="text-2xl font-bold mb-2">Oops! Something went wrong</h2>
       <p className="text-gray-600 mb-4">{error.message}</p>
-      <button onClick={() => reset()} className="brutal-btn">
-        Try Again
-      </button>
+      <button onClick={() => reset()}>Try Again</button>
     </div>
   );
 }
 ```
 
-<div v-click class="mt-3 brutal-card bg-white p-3 text-sm">
+<BrutalCard v-click class="mt-3">
   ⚠️ <code>error.tsx</code> harus menggunakan <code>"use client"</code> karena membutuhkan <code>onClick</code> untuk tombol retry!
-</div>
+</BrutalCard>
 
 ---
 
@@ -316,9 +314,9 @@ export default function DashboardPage() {
 }
 ```
 
-<div v-click class="mt-3 brutal-card bg-white p-3 text-sm">
+<BrutalCard v-click class="mt-3">
   🚀 Setiap <code>&lt;Suspense&gt;</code> bisa resolve secara <strong>independen</strong>. Bagian yang cepat muncul duluan, yang lambat menyusul — pengunjung tidak perlu menunggu semuanya!
-</div>
+</BrutalCard>
 
 ---
 
@@ -327,9 +325,9 @@ export default function DashboardPage() {
 Menggabungkan Kecepatan SSG Statis + Fleksibilitas SSR Dinamis dalam 1 Halaman
 
 <div class="grid grid-cols-2 gap-4 mt-2">
-  <div class="brutal-card bg-white p-3 border-2 border-black shadow-[3px_3px_0px_#000]">
-    <div class="font-black text-xs uppercase mb-1 text-black flex items-center gap-1.5">
-      <span class="bg-[#FFE600] px-1.5 py-0.5 border border-black rounded text-[10px]">SHELL STATIS (SSG)</span>
+  <BrutalCard>
+    <div class="font-black text-xs uppercase mb-1 text-brutal-black flex items-center gap-1.5">
+      <span class="bg-brutal-yellow px-1.5 py-0.5 border border-brutal-black rounded text-xs">SHELL STATIS (SSG)</span>
       <span>Instan dari CDN Edge</span>
     </div>
     <ul class="text-xs text-gray-700 space-y-1.5 mt-2">
@@ -337,11 +335,11 @@ Menggabungkan Kecepatan SSG Statis + Fleksibilitas SSR Dinamis dalam 1 Halaman
       <li>• Loading time: <strong>0ms</strong> (secepat halaman statis biasa).</li>
       <li>• Dikirim instan ke user tanpa menunggu server query database.</li>
     </ul>
-  </div>
+  </BrutalCard>
 
-  <div class="brutal-card bg-white p-3 border-2 border-black shadow-[3px_3px_0px_#000]">
-    <div class="font-black text-xs uppercase mb-1 text-black flex items-center gap-1.5">
-      <span class="bg-[#FF6B6B] text-white px-1.5 py-0.5 border border-black rounded text-[10px]">HOLE DINAMIS (SSR)</span>
+  <BrutalCard>
+    <div class="font-black text-xs uppercase mb-1 text-brutal-black flex items-center gap-1.5">
+      <span class="bg-brutal-red text-brutal-white px-1.5 py-0.5 border border-brutal-black rounded text-xs">HOLE DINAMIS (SSR)</span>
       <span>Streaming via Suspense</span>
     </div>
     <ul class="text-xs text-gray-700 space-y-1.5 mt-2">
@@ -349,12 +347,12 @@ Menggabungkan Kecepatan SSG Statis + Fleksibilitas SSR Dinamis dalam 1 Halaman
       <li>• Di-stream paralel dalam <strong>satu HTTP request</strong> yang sama.</li>
       <li>• Tidak ada waterfall request tambahan di browser client!</li>
     </ul>
-  </div>
+  </BrutalCard>
 </div>
 
-<div class="mt-3 p-2.5 brutal-card bg-purple-50 border-2 border-black shadow-[2px_2px_0px_#000] text-xs">
+<BrutalCard class="mt-3 bg-purple-50 text-xs">
   🚀 <strong>Next.js 16 PPR via Cache Components:</strong> Cukup aktifkan <code>cacheComponents: true</code> di <code>next.config.ts</code>. Shell statis terkirim instan (0ms), sedangkan bagian dinamis mengalir otomatis sesuai batas <code>&lt;Suspense&gt;</code>!
-</div>
+</BrutalCard>
 
 ---
 layout: intro

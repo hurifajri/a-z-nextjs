@@ -18,7 +18,7 @@ const style = computed(() => handleBackground(props.background));
 
 <template>
   <div
-    class="slidev-layout two-cols h-full flex flex-col justify-between"
+    class="h-full flex flex-col justify-between p-2"
     :class="props.class"
     :style="style"
   >
@@ -26,12 +26,22 @@ const style = computed(() => handleBackground(props.background));
       <slot />
     </div>
     <div class="grid grid-cols-2 gap-5 mt-2 flex-1 min-h-0">
-      <div class="brutal-card bg-white h-full !p-4 flex flex-col">
+      <BrutalCard class="flex flex-col h-fit">
         <slot name="left" />
-      </div>
-      <div class="brutal-card bg-white h-full !p-4 flex flex-col">
+      </BrutalCard>
+      <BrutalCard class="flex flex-col h-fit">
         <slot name="right" />
-      </div>
+      </BrutalCard>
     </div>
   </div>
 </template>
+
+<style scoped>
+:deep(h3) {
+  @apply text-brutal-black text-2xl font-extrabold leading-tight tracking-tight my-2;
+}
+
+:deep(h4) {
+  @apply text-brutal-black text-lg font-extrabold leading-snug my-2;
+}
+</style>

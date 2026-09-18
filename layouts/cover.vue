@@ -1,78 +1,60 @@
 <script setup lang="ts">
-import { handleBackground } from "@slidev/client";
-import { computed } from "vue";
+import { type BadgeColor } from "../components/BrutalBadge.vue";
 
 const props = withDefaults(
   defineProps<{
-    background?: string;
-    badgeLeft?: string | false;
-    badgeRight?: string | false;
-    badgeLeftColor?: "cyan" | "pink" | "yellow" | "green" | "purple" | "white";
-    badgeRightColor?: "cyan" | "pink" | "yellow" | "green" | "purple" | "white";
+    badgeLeft?: string;
+    badgeRight?: string;
+    badgeLeftColor?: BadgeColor;
+    badgeRightColor?: BadgeColor;
   }>(),
   {
-    background: undefined,
     badgeLeft: "★ PRESENTATION",
     badgeRight: "● SLIDEV",
     badgeLeftColor: "cyan",
     badgeRightColor: "pink",
   },
 );
-
-const style = computed(() => handleBackground(props.background));
 </script>
 
 <template>
   <div
-    class="slidev-layout cover relative flex flex-col justify-center items-center h-full text-center"
-    :style="style"
+    class="flex flex-col gap-6 justify-center items-center h-full text-center p-16"
   >
-    <!-- Top Left Decorative Badge -->
-    <div
-      v-if="$slots['badge-left'] || (badgeLeft !== false && badgeLeft)"
-      class="absolute top-8 left-14"
-    >
-      <slot name="badge-left">
-        <span class="brutal-badge" :class="`brutal-badge-${badgeLeftColor}`">
-          {{ badgeLeft }}
-        </span>
-      </slot>
-    </div>
+    <!-- Top Left and Right Decorative Badge -->
+    <div class="flex items-center justify-between w-full">
+      <!-- Top Left Decorative Badge -->
+      <div v-if="$slots['badge-left'] || badgeLeft">
+        <slot name="badge-left">
+          <BrutalBadge :color="badgeLeftColor">
+            {{ badgeLeft }}
+          </BrutalBadge>
+        </slot>
+      </div>
 
-    <!-- Top Right Decorative Badge -->
-    <div
-      v-if="$slots['badge-right'] || (badgeRight !== false && badgeRight)"
-      class="absolute top-8 right-14"
-    >
-      <slot name="badge-right">
-        <span class="brutal-badge" :class="`brutal-badge-${badgeRightColor}`">
-          {{ badgeRight }}
-        </span>
-      </slot>
+      <!-- Top Right Decorative Badge -->
+      <div v-if="$slots['badge-right'] || badgeRight">
+        <slot name="badge-right">
+          <BrutalBadge :color="badgeRightColor">
+            {{ badgeRight }}
+          </BrutalBadge>
+        </slot>
+      </div>
     </div>
 
     <!-- Center Hero Card -->
-    <div
-      class="brutal-card w-full max-w-230 mx-auto py-10 px-12 relative bg-white"
-    >
+    <BrutalCard class="flex flex-col gap-6 p-6">
       <slot />
-    </div>
+    </BrutalCard>
   </div>
 </template>
 
 <style scoped>
 :deep(h1) {
-  font-size: 3.5rem !important;
-  font-weight: 900 !important;
-  letter-spacing: -0.03em !important;
-  line-height: 1.1 !important;
-  margin-bottom: 0.75rem !important;
-  text-transform: uppercase;
+  @apply text-6xl font-black tracking-tight leading-tight uppercase;
 }
 
 :deep(p) {
-  font-size: 1.25rem;
-  font-weight: 600;
-  color: #333;
+  @apply text-xl font-semibold;
 }
 </style>
