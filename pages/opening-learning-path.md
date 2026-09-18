@@ -19,7 +19,7 @@ transition: slide-up
       </div>
       <div class="font-black text-sm text-black">HTML + CSS + JS</div>
       <p class="text-[11px] text-gray-700 mt-1 leading-snug">
-        Struktur halaman, estetika styling, dan logika manipulasi data di browser.
+        Struktur konten, tata letak visual, & interaktivitas logika di browser.
       </p>
       <a
         v-click="2"
@@ -57,7 +57,7 @@ transition: slide-up
       </p>
     </div>
     <div class="mt-2 pt-1.5 border-t border-dashed border-gray-300 text-[10px] font-bold text-gray-500">
-      Fondasi komponen
+      Arsitektur UI modern
     </div>
   </div>
 
@@ -72,15 +72,15 @@ transition: slide-up
   <div v-click="4" class="flow-card flex-1 brutal-card bg-white p-2.5 border-2 border-black shadow-[3px_3px_0px_#000] flex flex-col justify-between">
     <div>
       <div class="text-[10px] font-black uppercase tracking-wider bg-[#FF6B8B] text-white px-1.5 py-0.5 border border-black rounded inline-block mb-1.5">
-        03. TIPE DATA
+        03. TYPE SAFETY
       </div>
       <div class="font-black text-sm text-black">TypeScript</div>
       <p class="text-[11px] text-gray-700 mt-1 leading-snug">
-        Keamanan tipe variabel, auto-complete cerdas, dan mencegah bug koding sejak awal.
+        Keamanan tipe data, auto-complete cerdas, & cegah error sejak awal coding.
       </p>
     </div>
-    <div class="mt-2 pt-1.5 border-t border-dashed border-gray-300 text-[10px] font-bold text-[#FF6B8B]">
-      *Opsional tapi dianjurkan
+    <div class="mt-2 pt-1.5 border-t border-dashed border-gray-300 text-[10px] font-bold text-gray-700">
+      Standar industri modern
     </div>
   </div>
 
@@ -117,7 +117,7 @@ transition: slide-up
     <span>Prinsip Pareto (80/20)</span>
   </div>
   <p class="text-xs text-gray-700 leading-snug">
-    Belajar keempat tangga secara terpisah dari nol butuh waktu lebih dari setahun. Di bootcamp intensif ini, kita langsung fokus ke <b>Next.js</b> sambil menyerap <b><span v-mark.circle.orange="7">20%</span> intisari</b> HTML, CSS, JS, dan React yang <b>benar-benar dipakai di <span v-mark.circle.orange="8">80%</span> proyek nyata</b>!
+    Mempelajari seluruh tahapan di atas dari nol secara terpisah butuh waktu bertahun-tahun. Di bootcamp intensif ini, kita langsung fokus ke <b>Next.js</b> sambil menyerap <b><span v-mark.circle.orange="7">20%</span> intisari</b> HTML, CSS, JS, React, hingga TypeScript yang <b>benar-benar dipakai di <span v-mark.circle.orange="8">80%</span> proyek nyata</b>!
   </p>
 </div>
 

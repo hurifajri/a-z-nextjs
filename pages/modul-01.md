@@ -7,28 +7,28 @@ level: 1
 
 ## 01. Pengenalan Next.js & Setup Project
 
-Mengenal Apa Itu Next.js, Bedanya dengan React Biasa, serta Inisialisasi Project dan Tooling Modern.
+Memahami Fondasi Next.js, Perbedaan Arsitektur dengan React Biasa, serta Setup Project dengan Tooling Modern.
 
 ---
 
 ### Kenapa Kita Butuh Next.js?
 
-Solusi Praktis Bikin Website yang Cepat, Rapi, dan Siap untuk Pengguna Nyata
+Standar Industri Modern untuk Membangun Aplikasi Web React yang Cepat, Aman, dan Skalabel
 
-Next.js adalah framework React yang dirancang agar kita bisa membangun website nyata dengan mudah. Jika React biasa hanya fokus di browser pengunjung, **Next.js bekerja cerdas menggabungkan keunggulan server dan browser.**
+Next.js bukan sekadar React dengan router bawaan. **Next.js adalah framework fullstack** yang memperluas kemampuan React ke server, menghadirkan performa tinggi dan developer experience kelas atas.
 
 <div class="grid grid-cols-3 gap-4 mt-6">
   <div class="brutal-card bg-white">
-    <div class="font-black text-lg mb-1">🚀 Lengkap & Siap Pakai</div>
-    <p class="text-xs text-gray-700">Tidak perlu pusing install router manual. Routing halaman, tata letak, dan optimasi sudah langsung tersedia sejak hari pertama.</p>
+    <div class="font-black text-base mb-1">🌐 Fullstack & Server-First</div>
+    <p class="text-xs text-gray-700">Ambil data langsung dari database di dalam komponen (RSC) tanpa repot membuat REST API terpisah dan <strong>0 KB beban JavaScript ke browser</strong>.</p>
   </div>
   <div class="brutal-card bg-white">
-    <div class="font-black text-lg mb-1">⚡ Tampilan Langsung Muncul</div>
-    <p class="text-xs text-gray-700">Server langsung mengirimkan halaman yang sudah jadi. Pengunjung tidak perlu menunggu layar putih berputar-putar.</p>
+    <div class="font-black text-base mb-1">⚡ Hybrid Rendering & Streaming</div>
+    <p class="text-xs text-gray-700">Gabungkan kecepatan HTML statis (CDN), SSR dinamis, dan <strong>Streaming Suspense</strong>. Konten tampil instan tanpa membuat user menunggu.</p>
   </div>
   <div class="brutal-card bg-white">
-    <div class="font-black text-lg mb-1">🛠 Fitur Otomatis Canggih</div>
-    <p class="text-xs text-gray-700">Gambar otomatis dikompres (`next/image`), font dimuat secepat kilat (`next/font`), dan link antar halaman terasa instan.</p>
+    <div class="font-black text-base mb-1">🛡️ Standar Industri & Aman</div>
+    <p class="text-xs text-gray-700">Kunci API & kredensial database aman di server. Dioptimalkan otomatis untuk Core Web Vitals, SEO, dan dipakai perusahaan raksasa dunia.</p>
   </div>
 </div>
 
@@ -47,14 +47,14 @@ Memahami Perbedaan Cara Menampilkan Halaman ke Pengunjung
 - 📦 **Browser Bekerja Sendirian**: Browser mengunduh file HTML kosong `<div id="root"></div>`, lalu sibuk merakit halaman sendiri.
 - ⏳ **Layar Putih Sejenak**: Pengunjung sering melihat halaman kosong atau loading spinner sebelum isi konten muncul.
 - 🔍 **Kurang Ramah SEO**: Mesin pencari dan media sosial kesulitan membaca isi teks jika halaman lambat dirakit.
-- 🛡 **Kode Rahasia Rawan Bocor**: Kunci API privat atau logika rahasia tidak aman jika ditaruh di komponen biasa.
+- 🛡 **Kode Rahasia Rawan Bocor**: Kunci API privat atau logika rahasia tidak aman jika ditaruh di komponen biasa (Client Component).
 
 ::right::
 
 #### Next.js (App Router)
 
 - ⚡ **Tampilan Siap Baca**: Server langsung merakit dan mengirimkan halaman siap jadi, sehingga tulisan langsung tampil seketika.
-- 🧩 **Ukuran File Lebih Ringan**: Sebagian besar pekerjaan selesai di server, jadi HP pengunjung tidak keberatan memproses kode.
+- 🧩 **Ukuran File Lebih Ringan**: Sebagian besar pekerjaan selesai di server, sehingga perangkat pengunjung tidak terbebani kode berlebih.
 - 📈 **Mudah Dibagikan ke Medsos**: Judul, gambar thumbnail, dan deskripsi otomatis terbaca rapi saat link dibagikan.
 - 🔒 **Jauh Lebih Aman**: Sambungan ke database dan password rahasia tersimpan aman di server tanpa bisa diintip pengunjung.
 
@@ -64,14 +64,14 @@ Memahami Perbedaan Cara Menampilkan Halaman ke Pengunjung
 
 Tabel Komparasi Sederhana untuk Memilih Pendekatan yang Pas
 
-| Aspek                    | React Biasa (Vite / CRA)                        | Next.js (App Router)                             |
-| :----------------------- | :---------------------------------------------- | :----------------------------------------------- |
-| **Cara Tampil**          | Browser merakit halaman sendiri dari nol        | Server mengirim halaman yang sudah jadi          |
-| **Kecepatan Buka Awal**  | Muncul layar kosong atau spinner sesaat         | Konten langsung terbaca dalam hitungan milidetik |
-| **Beban di HP Pengguna** | Makin banyak halaman, file JS makin besar       | Ringan, hanya mengirim kode yang dipakai         |
-| **Bikin Halaman Baru**   | Harus install library tambahan (`react-router`) | Cukup buat folder baru di dalam `app/`           |
-| **Optimasi Gambar**      | Harus compress gambar manual satu per satu      | Otomatis dioptimalkan lewat `next/image`         |
-| **SEO & Social Share**   | Butuh pengaturan rumit tambahan                 | Bawaan otomatis lewat fitur Metadata             |
+| Aspek                         | React Biasa (Vite / CRA)                        | Next.js (App Router)                             |
+| :---------------------------- | :---------------------------------------------- | :----------------------------------------------- |
+| **Cara Tampil**               | Browser merakit halaman sendiri dari nol        | Server mengirim halaman yang sudah jadi          |
+| **Kecepatan Buka Awal**       | Muncul layar kosong atau spinner sesaat         | Konten langsung terbaca dalam hitungan milidetik |
+| **Beban di Perangkat Pengguna** | Makin banyak halaman, file JS makin besar     | Ringan, hanya mengirim kode yang dipakai         |
+| **Pembuatan Halaman (Routing)** | Harus install library tambahan (`react-router`) | Cukup buat folder baru di dalam `app/`         |
+| **Optimasi Gambar**           | Harus compress gambar manual satu per satu      | Otomatis dioptimalkan lewat `next/image`         |
+| **SEO & Social Share**        | Butuh pengaturan rumit tambahan                 | Bawaan otomatis lewat fitur Metadata             |
 
 ---
 
@@ -114,7 +114,7 @@ npx create-next-app@latest my-next-app
 ````
 
 <div v-click class="mt-4 brutal-card bg-white p-3 text-sm">
-  ✅ Rekomendasi di kelas ini: Pilih <strong>Yes</strong> untuk semua opsi di atas!
+  ✅ Rekomendasi di kelas ini: Tekan Enter untuk memilih opsi default (pilih <strong>Yes</strong>, dan <strong>No</strong> untuk customize alias).
 </div>
 
 ---
@@ -235,12 +235,12 @@ Kecepatan Kompilasi Rust vs Kekuatan Plugin Spesifik Framework
       <div class="text-[11px] text-gray-600 mb-2 font-mono">Engine: Rust</div>
       <ul class="space-y-1 text-[11px] text-gray-800 leading-snug">
         <li>⚡ <strong>Kecepatan:</strong> <strong>25x – 35x</strong> lebih cepat (Linter + Formatter Prettier).</li>
-        <li>🔌 <strong>Ekosistem:</strong> Tertutup/mandiri. <strong>Tidak bisa</strong> install arbitrary ESLint plugin.</li>
+        <li>🔌 <strong>Ekosistem:</strong> Tertutup/mandiri. <strong>Tidak mendukung</strong> instalasi plugin ESLint eksternal.</li>
         <li>🎯 <strong>Cocok untuk:</strong> Proyek mandiri yang ingin zero-config dan super ringkas.</li>
       </ul>
     </div>
     <div class="mt-2 pt-2 border-t border-dashed border-gray-300 font-bold text-[10px] text-red-700">
-      ⚠️ Tidak support plugin AST eksternal
+      ⚠️ Belum mendukung plugin AST pihak ketiga
     </div>
   </div>
 </div>

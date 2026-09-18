@@ -5,11 +5,11 @@ hideInToc: true
 ## APA SAJA YANG BISA DIBUAT DENGAN NEXT.JS?
 
 <p>
-  Dari <span v-mark.underline.orange="1">landing page</span> sederhana hingga <span v-mark.underline.orange="2">marketplace</span> — apa pun yang bisa diakses melalui browser, insyaa Allah bisa Antum buat.
+  Dari <span v-mark.underline.orange="1">landing page</span> interaktif hingga <span v-mark.underline.orange="2">platform enterprise</span> skala global — apa pun yang bisa diakses melalui browser, insyaa Allah bisa Antum buat.
 </p>
 
 <!-- 4 Columns × 2 Rows Showcase Grid with Rotated Neobrutalist Cards (Click Animation Fade-In) -->
-<div class="grid grid-cols-4 gap-3.5 mt-2 px-1">
+<div class="grid grid-cols-4 gap-3.5 px-1">
 
   <!-- 01. E-Commerce -->
   <div
@@ -29,7 +29,7 @@ hideInToc: true
           <span class="font-black text-[11px] text-black truncate">Toko Online</span>
         </div>
         <p class="text-[10px] text-gray-700 leading-tight font-medium line-clamp-2">
-          Katalog produk, pencarian filter, keranjang belanja, & checkout payment.
+          Katalog produk, filter pencarian, keranjang belanja, & integrasi payment gateway.
         </p>
       </div>
       <div class="mt-1 pt-1 border-t border-black/10 flex items-center justify-between">
@@ -89,7 +89,7 @@ hideInToc: true
           <span class="font-black text-[11px] text-black truncate">Chat & Copilot</span>
         </div>
         <p class="text-[10px] text-gray-700 leading-tight font-medium line-clamp-2">
-          Asisten cerdas LLM streaming, analisis berkas dokumen, & otomasi tugas.
+          Asisten AI respons streaming, tanya-jawab dokumen, & otomasi tugas.
         </p>
       </div>
       <div class="mt-1 pt-1 border-t border-black/10 flex items-center justify-between">
@@ -149,7 +149,7 @@ hideInToc: true
           <span class="font-black text-[11px] text-black truncate">Portal Berita</span>
         </div>
         <p class="text-[10px] text-gray-700 leading-tight font-medium line-clamp-2">
-          Publikasi artikel instan, ramah SEO Google, dan tata letak mobile-friendly.
+          Publikasi artikel instan, optimasi SEO maksimal, & tata letak responsif.
         </p>
       </div>
       <div class="mt-1 pt-1 border-t border-black/10 flex items-center justify-between">
@@ -176,10 +176,10 @@ hideInToc: true
           <span class="text-[9px] font-black uppercase px-1.5 py-0.2 bg-[#FFA502] border border-black rounded shadow-[1px_1px_0px_#000]">
             Booking
           </span>
-          <span class="font-black text-[11px] text-black truncate">Reservasi & Tiket</span>
+          <span class="font-black text-[11px] text-black truncate">Reservasi & Jadwal</span>
         </div>
         <p class="text-[10px] text-gray-700 leading-tight font-medium line-clamp-2">
-          Kalender jadwal reservasi, pemesanan tiket, & e-tiket barcode otomatis.
+          Sinkronisasi kalender, reservasi janji temu, & konfirmasi otomatis.
         </p>
       </div>
       <div class="mt-1 pt-1 border-t border-black/10 flex items-center justify-between">
@@ -206,10 +206,10 @@ hideInToc: true
           <span class="text-[9px] font-black uppercase px-1.5 py-0.2 bg-[#00E5FF] border border-black rounded shadow-[1px_1px_0px_#000]">
             Social
           </span>
-          <span class="font-black text-[11px] text-black truncate">Komunitas & Forum</span>
+          <span class="font-black text-[11px] text-black truncate">Komunitas & Kreator</span>
         </div>
         <p class="text-[10px] text-gray-700 leading-tight font-medium line-clamp-2">
-          Diskusi tanya-jawab, upvote jawaban, utas obrolan, & reputasi profil.
+          Forum diskusi anggota, feed interaktif, utas obrolan, & sistem membership.
         </p>
       </div>
       <div class="mt-1 pt-1 border-t border-black/10 flex items-center justify-between">
