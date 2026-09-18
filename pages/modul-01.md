@@ -259,6 +259,148 @@ Kecepatan Kompilasi Rust vs Kekuatan Plugin Spesifik Framework
 </div>
 
 ---
+layout: two-cols
+---
+
+### Auto Sort & Remove Unused Imports
+
+Otomatisasi Kebersihan Import di Header File Tanpa Dikerjakan Manual
+
+::left::
+
+#### 🔌 Ekosistem ESLint (Next.js Paling Populer)
+
+Kombinasi plugin standar industri:
+
+- **`eslint-plugin-simple-import-sort`**: Mengurutkan import secara deterministik dan teratur.
+- **`eslint-plugin-unused-imports`**: Otomatis menghapus import & variabel tak terpakai saat `--fix`.
+
+```bash
+npm i -D eslint-plugin-simple-import-sort eslint-plugin-unused-imports
+```
+
+<div class="mt-2 p-2 brutal-card bg-yellow-50 text-[11px] border border-black">
+  🎯 <strong>Keunggulan:</strong> Aturan pengelompokan regex sangat fleksibel (React/Next duluan, lalu package npm, alias <code>@/</code>, relative <code>./</code>, dan CSS).
+</div>
+
+::right::
+
+#### ⚡ Bawaan Biome vs Oxlint
+
+Bagaimana Linter Generasi Rust Menanganinya?
+
+<div class="space-y-2 mt-1 text-xs">
+  <div class="p-2 brutal-card bg-white border border-black shadow-[2px_2px_0px_#000]">
+    <div class="font-bold flex items-center justify-between text-[#FF6B8B]">
+      <span>Biome (Built-in)</span>
+      <span class="text-[10px] bg-green-100 text-green-800 px-1 rounded border border-black font-mono font-bold">All-in-One</span>
+    </div>
+    <p class="text-[11px] text-gray-700 mt-1">
+      Punya fitur bawaan <code>organizeImports</code>. Sort & remove unused imports berjalan <strong>otomatis 25x–35x lebih cepat</strong> tanpa install plugin tambahan via <code>biome check --write</code>.
+    </p>
+  </div>
+
+  <div class="p-2 brutal-card bg-white border border-black shadow-[2px_2px_0px_#000]">
+    <div class="font-bold flex items-center justify-between text-[#00E5FF]">
+      <span>Oxlint (Linter Only)</span>
+      <span class="text-[10px] bg-yellow-100 text-yellow-800 px-1 rounded border border-black font-mono font-bold">Fast Audit</span>
+    </div>
+    <p class="text-[11px] text-gray-700 mt-1">
+      Sangat cepat mendeteksi error <code>no-unused-vars</code> (50x–100x), namun fokus pada <strong>audit diagnosa</strong> (belum menyediakan transformasi auto-sort format bawaan).
+    </p>
+  </div>
+</div>
+
+---
+
+### Demo: Auto Sort & Remove Unused Imports
+
+Satu Kali Simpan (Ctrl+S / Cmd+S), Seluruh Header File Langsung Bersih!
+
+````md magic-move
+```tsx
+// ❌ 1. Sebelum: Berantakan & Penuh Unused Imports
+import "./button.css";
+import { useState, useEffect } from "react";
+import Image from "next/image";
+import { formatRupiah } from "@/utils/format";
+import Link from "next/link";
+import { Trash, Heart } from "lucide-react";
+import { UserCard } from "./UserCard";
+import axios from "axios";
+
+export default function ProductCard({ title }: { title: string }) {
+  const [liked, setLiked] = useState(false);
+
+  return (
+    <div>
+      <h3>{title}</h3>
+      <Link href="/cart">Beli Sekarang</Link>
+      <button onClick={() => setLiked(!liked)}>
+        <Heart className={liked ? "text-red-500" : ""} />
+      </button>
+    </div>
+  );
+}
+```
+
+```tsx
+// 🧹 2. Auto Remove: Unused Imports Dihapus Seketika!
+// (useEffect, Image, formatRupiah, Trash, UserCard, axios terhapus bersih)
+import "./button.css";
+import { useState } from "react";
+import Link from "next/link";
+import { Heart } from "lucide-react";
+
+export default function ProductCard({ title }: { title: string }) {
+  const [liked, setLiked] = useState(false);
+
+  return (
+    <div>
+      <h3>{title}</h3>
+      <Link href="/cart">Beli Sekarang</Link>
+      <button onClick={() => setLiked(!liked)}>
+        <Heart className={liked ? "text-red-500" : ""} />
+      </button>
+    </div>
+  );
+}
+```
+
+```tsx
+// ✨ 3. Auto Sort: Rapi & Terstruktur Berdasarkan Grup!
+// 1. Framework Inti (React & Next.js)
+import Link from "next/link";
+import { useState } from "react";
+
+// 2. Third-Party Dependencies (lucide-react)
+import { Heart } from "lucide-react";
+
+// 3. Side-Effects / Global Styles
+import "./button.css";
+
+export default function ProductCard({ title }: { title: string }) {
+  const [liked, setLiked] = useState(false);
+
+  return (
+    <div>
+      <h3>{title}</h3>
+      <Link href="/cart">Beli Sekarang</Link>
+      <button onClick={() => setLiked(!liked)}>
+        <Heart className={liked ? "text-red-500" : ""} />
+      </button>
+    </div>
+  );
+}
+```
+````
+
+<div v-click class="mt-2 p-2 brutal-card bg-white border border-black shadow-[2px_2px_0px_#000] text-xs flex items-center justify-between">
+  <span>💡 <strong>Tips Produktivitas:</strong> Aktifkan <code>"editor.codeActionsOnSave": { "source.fixAll.eslint": "explicit" }</code> di VS Code Antum!</span>
+  <span class="bg-[#FFE600] px-2 py-0.5 border border-black rounded text-[10px] font-black">Zero Mental Overhead</span>
+</div>
+
+---
 
 ### Tailwind CSS: Styling Cepat
 
