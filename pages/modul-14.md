@@ -5,47 +5,47 @@ badgeColor: "yellow"
 level: 1
 ---
 
-## 14. Middleware & Auth Pattern
+## 14. Proxy (ex-Middleware) & Auth Pattern
 
-Melindungi halaman dengan Next.js Middleware, mengelola sesi pengguna, dan membuat guard untuk rute yang memerlukan login.
+Melindungi halaman dengan Next.js Proxy (dulu Middleware), mengelola sesi pengguna, dan membuat guard untuk rute yang memerlukan login.
 
 ---
 
-### Apa Itu Middleware di Next.js?
+### Apa Itu Proxy (Middleware) di Next.js?
 
 Kode yang berjalan SEBELUM request sampai ke halaman
 
 ```text
-User request → Middleware → Page/Route Handler
-                  ↓
-          Cek token / redirect
+User request → Proxy / Middleware → Page/Route Handler
+                        ↓
+               Cek cookie / redirect
 ```
 
 <v-clicks>
 
-- 🛡️ **Auth Guard** — Redirect ke login jika belum punya token
+- 🛡️ **Auth Guard** — Redirect ke login jika belum punya token/session
 - 🔄 **Redirect** — Arahkan user ke halaman yang tepat
-- 🌐 **Rewrite** — Ubah URL tanpa redirect (untuk A/B testing, dll)
-- 📝 **Logging** — Catat setiap request yang masuk
+- 🌐 **Rewrite** — Ubah URL tanpa redirect (untuk A/B testing, multitenant)
+- 📝 **Modifikasi Headers** — Sisipkan request id atau pathname info
 
 </v-clicks>
 
 <div v-click class="mt-4 brutal-card bg-white p-3 text-sm">
-  📁 Middleware ditulis di file <code>middleware.ts</code> di <strong>root project</strong> (bukan di dalam <code>app/</code>).
+  📁 <strong>Evolusi Next.js 16:</strong> File kini dinamai <code>proxy.ts</code> di <strong>root project</strong> (menggantikan <code>middleware.ts</code> di Next.js 12–15) untuk memperjelas perannya sebagai batas jaringan (network boundary).
 </div>
 
 ---
 
-### Membuat Middleware
+### Membuat Proxy (`proxy.ts`)
 
-File `middleware.ts` di root project
+File `proxy.ts` (atau `middleware.ts` di Next.js 15) di root project
 
 ```tsx {1-3|5-10|12-18|all}
-// middleware.ts
+// proxy.ts (Next.js 16) atau middleware.ts (Next.js 15)
 import { NextResponse } from "next/server";
 import type { NextRequest } from "next/server";
 
-export function middleware(request: NextRequest) {
+export function proxy(request: NextRequest) {
   const token = request.cookies.get("token")?.value;
 
   // Jika belum login dan coba akses halaman terlindungi
@@ -103,15 +103,15 @@ layout: two-cols
 
 ### Protected Route Pattern
 
-Dua lapisan perlindungan: Middleware + Client Check
+Dua lapisan perlindungan: Proxy / Middleware + Client Check
 
 ::left::
 
-#### Lapisan 1: Middleware
+#### Lapisan 1: Proxy (Server-side)
 
 ```tsx
-// middleware.ts — Server-side guard
-export function middleware(req: NextRequest) {
+// proxy.ts — Server-side guard
+export function proxy(req: NextRequest) {
   const token = req.cookies.get("token");
 
   if (!token) {
@@ -152,12 +152,12 @@ Cek tambahan di sisi client!
 
 ---
 
-### Middleware: Menambahkan Header
+### Proxy: Menambahkan Header & Cookie
 
-Menambahkan informasi ke setiap request
+Menambahkan informasi ke setiap request di tingkat network
 
 ```tsx {3-6|8-11|all}
-export function middleware(request: NextRequest) {
+export function proxy(request: NextRequest) {
   const response = NextResponse.next();
 
   // Tambah custom header
@@ -178,7 +178,7 @@ export function middleware(request: NextRequest) {
 
 ---
 
-### Pola Auth Lengkap: Login → Cookie → Middleware
+### Pola Auth Lengkap: Login → Cookie → Proxy
 
 Alur autentikasi end-to-end yang aman
 
@@ -203,9 +203,9 @@ export async function POST(req: Request) {
 ```
 
 ```tsx
-// 2. Middleware: Cek cookie di setiap request
-// middleware.ts
-export function middleware(request: NextRequest) {
+// 2. Proxy: Cek cookie di setiap request
+// proxy.ts (Next.js 16)
+export function proxy(request: NextRequest) {
   const token = request.cookies.get("token")?.value;
 
   if (!token && request.nextUrl.pathname.startsWith("/dashboard")) {
@@ -241,6 +241,6 @@ transition: slide-up
 
 ## 3 Hal Penting dari Modul 14
 
-1. **Middleware = Gerbang Utama**: Tulis di `middleware.ts` root project. Cek token, redirect, atau modifikasi request SEBELUM halaman dirender.
-2. **Matcher = Filter Rute**: Gunakan `config.matcher` untuk menentukan rute mana saja yang diproses middleware. Hindari memproses API dan asset statis.
-3. **httpOnly Cookie > localStorage**: Simpan token autentikasi di httpOnly cookie agar lebih aman dari serangan XSS.
+1. **Proxy (ex-Middleware) = Gerbang Utama**: Tulis di `proxy.ts` (atau `middleware.ts` di versi sebelumnya). Cek token/cookie, redirect, atau modifikasi headers SEBELUM halaman dirender.
+2. **Matcher = Filter Rute**: Gunakan `config.matcher` untuk menentukan rute mana saja yang diproses. Hindari memproses API dan asset statis.
+3. **httpOnly Cookie > localStorage**: Simpan token autentikasi di httpOnly cookie agar aman dari serangan XSS dan langsung terbaca oleh server.

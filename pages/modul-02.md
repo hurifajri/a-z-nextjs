@@ -122,6 +122,12 @@ Nama-Nama File dengan Peran Otomatis Tanpa Perlu Setup Tambahan
   </div>
 </div>
 
+::bottom::
+
+<div v-click class="mt-3 p-2 brutal-card bg-purple-50 border-2 border-black shadow-[2px_2px_0px_#000] text-xs">
+  🛡️ <strong>Next.js 16 File:</strong> File <code>proxy.ts</code> di root (pengganti <code>middleware.ts</code>) berfungsi sebagai gerbang penengah untuk auth guard & redirect sebelum request sampai ke halaman.
+</div>
+
 ---
 
 ### Anatomi Root Layout (`app/layout.tsx`)

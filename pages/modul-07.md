@@ -49,25 +49,13 @@ Bagaimana Next.js menyajikan halaman ke pengunjung?
 
 ### fetch() di Server Components
 
-Di App Router, cukup gunakan `fetch()` langsung di komponen!
+Di App Router, `fetch()` berjalan langsung di server dengan model caching fleksibel!
 
 ````md magic-move
 ```tsx
-// 1. SSG: Data di-cache permanen (default)
-export default async function BlogPage() {
-  const res = await fetch("https://api.example.com/posts");
-  const posts = await res.json();
-
-  return <PostList posts={posts} />;
-}
-```
-
-```tsx
-// 2. SSR: Data fresh setiap request
+// 1. Default Next.js 15/16: Uncached (Selalu fresh setiap request!)
 export default async function DashboardPage() {
-  const res = await fetch("https://api.example.com/stats", {
-    cache: "no-store", // ← Jangan cache!
-  });
+  const res = await fetch("https://api.example.com/stats");
   const stats = await res.json();
 
   return <Dashboard stats={stats} />;
@@ -75,11 +63,39 @@ export default async function DashboardPage() {
 ```
 
 ```tsx
+// 2. SSG: Caching eksplisit (force-cache)
+export default async function BlogPage() {
+  const res = await fetch("https://api.example.com/posts", {
+    cache: "force-cache", // ← Simpan ke cache permanen
+  });
+  const posts = await res.json();
+
+  return <PostList posts={posts} />;
+}
+```
+
+```tsx
 // 3. ISR: Revalidate setiap 60 detik
 export default async function ProductPage() {
   const res = await fetch("https://api.example.com/products", {
-    next: { revalidate: 60 }, // ← Update setiap 60 detik
+    next: { revalidate: 60 }, // ← Update berkala tiap 60 detik
   });
+  const products = await res.json();
+
+  return <ProductList products={products} />;
+}
+```
+
+```tsx
+// 4. Standar Baru Next.js 16: Directive 'use cache' (Cache Components)
+import { cacheLife, cacheTag } from "next/cache";
+
+export default async function ProductPage() {
+  "use cache";
+  cacheLife("hours");
+  cacheTag("products");
+
+  const res = await fetch("https://api.example.com/products");
   const products = await res.json();
 
   return <ProductList products={products} />;
@@ -116,7 +132,7 @@ Pilih strategi yang tepat berdasarkan kebutuhan data
 </v-clicks>
 
 <div v-click class="mt-4 brutal-card bg-white p-2 text-xs">
-  💡 Di App Router, <strong>SSG adalah default</strong>. Antum hanya perlu menambahkan opsi jika butuh SSR atau ISR.
+  💡 Di Next.js 15 & 16, <strong>fetch() bersifat uncached secara default</strong>. Caching kini eksplisit (opt-in via <code>force-cache</code>, ISR, atau <code>'use cache'</code>) demi mencegah bug data usang.
 </div>
 
 ---
@@ -155,11 +171,14 @@ fetch("https://api.com/items", {
   <p class="text-[11px] text-gray-700 mb-2">Update instan seketika saat ada perubahan data di CMS atau Server Action.</p>
 
 ```ts
-import { revalidatePath, revalidateTag } from "next/cache";
+import { revalidatePath, revalidateTag, updateTag } from "next/cache";
 
-// Purge cache rute atau tag seketika:
+// Purge cache rute atau tag (Next.js 16: wajib 2 argumen):
 revalidatePath("/blog");
-revalidateTag("products");
+revalidateTag("products", "max");
+
+// Di Server Action Next.js 16: refresh instan UI
+updateTag("products");
 ```
 
 </div>
@@ -167,7 +186,7 @@ revalidateTag("products");
 ::bottom::
 
 <div class="mt-1 p-2 brutal-card bg-emerald-50 border-2 border-black shadow-[2px_2px_0px_#000] text-[11px] text-gray-800">
-  💡 <strong>Best Practice Industri:</strong> Gunakan <strong>On-Demand Revalidation</strong> agar halaman secepat SSG di CDN, namun konten langsung segar seketika saat data diubah <em>(Akan kita pakai intensif di Modul 09)</em>.
+  💡 <strong>Best Practice Next.js 16:</strong> Gunakan <code>revalidateTag(tag, profile)</code> untuk update berkala, atau <code>updateTag(tag)</code> di Server Actions agar perubahan user langsung muncul instan tanpa menunggu revalidasi latar belakang.
 </div>
 
 ---
@@ -334,7 +353,7 @@ Menggabungkan Kecepatan SSG Statis + Fleksibilitas SSR Dinamis dalam 1 Halaman
 </div>
 
 <div class="mt-3 p-2.5 brutal-card bg-purple-50 border-2 border-black shadow-[2px_2px_0px_#000] text-xs">
-  🚀 <strong>Next.js 14/15 Innovation:</strong> Antum tidak perlu memilih <em>"Halaman ini SSG atau SSR?"</em>. Dengan PPR, halaman adalah <strong>statis secara default</strong>, dengan "lubang dinamis" yang mengalir otomatis sesuai batas <code>&lt;Suspense&gt;</code>!
+  🚀 <strong>Next.js 16 PPR via Cache Components:</strong> Cukup aktifkan <code>cacheComponents: true</code> di <code>next.config.ts</code>. Shell statis terkirim instan (0ms), sedangkan bagian dinamis mengalir otomatis sesuai batas <code>&lt;Suspense&gt;</code>!
 </div>
 
 ---
@@ -347,7 +366,7 @@ transition: slide-up
 
 ## 4 Hal Penting dari Modul 07
 
-1. **Strategi Rendering Server**: SSG (default build time), ISR (revalidate berkala atau on-demand via `revalidatePath`), dan SSR (request time).
+1. **Strategi Caching Modern**: `fetch()` tidak di-cache secara default di Next.js 15 & 16. Caching kini eksplisit via ISR (`revalidate`), `force-cache`, atau `'use cache'` (Cache Components).
 2. **Special Files Otomatis**: `loading.tsx` untuk skeleton loading, `error.tsx` untuk error boundary, `not-found.tsx` untuk halaman 404.
-3. **Suspense & Streaming**: Mengalirkan potongan halaman secara independen (fondasi dari Partial Prerendering / PPR).
+3. **Suspense & Streaming (PPR)**: Mengalirkan potongan halaman secara independen sebagai fondasi Partial Prerendering modern.
 4. **Jembatan ke CSR**: Data fetching di server tuntas di sini. Untuk data interaktif di browser (_Client-Side Rendering_), kita lanjut ke **Modul 08 (TanStack Query)**!

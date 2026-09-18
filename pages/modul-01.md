@@ -127,21 +127,27 @@ Menjaga Kode Tetap Bersih, Rapi, dan Konsisten di Dalam Tim
 
 ::left::
 
-#### ESLint (Bawaan Next.js)
+#### ESLint (Flat Config & CLI)
 
 Mendeteksi **kesalahan logika dan bug** sebelum dijalankan:
 
-```json
-// .eslintrc.json
-{
-  "extends": "next/core-web-vitals"
-}
+```js
+// eslint.config.mjs
+import { dirname } from "path";
+import { fileURLToPath } from "url";
+import { FlatCompat } from "@eslint/eslintrc";
+
+const compat = new FlatCompat({
+  baseDirectory: dirname(fileURLToPath(import.meta.url)),
+});
+
+export default [...compat.extends("next/core-web-vitals")];
 ```
 
-Jalankan audit kode:
+Jalankan audit kode via CLI ESLint:
 
 ```bash
-npx next lint
+npx eslint .
 ```
 
 ::right::
@@ -294,9 +300,9 @@ export default function Tombol() {
 
 ---
 
-### Menjalankan Development Server
+### Menjalankan Development Server (Turbopack)
 
-Melihat Hasil Proyek Pertama Antum Secara Langsung
+Melihat Hasil Proyek Pertama Antum Secara Langsung dengan Kompiler Rust
 
 Jalankan perintah ini di terminal proyek:
 
@@ -308,12 +314,12 @@ npm run dev
 
 1. 🌐 Buka browser dan kunjungi alamat `http://localhost:3000`
 2. 🎉 Halaman pembuka Next.js siap menyambut Antum!
-3. ⚡ Coba edit file `src/app/page.tsx`, tekan **Save**, dan perhatikan perubahannya muncul seketika tanpa refresh manual (_Fast Refresh_).
+3. ⚡ Di **Next.js 16**, engine **Turbopack sudah aktif secara default** — kompilasi dan _Fast Refresh_ berjalan secepat kilat!
 
 </v-clicks>
 
 <div v-click class="mt-6 brutal-card bg-white p-3">
-  <span class="brutal-badge brutal-badge-cyan">TIGA SCRIPT UTAMA</span>
+  <span class="brutal-badge brutal-badge-cyan">TIGA SCRIPT UTAMA (TURBOPACK DEFAULT)</span>
   <div class="grid grid-cols-3 gap-2 mt-3 text-xs">
     <div><code>npm run dev</code> — Jalankan mode koding (development)</div>
     <div><code>npm run build</code> — Kompilasi untuk siap rilis (production)</div>
@@ -332,5 +338,5 @@ transition: slide-up
 ## 3 Hal Penting dari Modul 01
 
 1. **Next.js Menggabungkan Server & Browser**: Menghadirkan performa cepat, ramah mesin pencari (SEO), dan hemat beban perangkat pengguna.
-2. **Setup Cepat dengan `create-next-app`**: Satu baris perintah langsung menghasilkan project terintegrasi TypeScript, ESLint, Tailwind CSS, dan App Router.
-3. **Tooling Modern Meningkatkan Kecepatan Kerja**: Kombinasi Prettier, ESLint, dan Tailwind CSS memastikan kode Antum selalu rapi dan konsisten.
+2. **Setup Cepat & Turbopack Default**: `create-next-app` langsung menghasilkan project modern dengan engine Turbopack Rust bawaan Next.js 16.
+3. **Tooling Modern Meningkatkan Kecepatan Kerja**: Kombinasi Prettier, ESLint Flat Config, dan Tailwind CSS memastikan kode Antum selalu rapi dan konsisten.
