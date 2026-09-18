@@ -74,7 +74,7 @@ export function ThemeProvider({ children }: { children: React.ReactNode }) {
   );
 }
 
-// Custom hook ramah pengembang
+// Developer-friendly custom hook
 export const useTheme = () => useContext(ThemeContext);
 ```
 
@@ -86,40 +86,40 @@ Lihat Bagaimana Kode Menjadi Jauh Lebih Rapi dan Terpelihara!
 
 ````md magic-move
 ```tsx
-// ❌ SEBELUM: Prop Drilling — props user menembus 4 level
+// ❌ BEFORE: Prop Drilling — user prop travels down 4 levels
 function App() {
-  const [user] = useState({ name: "Fulan" });
+  const [user] = useState({ name: "John Doe" });
   return <Header user={user} />;
 }
-function Header({ user }) {
+function Header({ user }: { user: { name: string } }) {
   return <Nav user={user} />;
 }
-function Nav({ user }) {
+function Nav({ user }: { user: { name: string } }) {
   return <Profile user={user} />;
 }
-function Profile({ user }) {
-  return <div>Halo, {user.name}</div>;
+function Profile({ user }: { user: { name: string } }) {
+  return <div>Hello, {user.name}</div>;
 }
 ```
 
 ```tsx
-// ✅ SESUDAH: Context — ambil langsung di komponen yang butuh!
+// ✅ AFTER: Context — consume directly where needed!
 function App() {
   return (
     <AuthProvider>
       <Header />
     </AuthProvider>
-  )
+  );
 }
 function Header() {
-  return <Nav />     {/* Bersih dari props! */}
+  return <Nav />; /* No props passed! */
 }
 function Nav() {
-  return <Profile /> {/* Bersih dari props! */}
+  return <Profile />; /* No props passed! */
 }
 function Profile() {
-  const { user } = useAuth()  {/* Langsung ambil dari gudang! */}
-  return <div>Halo, {user.name}</div>
+  const { user } = useAuth(); /* Consume directly from store! */
+  return <div>Hello, {user.name}</div>;
 }
 ```
 ````
@@ -170,35 +170,35 @@ npm install zustand
 
 ````md magic-move
 ```tsx
-// 1. Buat store terpusat (hanya butuh 10 baris!)
+// 1. Create a centralized store (under 10 lines!)
 import { create } from "zustand";
 
 interface CartStore {
-  totalItem: number;
-  tambahItem: () => void;
+  totalItems: number;
+  addItem: () => void;
   resetCart: () => void;
 }
 
 export const useCartStore = create<CartStore>((set) => ({
-  totalItem: 0,
-  tambahItem: () => set((state) => ({ totalItem: state.totalItem + 1 })),
-  resetCart: () => set({ totalItem: 0 }),
+  totalItems: 0,
+  addItem: () => set((state) => ({ totalItems: state.totalItems + 1 })),
+  resetCart: () => set({ totalItems: 0 }),
 }));
 ```
 
 ```tsx
-// 2. Gunakan di komponen manapun — TANPA PROVIDER!
+// 2. Use in any component — NO PROVIDER NEEDED!
 "use client";
 import { useCartStore } from "@/stores/cart";
 
-export default function TombolBeli() {
-  // Komponen ini HANYA re-render saat totalItem berubah
-  const totalItem = useCartStore((state) => state.totalItem);
-  const tambahItem = useCartStore((state) => state.tambahItem);
+export default function BuyButton() {
+  // This component ONLY re-renders when totalItems changes
+  const totalItems = useCartStore((state) => state.totalItems);
+  const addItem = useCartStore((state) => state.addItem);
 
   return (
-    <button onClick={tambahItem} className="brutal-btn">
-      Keranjang: {totalItem} item
+    <button onClick={addItem} className="brutal-btn">
+      Cart: {totalItems} items
     </button>
   );
 }

@@ -24,13 +24,10 @@ Dua Pendekatan Mengelola Nilai Input di React
 Nilai dikendalikan penuh oleh state React:
 
 ```tsx {2|5-6|all}
-"use client"
-const [nama, setNama] = useState("")
+"use client";
+const [name, setName] = useState("");
 
-<input
-  value={nama}
-  onChange={e => setNama(e.target.value)}
-/>
+<input value={name} onChange={(e) => setName(e.target.value)} />;
 ```
 
 - ✅ Sinkronisasi instan ke state
@@ -44,10 +41,10 @@ const [nama, setNama] = useState("")
 Nilai disimpan langsung oleh DOM browser:
 
 ```tsx
-"use client"
-const inputRef = useRef<HTMLInputElement>(null)
+"use client";
+const inputRef = useRef<HTMLInputElement>(null);
 
-<input ref={inputRef} defaultValue="Fulan" />
+<input ref={inputRef} defaultValue="John Doe" />;
 ```
 
 - ⚡ **Tanpa Re-render**: Mengetik ribuan kata tidak memicu komponen render ulang.
@@ -121,20 +118,26 @@ Mendefinisikan Aturan Validasi Secara Deklaratif
 ```tsx {1-2|4-10|12-13|all}
 import * as v from "valibot";
 
-// 1. Definisikan aturan skema
+// 1. Define schema rules
 export const RegisterSchema = v.object({
-  nama: v.pipe(v.string(), v.minLength(3, "Nama minimal 3 karakter")),
-  email: v.pipe(v.string(), v.email("Format email tidak sah")),
-  password: v.pipe(v.string(), v.minLength(8, "Password minimal 8 karakter")),
-  umur: v.pipe(
-    v.number("Umur harus angka"),
-    v.minValue(17, "Minimal 17 tahun"),
+  fullName: v.pipe(
+    v.string(),
+    v.minLength(3, "Full name must be at least 3 characters"),
+  ),
+  email: v.pipe(v.string(), v.email("Invalid email format")),
+  password: v.pipe(
+    v.string(),
+    v.minLength(8, "Password must be at least 8 characters"),
+  ),
+  age: v.pipe(
+    v.number("Age must be a number"),
+    v.minValue(17, "Must be at least 17 years old"),
   ),
 });
 
-// 2. Ekstrak tipe TypeScript otomatis (Infer Type)!
+// 2. Extract TypeScript type automatically (Infer Type)!
 export type RegisterFormValues = v.InferOutput<typeof RegisterSchema>;
-// RegisterFormValues otomatis punya properti { nama, email, password, umur }
+// RegisterFormValues automatically has properties { fullName, email, password, age }
 ```
 
 ---
@@ -168,16 +171,16 @@ export default function RegisterForm() {
   return (
     <form onSubmit={handleSubmit(onSubmit)} className="space-y-3">
       <input
-        {...register("nama")}
-        placeholder="Nama Lengkap"
+        {...register("fullName")}
+        placeholder="Full Name"
         className="border p-2 w-full rounded"
       />
-      {errors.nama && (
-        <p className="text-red-500 text-xs">{errors.nama.message}</p>
+      {errors.fullName && (
+        <p className="text-red-500 text-xs">{errors.fullName.message}</p>
       )}
 
       <button disabled={isSubmitting} className="brutal-btn">
-        {isSubmitting ? "Mendaftarkan..." : "Daftar Akun"}
+        {isSubmitting ? "Registering..." : "Register Account"}
       </button>
     </form>
   );
@@ -201,7 +204,7 @@ Mengirim Perubahan Data ke Endpoint Backend
 - **DELETE**: Menghapus data (_Delete_)
 
 ```tsx
-// Contoh PUT: Update data
+// Example PUT: Update data
 await fetch(`/api/todos/${id}`, {
   method: "PUT",
   headers: {

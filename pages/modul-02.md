@@ -67,13 +67,13 @@ Di Next.js App Router, setiap **folder** di dalam direktori `app/` mewakili satu
 
 ```text {1|2|3-4|5-6|7-8|all}
 src/app/
-├── page.tsx               → URL: / (Halaman Beranda)
-├── tentang/
-│   └── page.tsx           → URL: /tentang
-├── kontak/
-│   └── page.tsx           → URL: /kontak
-└── layanan/
-    └── page.tsx           → URL: /layanan
+├── page.tsx               → URL: / (Home Page)
+├── about/
+│   └── page.tsx           → URL: /about
+├── contact/
+│   └── page.tsx           → URL: /contact
+└── services/
+    └── page.tsx           → URL: /services
 ```
 
 <div v-click class="mt-4 brutal-card bg-white p-3 text-sm">
@@ -142,9 +142,9 @@ export default function RootLayout({
   children: React.ReactNode;
 }) {
   return (
-    <html lang="id">
+    <html lang="en">
       <body className="antialiased font-sans">
-        <header className="border-b p-4">Navbar Utama</header>
+        <header className="border-b p-4">Main Navbar</header>
         <main>{children}</main>
         <footer className="border-t p-4 text-center">Footer © 2026</footer>
       </body>
@@ -168,7 +168,7 @@ Saat pengunjung membuka sebuah alamat rute, Next.js menyusun komponen secara ber
 ```text
 <RootLayout>
   <NestedLayout>
-    <Loading> (saat mengambil data)
+    <Loading> (fetching data)
       <ErrorBoundary (error.tsx)>
         <Page> (page.tsx)
       </ErrorBoundary>
@@ -185,7 +185,7 @@ Saat pengunjung membuka sebuah alamat rute, Next.js menyusun komponen secara ber
 layout: two-cols
 ---
 
-### Route Groups `(namaFolder)`
+### Route Groups `(folderName)`
 
 Merapikan Struktur Folder Tanpa Mengubah Alamat URL
 
@@ -193,13 +193,13 @@ Gunakan tanda **kurung bulat** untuk mengelompokkan folder:
 
 ```text
 src/app/
-├── (publik)/
-│   ├── layout.tsx         ← Navbar Publik
+├── (public)/
+│   ├── layout.tsx         ← Public Navbar
 │   ├── page.tsx           → /
-│   └── tentang/page.tsx   → /tentang
+│   └── about/page.tsx     → /about
 └── (dashboard)/
-    ├── layout.tsx         ← Sidebar Dashboard
-    └── profil/page.tsx    → /profil
+    ├── layout.tsx         ← Dashboard Sidebar
+    └── profile/page.tsx   → /profile
 ```
 
 ::right::
@@ -208,7 +208,7 @@ src/app/
 
 <v-clicks>
 
-- 🎯 **URL Bersih**: Tanda kurung `(publik)` dan `(dashboard)` tidak masuk ke alamat URL.
+- 🎯 **URL Bersih**: Tanda kurung `(public)` dan `(dashboard)` tidak masuk ke alamat URL.
 - 🎨 **Layout Berbeda**: Bagian dashboard bisa punya sidebar admin, sedangkan bagian publik punya navbar biasa.
 - 📂 **Organisasi Proyek**: Sangat rapi ketika aplikasi semakin besar dan kompleks.
 
@@ -224,20 +224,20 @@ Di App Router, Antum bebas menaruh file pendukung di dalam folder rute:
 
 ````md magic-move
 ```text
-// 1. Colocation: File selain page.tsx tidak akan jadi rute
+// 1. Colocation: Files other than page.tsx will not become routes
 src/app/dashboard/
 ├── page.tsx               → URL: /dashboard
-├── tombol-export.tsx      → Komponen helper (Bukan rute!)
-└── use-dashboard.ts       → Custom hook (Bukan rute!)
+├── export-button.tsx      → Helper component (Not a route!)
+└── use-dashboard.ts       → Custom hook (Not a route!)
 ```
 
 ```text
-// 2. Private Folders: Folder berawalan underscore diabaikan dari routing
+// 2. Private Folders: Folders with underscore prefix are excluded from routing
 src/app/
-├── _components/           → Seluruh folder ini privat!
+├── _components/           → This entire folder is private!
 │   └── Navbar.tsx
-├── _lib/                  → Fungsi bantuan privat
-│   └── format-rupiah.ts
+├── _lib/                  → Private helper functions
+│   └── format-currency.ts
 └── dashboard/
     └── page.tsx           → URL: /dashboard
 ```
@@ -265,7 +265,7 @@ Menyepakati Standar Agar Satu Tim Tidak Beda Gaya
   `UserProfile.tsx` atau `user-profile.tsx`
   _(nama function tetap `PascalCase`)_
 - **Hook, util, lib** → `kebab-case`
-  `use-auth.ts`, `format-rupiah.ts`
+  `use-auth.ts`, `format-currency.ts`
 - **Konstanta / config** → `kebab-case`
   `api-routes.ts`, `site-config.ts`
 - **Type / interface** → `kebab-case`
@@ -304,8 +304,8 @@ Bagaimana Menata Ratusan File Agar Proyek Tetap Rapi dan Mudah Dinavigasi
 <template #1>
 
 ```text
-// 📁 By Feature / Route (Direkomendasikan)
-// Semua file terkait fitur dikumpulkan dalam satu folder
+// 📁 By Feature / Route (Recommended)
+// All feature-related files are grouped in a single folder
 src/app/dashboard/
 ├── page.tsx
 ├── DashboardChart.tsx
@@ -320,8 +320,8 @@ src/app/dashboard/
 <template #2>
 
 ```text
-// 📁 By Type (Kurang Scalable)
-// File dikelompokkan berdasarkan jenisnya
+// 📁 By Type (Less Scalable)
+// Files grouped by file type
 src/
 ├── components/
 │   ├── DashboardChart.tsx
@@ -352,7 +352,7 @@ export { Button } from "./Button";
 export { Input } from "./Input";
 export { Modal } from "./Modal";
 export { Tabs } from "./Tabs";
-// ... puluhan export lainnya
+// ... dozens of other exports
 ```
 
 <v-clicks>

@@ -17,7 +17,7 @@ Data yang bisa berubah dan memengaruhi tampilan komponen
 
 ````md magic-move
 ```tsx
-// ❌ Variabel biasa: UI tidak akan berubah saat nilai berubah!
+// ❌ Regular variable: UI will not update when value changes!
 export default function Counter() {
   let count = 0;
 
@@ -27,14 +27,14 @@ export default function Counter() {
         count++;
       }}
     >
-      Diklik: {count} kali {/* Selalu tampil 0! */}
+      Clicked: {count} times {/* Always shows 0! */}
     </button>
   );
 }
 ```
 
 ```tsx
-// ✅ useState: React tahu harus re-render saat nilai berubah!
+// ✅ useState: React triggers re-render when value changes!
 "use client";
 import { useState } from "react";
 
@@ -43,7 +43,7 @@ export default function Counter() {
 
   return (
     <button onClick={() => setCount(count + 1)}>
-      Diklik: {count} kali {/* Update otomatis! */}
+      Clicked: {count} times {/* Automatically updates! */}
     </button>
   );
 }
@@ -61,20 +61,20 @@ Memahami setiap bagian dari hook useState
 import { useState } from "react";
 
 export default function Profile() {
-  //        [nilai saat ini, fungsi pengubah] = useState(nilai awal)
-  const [nama, setNama] = useState("Fulan");
-  const [umur, setUmur] = useState(25);
-  const [hobi, setHobi] = useState<string[]>(["coding", "baca"]);
-  const [aktif, setAktif] = useState(true);
+  //        [current value, setter function] = useState(initial value)
+  const [name, setName] = useState("John Doe");
+  const [age, setAge] = useState(25);
+  const [hobbies, setHobbies] = useState<string[]>(["coding", "reading"]);
+  const [isActive, setIsActive] = useState(true);
 
   return (
     <div>
       <p>
-        {nama}, {umur} tahun
+        {name}, {age} years old
       </p>
-      <button onClick={() => setUmur(umur + 1)}>Tambah Umur</button>
-      <button onClick={() => setAktif(!aktif)}>
-        {aktif ? "🟢 Aktif" : "🔴 Nonaktif"}
+      <button onClick={() => setAge(age + 1)}>Increase Age</button>
+      <button onClick={() => setIsActive(!isActive)}>
+        {isActive ? "🟢 Active" : "🔴 Inactive"}
       </button>
     </div>
   );
@@ -89,26 +89,26 @@ Jangan mutasi langsung — selalu buat salinan baru (Immutability)!
 
 ````md magic-move
 ```tsx
-// ❌ SALAH: Mutasi langsung tidak akan memicu re-render!
-const [items, setItems] = useState(["Apel", "Jeruk"]);
+// ❌ WRONG: Direct mutation does not trigger re-render!
+const [items, setItems] = useState(["Apple", "Orange"]);
 
-items.push("Mangga"); // ← Mutasi langsung
-setItems(items); // ← React tidak mendeteksi perubahan!
+items.push("Mango"); // ← Direct mutation
+setItems(items); // ← React does not detect changes!
 ```
 
 ```tsx
-// ✅ BENAR: Buat array/object baru dengan spread operator!
-const [items, setItems] = useState(["Apel", "Jeruk"]);
+// ✅ CORRECT: Create a new array/object with spread operator!
+const [items, setItems] = useState(["Apple", "Orange"]);
 
-// Tambah item
-setItems([...items, "Mangga"]);
+// Add item
+setItems([...items, "Mango"]);
 
-// Hapus item
-setItems(items.filter((i) => i !== "Jeruk"));
+// Remove item
+setItems(items.filter((i) => i !== "Orange"));
 
 // Update object
-const [user, setUser] = useState({ nama: "Fulan", umur: 25 });
-setUser({ ...user, umur: 26 });
+const [user, setUser] = useState({ name: "John Doe", age: 25 });
+setUser({ ...user, age: 26 });
 ```
 ````
 
@@ -127,19 +127,19 @@ Menjalankan kode di luar siklus render — fetch data, timer, subscription
 import { useState, useEffect } from "react";
 
 export default function Clock() {
-  const [waktu, setWaktu] = useState(new Date());
+  const [time, setTime] = useState(new Date());
 
   // useEffect(callback, dependencyArray)
   useEffect(() => {
     const timer = setInterval(() => {
-      setWaktu(new Date());
+      setTime(new Date());
     }, 1000);
 
-    // Cleanup: bersihkan saat komponen di-unmount
+    // Cleanup: clear when component unmounts
     return () => clearInterval(timer);
-  }, []); // [] = jalankan sekali saat mount
+  }, []); // [] = run once on mount
 
-  return <p>Waktu: {waktu.toLocaleTimeString("id-ID")}</p>;
+  return <p>Time: {time.toLocaleTimeString("en-US")}</p>;
 }
 ```
 
@@ -157,28 +157,40 @@ Anti-Pattern Populer yang Harus Antum Hindari Sejak Awal!
 
 ````md magic-move
 ```tsx
-// ❌ ANTI-PATTERN: Menyimpan hasil turunan di state + sync via useEffect
-function KeranjangBelanja({ items, diskon }) {
+// ❌ ANTI-PATTERN: Storing derived state in useState + syncing via useEffect
+function ShoppingCart({
+  items,
+  discount,
+}: {
+  items: { price: number }[];
+  discount: number;
+}) {
   const [total, setTotal] = useState(0);
 
-  // Double render & rawan bug desinkronisasi!
+  // Causes double render & desync bugs!
   useEffect(() => {
-    const subtotal = items.reduce((acc, item) => acc + item.harga, 0);
-    setTotal(subtotal - diskon);
-  }, [items, diskon]);
+    const subtotal = items.reduce((acc, item) => acc + item.price, 0);
+    setTotal(subtotal - discount);
+  }, [items, discount]);
 
-  return <div>Total Bayar: Rp {total}</div>;
+  return <div>Total: ${total}</div>;
 }
 ```
 
 ```tsx
-// ✅ BENAR: Hitung langsung saat render (Derived State)
-function KeranjangBelanja({ items, diskon }) {
-  // Tidak butuh useState & tidak butuh useEffect!
-  const subtotal = items.reduce((acc, item) => acc + item.harga, 0);
-  const total = subtotal - diskon;
+// ✅ CORRECT: Compute directly during render (Derived State)
+function ShoppingCart({
+  items,
+  discount,
+}: {
+  items: { price: number }[];
+  discount: number;
+}) {
+  // No useState & no useEffect needed!
+  const subtotal = items.reduce((acc, item) => acc + item.price, 0);
+  const total = subtotal - discount;
 
-  return <div>Total Bayar: Rp {total}</div>;
+  return <div>Total: ${total}</div>;
 }
 ```
 ````
@@ -202,15 +214,15 @@ Berbagi data antar komponen melalui parent
 Dua komponen perlu akses state yang sama:
 
 ```tsx
-// ❌ Masing-masing punya state sendiri
-function InputNama() {
-  const [nama, setNama] = useState("")
-  return <input onChange={...} />
+// ❌ Each component maintains its own isolated state
+function NameInput() {
+  const [name, setName] = useState("");
+  return <input onChange={...} />;
 }
 
 function Greeting() {
-  // Tidak bisa akses `nama`!
-  return <p>Halo, ???</p>
+  // Cannot access `name`!
+  return <p>Hello, ???</p>;
 }
 ```
 
@@ -222,23 +234,23 @@ State terpisah = data tidak sinkron!
 
 ```tsx {2-3|5-7|8-10|all}
 function Parent() {
-  // State dikelola di parent
-  const [nama, setNama] = useState("");
+  // State managed in parent
+  const [name, setName] = useState("");
 
   return (
     <div>
-      <InputNama onNamaChange={setNama} />
-      <Greeting nama={nama} />
+      <NameInput onNameChange={setName} />
+      <Greeting name={name} />
     </div>
   );
 }
 
-function InputNama({ onNamaChange }) {
-  return <input onChange={(e) => onNamaChange(e.target.value)} />;
+function NameInput({ onNameChange }: { onNameChange: (val: string) => void }) {
+  return <input onChange={(e) => onNameChange(e.target.value)} />;
 }
 
-function Greeting({ nama }) {
-  return <p>Halo, {nama}!</p>;
+function Greeting({ name }: { name: string }) {
+  return <p>Hello, {name}!</p>;
 }
 ```
 
@@ -256,14 +268,14 @@ Ketika Terlalu Banyak State Ditumpuk di Satu Komponen Raksasa
 
 ```tsx
 function Dashboard() {
-  // 15 state berbeda ditumpuk di 1 file!
+  // 15 separate states piled into 1 file!
   const [user, setUser] = useState();
   const [theme, setTheme] = useState();
   const [notif, setNotif] = useState();
   const [filter, setFilter] = useState();
   const [page, setPage] = useState();
-  // ... 10 state lainnya
-  // Satu huruf diketik -> 1000 baris re-render!
+  // ... 10 other states
+  // One keystroke -> 1000 lines re-render!
 }
 ```
 
@@ -279,9 +291,9 @@ function Dashboard() {
 function Dashboard() {
   return (
     <div>
-      <UserSection /> {/* Kelola state user */}
-      <FilterBar /> {/* Kelola state filter */}
-      <DataGrid /> {/* Kelola pagination */}
+      <UserSection /> {/* Manage user state */}
+      <FilterBar /> {/* Manage filter state */}
+      <DataGrid /> {/* Manage pagination */}
     </div>
   );
 }

@@ -53,7 +53,7 @@ Di App Router, `fetch()` berjalan langsung di server dengan model caching fleksi
 
 ````md magic-move
 ```tsx
-// 1. Default Next.js 15/16: Uncached (Selalu fresh setiap request!)
+// 1. Default Next.js 15/16: Uncached (Always fresh on every request!)
 export default async function DashboardPage() {
   const res = await fetch("https://api.example.com/stats");
   const stats = await res.json();
@@ -63,10 +63,10 @@ export default async function DashboardPage() {
 ```
 
 ```tsx
-// 2. SSG: Caching eksplisit (force-cache)
+// 2. SSG: Explicit caching (force-cache)
 export default async function BlogPage() {
   const res = await fetch("https://api.example.com/posts", {
-    cache: "force-cache", // ← Simpan ke cache permanen
+    cache: "force-cache", // ← Store in permanent cache
   });
   const posts = await res.json();
 
@@ -75,10 +75,10 @@ export default async function BlogPage() {
 ```
 
 ```tsx
-// 3. ISR: Revalidate setiap 60 detik
+// 3. ISR: Revalidate every 60 seconds
 export default async function ProductPage() {
   const res = await fetch("https://api.example.com/products", {
-    next: { revalidate: 60 }, // ← Update berkala tiap 60 detik
+    next: { revalidate: 60 }, // ← Periodic update every 60s
   });
   const products = await res.json();
 
@@ -87,7 +87,7 @@ export default async function ProductPage() {
 ```
 
 ```tsx
-// 4. Standar Baru Next.js 16: Directive 'use cache' (Cache Components)
+// 4. Next.js 16 Standard: Directive 'use cache' (Cache Components)
 import { cacheLife, cacheTag } from "next/cache";
 
 export default async function ProductPage() {
@@ -153,7 +153,7 @@ Memperbarui Halaman Statis Tanpa Build Ulang Seluruh Website
   <p class="text-[11px] text-gray-700 mb-2">Next.js mengecek kesegaran data secara berkala sesuai interval detik yang ditentukan.</p>
 
 ```ts
-// Update paling cepat tiap 60 detik
+// Fastest revalidation every 60 seconds
 fetch("https://api.com/items", {
   next: { revalidate: 60 },
 });
@@ -173,11 +173,11 @@ fetch("https://api.com/items", {
 ```ts
 import { revalidatePath, revalidateTag, updateTag } from "next/cache";
 
-// Purge cache rute atau tag (Next.js 16: wajib 2 argumen):
+// Purge cache for a route or tag (Next.js 16: requires 2 arguments):
 revalidatePath("/blog");
 revalidateTag("products", "max");
 
-// Di Server Action Next.js 16: refresh instan UI
+// Inside Next.js 16 Server Action: instantaneous UI refresh
 updateTag("products");
 ```
 
@@ -198,17 +198,17 @@ Men-generate halaman dinamis saat build time
 ```tsx {1-9|11-17|all}
 // app/blog/[slug]/page.tsx
 
-// Beri tahu Next.js: "generate halaman untuk slug-slug ini saat build!"
+// Tell Next.js: "generate static pages for these slugs at build time!"
 export async function generateStaticParams() {
   const res = await fetch("https://api.example.com/posts");
   const posts = await res.json();
 
   return posts.map((post) => ({
-    slug: post.slug, // Setiap slug jadi halaman statis
+    slug: post.slug, // Each slug becomes a static page
   }));
 }
 
-// Halaman ini akan di-generate untuk setiap slug
+// This page will be generated for each slug
 export default async function BlogPost({
   params,
 }: {
@@ -234,12 +234,12 @@ export default async function BlogPost({
 Next.js otomatis menampilkan komponen ini saat halaman sedang fetch data!
 
 ```tsx
-// app/dashboard/loading.tsx — Otomatis muncul!
+// app/dashboard/loading.tsx — Automatically rendered!
 export default function Loading() {
   return (
     <div className="flex items-center justify-center h-64">
       <div className="animate-spin w-8 h-8 border-4 border-blue-500 border-t-transparent rounded-full" />
-      <span className="ml-3 text-gray-600">Memuat data...</span>
+      <span className="ml-3 text-gray-600">Loading data...</span>
     </div>
   );
 }
@@ -264,7 +264,7 @@ export default function Loading() {
 Halaman tetap bersih meskipun terjadi kesalahan teknis
 
 ```tsx {1-2|5-6|9-13|all}
-"use client"; // error.tsx HARUS client component!
+"use client"; // error.tsx MUST be a client component!
 
 export default function Error({
   error,
@@ -275,10 +275,10 @@ export default function Error({
 }) {
   return (
     <div className="text-center py-12">
-      <h2 className="text-2xl font-bold mb-2">Oops! Terjadi Kesalahan</h2>
+      <h2 className="text-2xl font-bold mb-2">Oops! Something went wrong</h2>
       <p className="text-gray-600 mb-4">{error.message}</p>
       <button onClick={() => reset()} className="brutal-btn">
-        Coba Lagi
+        Try Again
       </button>
     </div>
   );
@@ -303,13 +303,13 @@ export default function DashboardPage() {
     <div>
       <h1>Dashboard</h1>
 
-      {/* Bagian yang lambat dibungkus Suspense */}
-      <Suspense fallback={<p>Memuat statistik...</p>}>
+      {/* Slow components wrapped in Suspense */}
+      <Suspense fallback={<p>Loading statistics...</p>}>
         <SlowStatistics /> {/* Async Server Component */}
       </Suspense>
 
-      <Suspense fallback={<p>Memuat grafik...</p>}>
-        <SlowChart /> {/* Muncul independen */}
+      <Suspense fallback={<p>Loading chart...</p>}>
+        <SlowChart /> {/* Renders independently */}
       </Suspense>
     </div>
   );

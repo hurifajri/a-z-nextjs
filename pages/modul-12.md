@@ -24,7 +24,7 @@ Pilih format tampilan yang sesuai dengan jenis data
 <table className="w-full border-2 border-black">
   <thead className="bg-yellow-300">
     <tr>
-      <th className="p-2 border">Nama</th>
+      <th className="p-2 border">Name</th>
       <th className="p-2 border">Email</th>
       <th className="p-2 border">Role</th>
     </tr>
@@ -52,7 +52,7 @@ Pilih format tampilan yang sesuai dengan jenis data
     <div key={p.id} className="border-2 border-black rounded-lg p-4 bg-white">
       <img src={p.image} className="w-full h-40 object-cover rounded" />
       <h3 className="font-bold mt-2">{p.name}</h3>
-      <p className="text-gray-600">Rp {p.price.toLocaleString()}</p>
+      <p className="text-gray-600">${p.price.toLocaleString()}</p>
     </div>
   ))}
 </div>
@@ -69,59 +69,62 @@ Mengelola Kumpulan Data Besar dengan Nyaman bagi Pengguna
 
 ````md magic-move
 ```tsx
-// 1. Filter Real-Time berdasarkan kata kunci & kategori
+// 1. Real-time filtering by keyword & category
 "use client";
-export default function ProductList({ products }) {
+export default function ProductList({ products }: { products: Product[] }) {
   const [search, setSearch] = useState("");
-  const [kategori, setKategori] = useState("semua");
+  const [category, setCategory] = useState("all");
 
-  const hasilFilter = products.filter((p) => {
-    const cocokNama = p.name.toLowerCase().includes(search.toLowerCase());
-    const cocokKategori = kategori === "semua" || p.category === kategori;
-    return cocokNama && cocokKategori;
+  const filteredProducts = products.filter((p) => {
+    const matchesName = p.name.toLowerCase().includes(search.toLowerCase());
+    const matchesCategory = category === "all" || p.category === category;
+    return matchesName && matchesCategory;
   });
 
   return (
     <div>
       <input
-        placeholder="Cari barang..."
+        placeholder="Search items..."
         value={search}
         onChange={(e) => setSearch(e.target.value)}
       />
-      <p>{hasilFilter.length} produk ditemukan</p>
+      <p>{filteredProducts.length} products found</p>
     </div>
   );
 }
 ```
 
 ```tsx
-// 2. Potong data menjadi beberapa halaman (Pagination)
-const [halaman, setHalaman] = useState(1);
-const perHalaman = 10;
+// 2. Slice data across pages (Pagination)
+const [currentPage, setCurrentPage] = useState(1);
+const itemsPerPage = 10;
 
-const totalHalaman = Math.ceil(hasilFilter.length / perHalaman);
-const dataTampil = hasilFilter.slice(
-  (halaman - 1) * perHalaman,
-  halaman * perHalaman,
+const totalPages = Math.ceil(filteredProducts.length / itemsPerPage);
+const paginatedData = filteredProducts.slice(
+  (currentPage - 1) * itemsPerPage,
+  currentPage * itemsPerPage,
 );
 
 return (
   <div>
-    {dataTampil.map((p) => (
+    {paginatedData.map((p) => (
       <ProductCard key={p.id} item={p} />
     ))}
     <div className="flex gap-2 justify-center mt-4">
-      <button disabled={halaman <= 1} onClick={() => setHalaman(halaman - 1)}>
-        Sebelumnya
+      <button
+        disabled={currentPage <= 1}
+        onClick={() => setCurrentPage(currentPage - 1)}
+      >
+        Previous
       </button>
       <span>
-        {halaman} dari {totalHalaman}
+        {currentPage} of {totalPages}
       </span>
       <button
-        disabled={halaman >= totalHalaman}
-        onClick={() => setHalaman(halaman + 1)}
+        disabled={currentPage >= totalPages}
+        onClick={() => setCurrentPage(currentPage + 1)}
       >
-        Selanjutnya
+        Next
       </button>
     </div>
   </div>
@@ -196,11 +199,11 @@ Perjalanan Komunitas dari Styled Components Kembali ke Tailwind CSS
 
 ````md magic-move
 ```tsx
-// 📜 ERA POPULER (2018–2022): CSS-in-JS (Styled-Components / Emotion)
+// 📜 POPULAR ERA (2018–2022): CSS-in-JS (Styled-Components / Emotion)
 import styled from "styled-components";
 
-const TombolKeren = styled.button`
-  background: ${(props) => (props.$primer ? "#FFE600" : "#FFFFFF")};
+const CustomButton = styled.button<{ $primary?: boolean }>`
+  background: ${(props) => (props.$primary ? "#FFE600" : "#FFFFFF")};
   border: 2px solid #000;
   padding: 8px 16px;
   font-weight: bold;
@@ -208,33 +211,33 @@ const TombolKeren = styled.button`
     background: #ffd700;
   }
 `;
-// Dulu disukai karena style bisa dinamis mengikuti props JavaScript!
+// Previously favored because styles could dynamically adapt to JS props!
 ```
 
 ```tsx
-// ⚠️ KENAPA SEKARANG DITINGGALKAN OLEH KOMUNITAS?
-// 1. Runtime Performance: Browser sibuk menghitung CSS saat aplikasi berjalan
-// 2. Ukuran JS Membengkak: Kode CSS dikirim sebagai file JavaScript
-// 3. TIDAK KOMPATIBEL DENGAN SERVER COMPONENTS (RSC)!
-//    CSS-in-JS butuh React Context di browser, sehingga tidak bisa berjalan di server!
+// ⚠️ WHY WAS IT ABANDONED BY THE COMMUNITY?
+// 1. Runtime Performance: The browser is overloaded calculating CSS at runtime
+// 2. Bloated JS Bundle: CSS code shipped as JavaScript
+// 3. INCOMPATIBLE WITH SERVER COMPONENTS (RSC)!
+//    CSS-in-JS requires React Context in the browser, failing on the server!
 ```
 
 ```tsx
-// ⚡ ERA SEKARANG: Tailwind CSS (Zero Runtime, Compile Time)
-export default function TombolKeren({ primer }: { primer?: boolean }) {
+// ⚡ MODERN ERA: Tailwind CSS (Zero Runtime, Compile Time)
+export default function CustomButton({ primary }: { primary?: boolean }) {
   return (
     <button
       className={`border-2 border-black px-4 py-2 font-bold transition-all ${
-        primer
+        primary
           ? "bg-[#FFE600] hover:bg-[#FFD700]"
           : "bg-white hover:bg-gray-100"
       }`}
     >
-      Klik Saya
+      Click Me
     </button>
   );
 }
-// Zero-runtime, dikompilasi saat build time, ukuran CSS statis, 100% kompatibel dengan Server Components!
+// Zero-runtime, compiled at build time, static CSS bundle, 100% compatible with Server Components!
 ```
 ````
 

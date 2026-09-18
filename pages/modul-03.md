@@ -18,10 +18,10 @@ Ketika URL Harus Mengikuti Data Produk, Artikel, atau Profil Pengguna
 Bayangkan Antum punya 1.000 produk di toko online:
 
 ```text
-/produk/laptop-gaming
-/produk/mouse-wireless
-/produk/keyboard-mechanical
-... 997 produk lainnya
+/products/gaming-laptop
+/products/wireless-mouse
+/products/mechanical-keyboard
+... 997 other products
 ```
 
 <div v-click class="mt-4 brutal-card bg-yellow-100 p-4 border-2 border-black">
@@ -35,21 +35,21 @@ Bayangkan Antum punya 1.000 produk di toko online:
 
 Satu Template Folder untuk Menangani Ribuan Halaman Berbeda
 
-Cukup buat folder dengan kurung siku: `app/produk/[id]/page.tsx`
+Cukup buat folder dengan kurung siku: `app/products/[id]/page.tsx`
 
 ```tsx {1-3|5-12|all}
-// app/produk/[id]/page.tsx
+// app/products/[id]/page.tsx
 interface PageProps {
   params: Promise<{ id: string }>;
 }
 
-export default async function DetailProduk({ params }: PageProps) {
+export default async function ProductDetail({ params }: PageProps) {
   const { id } = await params;
 
   return (
     <div>
-      <h1 className="text-2xl font-bold">Produk ID: {id}</h1>
-      <p>Data barang diambil berdasarkan parameter URL di atas.</p>
+      <h1 className="text-2xl font-bold">Product ID: {id}</h1>
+      <p>Product details fetched based on the URL parameter above.</p>
     </div>
   );
 }
@@ -65,11 +65,11 @@ export default async function DetailProduk({ params }: PageProps) {
 
 Pilihan Pola Dynamic Routes Sesuai Kebutuhan Aplikasi
 
-| Pola Folder                     | Contoh URL yang Cocok          | Nilai `params` yang Diterima                         |
-| :------------------------------ | :----------------------------- | :--------------------------------------------------- |
-| `produk/[id]`                   | `/produk/buku-react`           | `{ id: 'buku-react' }`                               |
-| `blog/[...slug]` _(Catch-all)_  | `/blog/2026/09/tips-next`      | `{ slug: ['2026', '09', 'tips-next'] }`              |
-| `docs/[[...slug]]` _(Optional)_ | `/docs` atau `/docs/instalasi` | `{ slug: undefined }` atau `{ slug: ['instalasi'] }` |
+| Pola Folder                     | Contoh URL yang Cocok             | Nilai `params` yang Diterima                            |
+| :------------------------------ | :-------------------------------- | :------------------------------------------------------ |
+| `products/[id]`                 | `/products/react-handbook`        | `{ id: 'react-handbook' }`                              |
+| `blog/[...slug]` _(Catch-all)_  | `/blog/2026/09/nextjs-tips`       | `{ slug: ['2026', '09', 'nextjs-tips'] }`               |
+| `docs/[[...slug]]` _(Optional)_ | `/docs` atau `/docs/installation` | `{ slug: undefined }` atau `{ slug: ['installation'] }` |
 
 <div v-click class="mt-4 brutal-card bg-white p-3 text-xs">
   📌 Gunakan <code>[...slug]</code> saat rute memiliki kedalaman bertingkat yang bervariasi (seperti rubrik artikel atau struktur dokumentasi panduan).
@@ -88,8 +88,8 @@ Cara Standar dan Optimal Berpindah Halaman di Next.js
 #### Mengapa Bukan Tag `<a>` Biasa?
 
 ```tsx
-// ❌ Jangan gunakan tag anchor biasa
-<a href="/tentang">Tentang</a>
+// ❌ Do not use standard anchor tag
+<a href="/about">About</a>
 ```
 
 - Memaksa browser reload penuh dari nol
@@ -101,10 +101,10 @@ Cara Standar dan Optimal Berpindah Halaman di Next.js
 #### Gunakan `next/link`
 
 ```tsx
-// ✅ Gunakan komponen Link bawaan
+// ✅ Use built-in Link component
 import Link from "next/link";
 
-<Link href="/tentang">Tentang</Link>;
+<Link href="/about">About</Link>;
 ```
 
 - ⚡ Navigasi instan di sisi klien
@@ -137,17 +137,17 @@ Gunakan saat navigasi harus menunggu sebuah proses selesai:
 "use client";
 import { useRouter } from "next/navigation";
 
-export default function FormPembayaran() {
+export default function CheckoutForm() {
   const router = useRouter();
 
-  async function prosesBayar() {
-    await kirimPembayaran();
-    router.push("/sukses"); // Pindah rute!
+  async function handlePayment() {
+    await processPayment();
+    router.push("/success"); // Navigate!
   }
 
   return (
-    <button onClick={prosesBayar} className="brutal-btn">
-      Bayar Sekarang
+    <button onClick={handlePayment} className="brutal-btn">
+      Pay Now
     </button>
   );
 }
@@ -161,34 +161,34 @@ Hook Pendukung dari Paket `next/navigation` untuk Client Component
 
 ````md magic-move
 ```tsx
-// 1. useRouter — Mengendalikan navigasi secara programatik
+// 1. useRouter — Programmatic navigation control
 "use client";
 import { useRouter } from "next/navigation";
 
 const router = useRouter();
-router.push("/halaman-baru"); // Pindah halaman
-router.replace("/beranda"); // Pindah tanpa menyimpan history mundur
-router.back(); // Kembali ke halaman sebelumnya
-router.refresh(); // Muat ulang data rute saat ini
+router.push("/new-page"); // Navigate to page
+router.replace("/home"); // Navigate without history
+router.back(); // Go back to previous page
+router.refresh(); // Refresh current route data
 ```
 
 ```tsx
-// 2. usePathname — Mengetahui alamat URL yang sedang aktif
+// 2. usePathname — Get currently active URL path
 "use client";
 import { usePathname } from "next/navigation";
 
 const pathname = usePathname();
-// Jika browser di /produk/laptop-gaming → pathname bernilai "/produk/laptop-gaming"
+// If browser is at /products/gaming-laptop → pathname is "/products/gaming-laptop"
 ```
 
 ```tsx
-// 3. useSearchParams — Mengambil parameter query (?kategori=elektronik)
+// 3. useSearchParams — Read query parameters (?category=electronics)
 "use client";
 import { useSearchParams } from "next/navigation";
 
 const searchParams = useSearchParams();
-const cari = searchParams.get("q");
-const urutkan = searchParams.get("sort");
+const query = searchParams.get("q");
+const sort = searchParams.get("sort");
 ```
 ````
 
@@ -207,9 +207,9 @@ export default function Navbar() {
   const pathname = usePathname();
 
   const links = [
-    { href: "/", label: "Beranda" },
-    { href: "/produk", label: "Katalog Produk" },
-    { href: "/tentang", label: "Tentang Kami" },
+    { href: "/", label: "Home" },
+    { href: "/products", label: "Products" },
+    { href: "/about", label: "About Us" },
   ];
 
   return (

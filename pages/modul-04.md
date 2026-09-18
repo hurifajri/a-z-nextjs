@@ -83,7 +83,7 @@ Mari bandingkan keduanya secara langsung
 Cukup tambahkan `"use client"` di baris paling atas!
 
 ```tsx {1|3|5-6|all}
-"use client"; // 👈 Baris ini mengubah Server → Client!
+"use client"; // 👈 This directive switches Server → Client!
 
 import { useState } from "react";
 
@@ -91,7 +91,7 @@ export default function Counter() {
   const [count, setCount] = useState(0);
 
   return (
-    <button onClick={() => setCount(count + 1)}>Diklik: {count} kali</button>
+    <button onClick={() => setCount(count + 1)}>Clicked: {count} times</button>
   );
 }
 ```
@@ -108,19 +108,19 @@ Lihat bagaimana kebutuhan interaksi mengubah tipe komponen
 
 ````md magic-move
 ```tsx
-// 1. Server Component biasa — menampilkan data statis
+// 1. Plain Server Component — renders static UI
 export default function SearchBar() {
   return (
     <div>
-      <input type="text" placeholder="Cari barang..." />
-      <button>Cari</button>
+      <input type="text" placeholder="Search items..." />
+      <button>Search</button>
     </div>
   );
 }
 ```
 
 ```tsx
-// 2. Butuh menyimpan input! useState = ERROR di server ❌
+// 2. Needs input state! useState = ERROR on server ❌
 import { useState } from "react";
 
 export default function SearchBar() {
@@ -129,14 +129,14 @@ export default function SearchBar() {
   return (
     <div>
       <input onChange={(e) => setQuery(e.target.value)} />
-      <button>Cari: {query}</button>
+      <button>Search: {query}</button>
     </div>
   );
 }
 ```
 
 ```tsx
-// 3. Solusi: tambahkan "use client" di paling atas ✅
+// 3. Solution: add "use client" directive at top ✅
 "use client";
 import { useState } from "react";
 
@@ -146,7 +146,7 @@ export default function SearchBar() {
   return (
     <div>
       <input onChange={(e) => setQuery(e.target.value)} />
-      <button>Cari: {query}</button>
+      <button>Search: {query}</button>
     </div>
   );
 }
@@ -185,24 +185,24 @@ Pisahkan bagian statis (server) dan interaktif (client)
 #### Server Page (`page.tsx`)
 
 ```tsx {2,5-6|8-11|all}
-// app/produk/[id]/page.tsx
+// app/products/[id]/page.tsx
 import AddToCart from "./AddToCart";
 
-export default async function Product({
+export default async function ProductPage({
   params,
 }: {
   params: Promise<{ id: string }>;
 }) {
   const { id } = await params;
-  // Ambil data langsung dari server!
-  const res = await fetch(`https://api.example.com/produk/${id}`);
-  const produk = await res.json();
+  // Fetch data directly on the server!
+  const res = await fetch(`https://api.example.com/products/${id}`);
+  const product = await res.json();
 
   return (
     <div>
-      <h1>{produk.name}</h1>
-      <p>Rp {produk.price}</p>
-      <AddToCart id={produk.id} />
+      <h1>{product.name}</h1>
+      <p>${product.price}</p>
+      <AddToCart id={product.id} />
     </div>
   );
 }
@@ -231,7 +231,7 @@ export default function AddToCart({ id }: { id: string }) {
 
   return (
     <button onClick={handleAdd}>
-      {loading ? "Menambahkan..." : "🛒 Beli"}
+      {loading ? "Adding..." : "🛒 Add to Cart"}
     </button>
   );
 }
@@ -246,7 +246,7 @@ Memasukkan Server Component ke dalam Client Component
 ```tsx {1|4,10|all}
 "use client";
 
-// Client Layout bisa menerima Server Component sebagai children!
+// Client Layout accepts Server Components via children prop!
 export default function InteractiveLayout({
   children,
 }: {
@@ -254,8 +254,8 @@ export default function InteractiveLayout({
 }) {
   return (
     <div className="flex">
-      <Sidebar /> {/* Sidebar interaktif */}
-      <main>{children}</main> {/* children tetap Server! */}
+      <Sidebar /> {/* Interactive client component */}
+      <main>{children}</main> {/* children remains a Server Component! */}
     </div>
   );
 }

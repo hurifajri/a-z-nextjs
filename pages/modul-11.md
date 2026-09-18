@@ -43,25 +43,25 @@ Anatomi project Todo App kita
 ```text {1-4|5-8|9-12|all}
 src/
 ├── app/
-│   ├── layout.tsx          ← Layout global + Navbar
-│   ├── page.tsx            ← Halaman beranda
+│   ├── layout.tsx          ← Global layout + Navbar
+│   ├── page.tsx            ← Home page
 │   ├── todos/
-│   │   ├── page.tsx        ← Halaman daftar todo (Server Component)
+│   │   ├── page.tsx        ← Todo list page (Server Component)
 │   │   └── loading.tsx     ← Skeleton loading
 │   ├── about/
-│   │   └── page.tsx        ← Halaman tentang
+│   │   └── page.tsx        ← About page
 │   └── api/
 │       └── todos/
-│           ├── route.ts    ← GET + POST (semua todo)
+│           ├── route.ts    ← GET + POST (all todos)
 │           └── [id]/
 │               └── route.ts ← PUT + DELETE (per todo)
 ├── db/
-│   ├── schema.ts           ← Schema tabel Drizzle
-│   └── index.ts            ← Koneksi database
+│   ├── schema.ts           ← Drizzle table schema
+│   └── index.ts            ← Database connection
 └── components/
-    ├── Navbar.tsx           ← Navigasi (Client Component)
-    ├── TodoForm.tsx         ← Form tambah todo (Client)
-    └── TodoItem.tsx         ← Item todo dengan aksi (Client)
+    ├── Navbar.tsx           ← Navigation (Client Component)
+    ├── TodoForm.tsx         ← Add todo form (Client)
+    └── TodoItem.tsx         ← Todo item with actions (Client)
 ```
 
 ---
@@ -138,7 +138,7 @@ export default function RootLayout({
   children: React.ReactNode;
 }) {
   return (
-    <html lang="id">
+    <html lang="en">
       <body className="bg-gray-50 min-h-screen">
         <Navbar />
         <main className="max-w-2xl mx-auto p-6">{children}</main>
@@ -159,13 +159,13 @@ export default function Navbar() {
   return (
     <nav className="flex gap-4 p-4 border-b-2 border-black bg-white">
       <Link href="/" className={path === "/" ? "font-bold" : ""}>
-        Beranda
+        Home
       </Link>
       <Link href="/todos" className={path === "/todos" ? "font-bold" : ""}>
         Todos
       </Link>
       <Link href="/about" className={path === "/about" ? "font-bold" : ""}>
-        Tentang
+        About
       </Link>
     </nav>
   );
@@ -191,10 +191,10 @@ export default async function TodosPage() {
 
   return (
     <div>
-      <h1 className="text-2xl font-bold mb-4">📝 Daftar Todo</h1>
+      <h1 className="text-2xl font-bold mb-4">📝 Todo List</h1>
       <TodoForm />
       <div className="mt-4 space-y-2">
-        {todos.length === 0 && <p className="text-gray-500">Belum ada todo.</p>}
+        {todos.length === 0 && <p className="text-gray-500">No todos yet.</p>}
         {todos.map((todo) => (
           <TodoItem key={todo.id} todo={todo} />
         ))}
@@ -212,7 +212,7 @@ Client Components untuk form dan aksi
 
 ````md magic-move
 ```tsx
-// components/TodoForm.tsx — Form tambah todo
+// components/TodoForm.tsx — Add todo form
 "use client";
 import { useState } from "react";
 import { useRouter } from "next/navigation";
@@ -237,11 +237,11 @@ export default function TodoForm() {
       <input
         value={title}
         onChange={(e) => setTitle(e.target.value)}
-        placeholder="Tulis todo baru..."
+        placeholder="Write a new todo..."
         className="flex-1 border-2 p-2 rounded"
       />
       <button className="bg-black text-white px-4 py-2 rounded font-bold">
-        Tambah
+        Add
       </button>
     </form>
   );
@@ -249,11 +249,15 @@ export default function TodoForm() {
 ```
 
 ```tsx
-// components/TodoItem.tsx — Item todo dengan toggle dan delete
+// components/TodoItem.tsx — Todo item with toggle and delete
 "use client";
 import { useRouter } from "next/navigation";
 
-export default function TodoItem({ todo }) {
+export default function TodoItem({
+  todo,
+}: {
+  todo: { id: number; title: string; done: boolean };
+}) {
   const router = useRouter();
 
   async function toggleDone() {

@@ -319,11 +319,11 @@ Satu Kali Simpan (Ctrl+S / Cmd+S), Seluruh Header File Langsung Bersih!
 
 ````md magic-move
 ```tsx
-// ❌ 1. Sebelum: Berantakan & Penuh Unused Imports
+// ❌ 1. Before: Messy order & unused imports
 import "./button.css";
 import { useState, useEffect } from "react";
 import Image from "next/image";
-import { formatRupiah } from "@/utils/format";
+import { formatCurrency } from "@/utils/format";
 import Link from "next/link";
 import { Trash, Heart } from "lucide-react";
 import { UserCard } from "./UserCard";
@@ -335,7 +335,7 @@ export default function ProductCard({ title }: { title: string }) {
   return (
     <div>
       <h3>{title}</h3>
-      <Link href="/cart">Beli Sekarang</Link>
+      <Link href="/cart">Buy Now</Link>
       <button onClick={() => setLiked(!liked)}>
         <Heart className={liked ? "text-red-500" : ""} />
       </button>
@@ -345,8 +345,8 @@ export default function ProductCard({ title }: { title: string }) {
 ```
 
 ```tsx
-// 🧹 2. Auto Remove: Unused Imports Dihapus Seketika!
-// (useEffect, Image, formatRupiah, Trash, UserCard, axios terhapus bersih)
+// 🧹 2. Auto Remove: Unused imports purged automatically!
+// (useEffect, Image, formatCurrency, Trash, UserCard, axios are removed)
 import "./button.css";
 import { useState } from "react";
 import Link from "next/link";
@@ -358,7 +358,7 @@ export default function ProductCard({ title }: { title: string }) {
   return (
     <div>
       <h3>{title}</h3>
-      <Link href="/cart">Beli Sekarang</Link>
+      <Link href="/cart">Buy Now</Link>
       <button onClick={() => setLiked(!liked)}>
         <Heart className={liked ? "text-red-500" : ""} />
       </button>
@@ -368,15 +368,15 @@ export default function ProductCard({ title }: { title: string }) {
 ```
 
 ```tsx
-// ✨ 3. Auto Sort: Rapi & Terstruktur Berdasarkan Grup!
-// 1. Framework Inti (React & Next.js)
+// ✨ 3. Auto Sort: Cleanly grouped and sorted!
+// 1. Core Framework (React & Next.js)
 import Link from "next/link";
 import { useState } from "react";
 
 // 2. Third-Party Dependencies (lucide-react)
 import { Heart } from "lucide-react";
 
-// 3. Side-Effects / Global Styles
+// 3. Side-Effects / Stylesheets
 import "./button.css";
 
 export default function ProductCard({ title }: { title: string }) {
@@ -385,7 +385,7 @@ export default function ProductCard({ title }: { title: string }) {
   return (
     <div>
       <h3>{title}</h3>
-      <Link href="/cart">Beli Sekarang</Link>
+      <Link href="/cart">Buy Now</Link>
       <button onClick={() => setLiked(!liked)}>
         <Heart className={liked ? "text-red-500" : ""} />
       </button>
@@ -408,20 +408,20 @@ Menulis CSS Langsung di Atribut `className` Tanpa Berpindah File
 
 ````md magic-move
 ```tsx
-// ❌ Cara Lama: Bikin file CSS terpisah & pusing mikir nama class
-import "./tombol.css";
+// ❌ Legacy Approach: Create separate CSS file & think of class names
+import "./button.css";
 
-export default function Tombol() {
-  return <button className="tombol-biru-utama">Daftar Sekarang</button>;
+export default function Button() {
+  return <button className="primary-blue-button">Register Now</button>;
 }
 ```
 
 ```tsx
-// ✅ Tailwind CSS: Utility class langsung di elemen!
-export default function Tombol() {
+// ✅ Tailwind CSS: Utility classes directly on elements!
+export default function Button() {
   return (
     <button className="bg-blue-600 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded-lg shadow-md transition-all">
-      Daftar Sekarang
+      Register Now
     </button>
   );
 }

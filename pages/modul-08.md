@@ -41,14 +41,14 @@ Berbagai Cara Mengirim HTTP Request ke Backend
 - 🛑 Penanganan HTTP error bawaan yang rapi
 
 ```bash
-# Instalasi jika dibutuhkan
+# Install if needed
 npm install ky
-# atau
+# or
 npm install axios
 ```
 
 ```tsx
-// Contoh Ky:
+// Ky example:
 import ky from "ky";
 const users = await ky.get("/api/users").json();
 ```
@@ -61,7 +61,7 @@ Masalah-Masalah Nyata dari Pola `useEffect + useState + fetch`
 
 ````md magic-move
 ```tsx
-// ❌ POLA MANUAL: 20 baris hanya untuk 1 fetch sederhana!
+// ❌ MANUAL PATTERN: 20 lines just for 1 simple fetch!
 "use client";
 export default function UserList() {
   const [data, setData] = useState([]);
@@ -81,7 +81,7 @@ export default function UserList() {
       });
   }, []);
 
-  if (loading) return <p>Memuat...</p>;
+  if (loading) return <p>Loading...</p>;
   if (error) return <p>Error: {error}</p>;
   return (
     <ul>
@@ -94,11 +94,11 @@ export default function UserList() {
 ```
 
 ```tsx
-// ⚠️ APA MASALAH DARI KODE DI ATAS?
-// 1. Race Condition: Respon request lama bisa menimpa request baru
-// 2. Tidak Ada Caching: Pindah halaman lalu balik lagi -> fetch ulang dari nol!
-// 3. Tanpa Deduplication: 2 komponen fetch data sama -> 2x network request
-// 4. Tidak Refresh Saat Tab Aktif: Data di layar bisa usang (stale data)
+// ⚠️ PROBLEMS WITH THE ABOVE CODE:
+// 1. Race Condition: Older responses can overwrite newer responses
+// 2. No Caching: Navigate away and back -> refetches from scratch!
+// 3. No Deduplication: 2 components fetching identical data -> 2 network requests
+// 4. No Window Focus Refetch: Stale data remains on screen
 ```
 ````
 
@@ -137,8 +137,8 @@ export default function UserList() {
     queryFn: () => fetch("/api/users").then((r) => r.json()),
   });
 
-  if (isLoading) return <p>Memuat data...</p>;
-  if (error) return <p>Terjadi kesalahan!</p>;
+  if (isLoading) return <p>Loading data...</p>;
+  if (error) return <p>Something went wrong!</p>;
 
   return (
     <ul>
@@ -201,17 +201,17 @@ function LoadingSkeleton() {
 
 ```tsx
 function ErrorState({
-  pesan,
+  message,
   onRetry,
 }: {
-  pesan: string;
+  message: string;
   onRetry: () => void;
 }) {
   return (
     <div className="text-center py-8 brutal-card bg-red-50">
-      <p className="text-red-600 font-bold mb-3">⚠️ {pesan}</p>
+      <p className="text-red-600 font-bold mb-3">⚠️ {message}</p>
       <button onClick={onRetry} className="brutal-btn">
-        Coba Lagi
+        Try Again
       </button>
     </div>
   );
@@ -228,8 +228,8 @@ function EmptyState() {
   return (
     <div className="text-center py-10 text-gray-500 brutal-card bg-white">
       <p className="text-4xl mb-2">📭</p>
-      <p className="font-bold text-black">Belum Ada Data</p>
-      <p className="text-xs">Data yang Antum cari belum tersedia saat ini.</p>
+      <p className="font-bold text-black">No Data Available</p>
+      <p className="text-xs">The requested data could not be found.</p>
     </div>
   );
 }
@@ -253,16 +253,16 @@ interface User {
   role: "admin" | "member";
 }
 
-// Fetch dengan penegasan tipe data (Type Assertion)
+// Fetch with type assertion
 async function getUsers(): Promise<User[]> {
   const res = await fetch("https://api.example.com/users");
   return res.json();
 }
 
-// Auto-complete editor langsung aktif!
+// Editor auto-completion enabled!
 const users = await getUsers();
-console.log(users[0].name); // ✅ Terbaca string
-console.log(users[0].saldo); // ❌ TypeScript langsung memunculkan garis merah!
+console.log(users[0].name); // ✅ Inferred as string
+console.log(users[0].balance); // ❌ TypeScript flags error immediately!
 ```
 
 ---

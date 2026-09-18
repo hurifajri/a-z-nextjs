@@ -72,13 +72,13 @@ Memahami klasifikasi halaman di Next.js 16
 Mengelola konfigurasi yang berbeda di development dan production
 
 ```text {1-3|5-7|all}
-# .env.local — HANYA di development (tidak masuk Git!)
+# .env.local — ONLY in development (never commit to Git!)
 DATABASE_URL=sqlite://local.db
-JWT_SECRET=rahasia-dev-saja
+JWT_SECRET=dev-secret-key-only
 
-# .env.production — Untuk production
+# .env.production — For production
 DATABASE_URL=postgresql://user:pass@prod-db:5432/app
-JWT_SECRET=rahasia-production-sangat-panjang
+JWT_SECRET=production-secret-key-very-long
 ```
 
 <div v-click class="mt-4 grid grid-cols-2 gap-3 text-xs">

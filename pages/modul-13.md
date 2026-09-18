@@ -65,7 +65,7 @@ Memahami setiap bagian di halaman dokumentasi
 Pisahkan logika fetch API ke file tersendiri agar rapi
 
 ```tsx {1-6|8-16|18-24|all}
-// lib/api.ts — Satu tempat untuk semua panggilan API
+// lib/api.ts — Centralized client for all API calls
 const BASE_URL = process.env.NEXT_PUBLIC_API_URL || "https://api.example.com";
 
 async function apiClient(endpoint: string, options?: RequestInit) {
@@ -81,9 +81,9 @@ async function apiClient(endpoint: string, options?: RequestInit) {
   });
 
   if (res.status === 401) {
-    // Token expired — redirect ke login
+    // Token expired — redirect to login
     window.location.href = "/login";
-    throw new Error("Sesi habis");
+    throw new Error("Session expired");
   }
 
   if (!res.ok) throw new Error(`API Error: ${res.status}`);
@@ -92,7 +92,7 @@ async function apiClient(endpoint: string, options?: RequestInit) {
 
 export const api = {
   getProducts: () => apiClient("/api/products"),
-  createProduct: (data) =>
+  createProduct: (data: unknown) =>
     apiClient("/api/products", { method: "POST", body: JSON.stringify(data) }),
 };
 ```
@@ -173,10 +173,10 @@ export default function LoginPage() {
 
     if (res.ok) {
       const { token } = await res.json();
-      localStorage.setItem("token", token); // Simpan token
+      localStorage.setItem("token", token); // Save token
       router.push("/dashboard");
     } else {
-      alert("Email atau password salah!");
+      alert("Invalid email or password!");
     }
   }
 
@@ -207,19 +207,19 @@ export default function LoginPage() {
 Sertakan token di header Authorization
 
 ```tsx {3-4|6-12|14-15|all}
-// Contoh: Fetch data yang butuh autentikasi
+// Example: Fetch data requiring authentication
 async function fetchProtectedData() {
   const token = localStorage.getItem("token");
 
   const res = await fetch("https://api.example.com/api/profile", {
     headers: {
       "Content-Type": "application/json",
-      Authorization: `Bearer ${token}`, // ← Token di sini!
+      Authorization: `Bearer ${token}`, // ← Token attached here!
     },
   });
 
   if (res.status === 401) {
-    // Token expired atau tidak valid
+    // Token expired or invalid
     localStorage.removeItem("token");
     window.location.href = "/login";
     return;

@@ -17,26 +17,26 @@ Sebuah Contoh Bug Sederhana yang Bisa Merugikan Bisnis Jutaan Rupiah
 
 ````md magic-move
 ```tsx
-// ❌ FUNGSI TANPA TESTING: Kelihatannya baik-baik saja...
-export function hitungTotal(harga: number, diskonPersen: number) {
-  // Developer salah ketik tanda kurung atau operator!
-  return harga - harga * diskonPersen; // Jika diskon 20%, dikira diskonPersen = 20 (bukan 0.2)!
+// ❌ FUNCTION WITHOUT TESTING: Looks harmless at first glance...
+export function calculateTotal(price: number, discountPercentage: number) {
+  // Developer mistypes operator or precedence!
+  return price - price * discountPercentage; // If discount is 20%, assumes discountPercentage = 20 (not 0.2)!
 }
 
-// Saat dipanggil: hitungTotal(100_000, 20)
-// Hasilnya: 100.000 - 2.000.000 = -1.900.000 (Pelanggan malah dapat uang!) 😱
+// When invoked: calculateTotal(100, 20)
+// Result: 100 - 2,000 = -1,900 (Customer gets credited money!) 😱
 ```
 
 ```tsx
-// ✅ DENGAN TESTING OTOMATIS: Tertangkap dalam hitungan milidetik sebelum deploy!
+// ✅ WITH AUTOMATED TESTING: Caught in milliseconds before deployment!
 import { describe, it, expect } from "vitest";
-import { hitungTotal } from "./transaksi";
+import { calculateTotal } from "./transactions";
 
-describe("hitungTotal", () => {
-  it("menghitung diskon 20% dengan benar", () => {
-    const total = hitungTotal(100_000, 20);
-    // Test langsung GAGAL! Bug dicegah sebelum rilis ke pengguna nyata.
-    expect(total).toBe(80_000);
+describe("calculateTotal", () => {
+  it("correctly calculates a 20% discount", () => {
+    const total = calculateTotal(100, 0.2);
+    // Any regression fails immediately before releasing to production!
+    expect(total).toBe(80);
   });
 });
 ```
@@ -122,16 +122,16 @@ import userEvent from "@testing-library/user-event";
 import Counter from "./Counter";
 
 describe("Counter", () => {
-  it("menambah angka saat tombol diklik", async () => {
-    // 1. ARRANGE: Siapkan komponen ke layar virtual
+  it("increments count when button is clicked", async () => {
+    // 1. ARRANGE: Render component to virtual DOM
     const user = userEvent.setup();
     render(<Counter />);
 
-    // 2. ACT: Lakukan interaksi selayaknya pengguna nyata
-    const tombol = screen.getByRole("button", { name: /tambah/i });
-    await user.click(tombol);
+    // 2. ACT: Perform interaction like a real user
+    const button = screen.getByRole("button", { name: /increment/i });
+    await user.click(button);
 
-    // 3. ASSERT: Periksa apakah hasilnya sesuai harapan
+    // 3. ASSERT: Verify outcome matches expectations
     expect(screen.getByText("Total: 1")).toBeInTheDocument();
   });
 });
@@ -152,10 +152,10 @@ Perbedaan Lingkup Pengujian dalam Praktik
 Menguji satu fungsi kecil tanpa melibatkan UI:
 
 ```tsx
-import { formatRupiah } from "./format";
+import { formatCurrency } from "./format";
 
-test("formatRupiah memformat angka dengan benar", () => {
-  expect(formatRupiah(50000)).toBe("Rp 50.000");
+test("formatCurrency formats number correctly", () => {
+  expect(formatCurrency(50000)).toBe("$50.00");
 });
 ```
 
@@ -169,15 +169,17 @@ test("formatRupiah memformat angka dengan benar", () => {
 Menguji alur interaksi pengguna yang utuh:
 
 ```tsx
-test("Pengguna mengisi form dan melihat pesan sukses", async () => {
+test("User completes registration form and sees success message", async () => {
   const user = userEvent.setup();
-  render(<FormPendaftaran />);
+  render(<RegistrationForm />);
 
-  await user.type(screen.getByLabelText("Nama"), "Ahmad");
-  await user.type(screen.getByLabelText("Email"), "ahmad@mail.com");
-  await user.click(screen.getByRole("button", { name: /daftar/i }));
+  await user.type(screen.getByLabelText("Full Name"), "John Doe");
+  await user.type(screen.getByLabelText("Email"), "john@example.com");
+  await user.click(screen.getByRole("button", { name: /register/i }));
 
-  expect(await screen.findByText("Pendaftaran Berhasil!")).toBeInTheDocument();
+  expect(
+    await screen.findByText("Registration Successful!"),
+  ).toBeInTheDocument();
 });
 ```
 
@@ -193,38 +195,36 @@ npm install -D msw
 
 ````md magic-move
 ```tsx
-// 1. Definisikan Mock Handler dengan MSW
+// 1. Define Mock Handlers with MSW
 import { http, HttpResponse } from "msw";
 
 export const handlers = [
   http.get("https://api.example.com/products", () => {
-    return HttpResponse.json([
-      { id: 1, name: "Buku React Next.js", price: 120_000 },
-    ]);
+    return HttpResponse.json([{ id: 1, name: "Next.js Handbook", price: 39 }]);
   }),
 ];
 ```
 
 ```tsx
-// 2. Jalankan Server Mock di Lingkungan Test
+// 2. Start Mock Server in Test Environment
 import { setupServer } from "msw/node";
 import { handlers } from "./handlers";
 
 export const server = setupServer(...handlers);
 
-// Di vitest.setup.ts:
+// In vitest.setup.ts:
 beforeAll(() => server.listen());
 afterEach(() => server.resetHandlers());
 afterAll(() => server.close());
 ```
 
 ```tsx
-// 3. Komponen Antum di-test tanpa tahu kalau API sedang di-mock!
-test("Menampilkan daftar produk dari backend", async () => {
+// 3. Components are tested without knowing the API is mocked!
+test("Renders product list from backend", async () => {
   render(<ProductList />);
 
-  // Data dari mock MSW akan otomatis muncul di antarmuka!
-  expect(await screen.findByText("Buku React Next.js")).toBeInTheDocument();
+  // Data from MSW mock automatically renders in the interface!
+  expect(await screen.findByText("Next.js Handbook")).toBeInTheDocument();
 });
 ```
 ````

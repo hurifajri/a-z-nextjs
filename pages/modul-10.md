@@ -59,7 +59,7 @@ import { NextResponse } from "next/server";
 // GET /api/hello
 export async function GET() {
   return NextResponse.json({
-    message: "Assalamu'alaikum dari API Next.js!",
+    message: "Hello from Next.js API!",
   });
 }
 
@@ -68,7 +68,7 @@ export async function POST(request: Request) {
   const body = await request.json();
 
   return NextResponse.json(
-    { message: `Ahlan, ${body.nama}!` },
+    { message: `Welcome, ${body.name}!` },
     { status: 201 },
   );
 }
@@ -86,10 +86,10 @@ Semua operasi data dalam satu file route
 
 ````md magic-move
 ```tsx
-// app/api/todos/route.ts — GET: Ambil semua todos
+// app/api/todos/route.ts — GET: Fetch all todos
 import { NextResponse } from "next/server";
 
-const todos = [{ id: 1, title: "Belajar Next.js", done: false }];
+const todos = [{ id: 1, title: "Learn Next.js", done: false }];
 
 export async function GET() {
   return NextResponse.json(todos);
@@ -97,7 +97,7 @@ export async function GET() {
 ```
 
 ```tsx
-// app/api/todos/route.ts — POST: Tambah todo baru
+// app/api/todos/route.ts — POST: Add new todo
 export async function POST(request: Request) {
   const body = await request.json();
 
@@ -230,21 +230,21 @@ import { db } from "@/db";
 import { todos } from "@/db/schema";
 import { eq } from "drizzle-orm";
 
-// CREATE: Tambah todo baru
+// CREATE: Insert new todo
 const newTodo = await db
   .insert(todos)
   .values({
-    title: "Belajar Drizzle ORM",
+    title: "Learn Drizzle ORM",
   })
   .returning();
 
-// READ: Ambil semua todos
+// READ: Fetch all todos
 const allTodos = await db.select().from(todos);
 
-// UPDATE: Tandai selesai
+// UPDATE: Mark as completed
 await db.update(todos).set({ done: true }).where(eq(todos.id, 1));
 
-// DELETE: Hapus todo
+// DELETE: Delete todo
 await db.delete(todos).where(eq(todos.id, 1));
 ```
 
@@ -260,13 +260,13 @@ import { db } from "@/db";
 import { todos } from "@/db/schema";
 import { NextResponse } from "next/server";
 
-// GET /api/todos — ambil semua dari database
+// GET /api/todos — fetch all records from database
 export async function GET() {
   const allTodos = await db.select().from(todos);
   return NextResponse.json(allTodos);
 }
 
-// POST /api/todos — simpan ke database
+// POST /api/todos — insert into database
 export async function POST(request: Request) {
   const { title } = await request.json();
 
@@ -292,13 +292,13 @@ export async function addTodo(formData: FormData) {
   revalidatePath("/todos");
 }
 
-// Di Client Component:
+// Client Component:
 ("use client");
 export default function AddForm() {
   return (
     <form action={addTodo}>
       <input name="title" />
-      <button type="submit">Tambah</button>
+      <button type="submit">Add</button>
     </form>
   );
 }

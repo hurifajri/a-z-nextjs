@@ -41,27 +41,27 @@ User request → Proxy / Middleware → Page/Route Handler
 File `proxy.ts` (atau `middleware.ts` di Next.js 15) di root project
 
 ```tsx {1-3|5-10|12-18|all}
-// proxy.ts (Next.js 16) atau middleware.ts (Next.js 15)
+// proxy.ts (Next.js 16) or middleware.ts (Next.js 15)
 import { NextResponse } from "next/server";
 import type { NextRequest } from "next/server";
 
 export function proxy(request: NextRequest) {
   const token = request.cookies.get("token")?.value;
 
-  // Jika belum login dan coba akses halaman terlindungi
+  // If unauthenticated and accessing a protected route
   if (!token && request.nextUrl.pathname.startsWith("/dashboard")) {
     return NextResponse.redirect(new URL("/login", request.url));
   }
 
-  // Jika sudah login dan coba akses halaman login
+  // If already authenticated and accessing login page
   if (token && request.nextUrl.pathname === "/login") {
     return NextResponse.redirect(new URL("/dashboard", request.url));
   }
 
-  return NextResponse.next(); // Lanjutkan ke halaman
+  return NextResponse.next(); // Proceed to page
 }
 
-// Tentukan rute mana yang dilindungi
+// Specify matched routes to protect
 export const config = {
   matcher: ["/dashboard/:path*", "/settings/:path*", "/login"],
 };
@@ -76,10 +76,10 @@ Menentukan halaman mana yang diproses oleh middleware
 ```tsx {2|3|4|5|all}
 export const config = {
   matcher: [
-    "/dashboard/:path*", // /dashboard dan semua sub-halaman
-    "/settings/:path*", // /settings dan semua sub-halaman
-    "/profile", // Hanya /profile
-    "/((?!api|_next|favicon.ico).*)", // Semua kecuali API dan asset
+    "/dashboard/:path*", // /dashboard and all subpaths
+    "/settings/:path*", // /settings and all subpaths
+    "/profile", // Only /profile
+    "/((?!api|_next|favicon.ico).*)", // All routes except API and static assets
   ],
 };
 ```
@@ -160,7 +160,7 @@ Menambahkan informasi ke setiap request di tingkat network
 export function proxy(request: NextRequest) {
   const response = NextResponse.next();
 
-  // Tambah custom header
+  // Attach custom headers
   response.headers.set("x-request-id", crypto.randomUUID());
   response.headers.set("x-pathname", request.nextUrl.pathname);
 
@@ -168,7 +168,7 @@ export function proxy(request: NextRequest) {
   if (!request.cookies.has("visited")) {
     response.cookies.set("visited", "true", {
       httpOnly: true,
-      maxAge: 60 * 60 * 24, // 1 hari
+      maxAge: 60 * 60 * 24, // 1 day
     });
   }
 
@@ -184,26 +184,26 @@ Alur autentikasi end-to-end yang aman
 
 ````md magic-move
 ```tsx
-// 1. Login: Simpan token di cookie (bukan localStorage!)
+// 1. Login: Store token in cookie (not localStorage!)
 // app/api/auth/login/route.ts
 export async function POST(req: Request) {
   const { email, password } = await req.json();
-  // ... validasi kredensial
+  // ... validate credentials
 
   const token = generateJWT({ userId: user.id });
 
   const response = NextResponse.json({ success: true });
   response.cookies.set("token", token, {
-    httpOnly: true, // Tidak bisa diakses via JavaScript
-    secure: true, // Hanya via HTTPS
-    maxAge: 60 * 60 * 8, // 8 jam
+    httpOnly: true, // Inaccessible via JavaScript
+    secure: true, // Only transmitted over HTTPS
+    maxAge: 60 * 60 * 8, // 8 hours
   });
   return response;
 }
 ```
 
 ```tsx
-// 2. Proxy: Cek cookie di setiap request
+// 2. Proxy: Inspect cookie on every request
 // proxy.ts (Next.js 16)
 export function proxy(request: NextRequest) {
   const token = request.cookies.get("token")?.value;
@@ -217,7 +217,7 @@ export function proxy(request: NextRequest) {
 ```
 
 ```tsx
-// 3. Logout: Hapus cookie
+// 3. Logout: Remove cookie
 // app/api/auth/logout/route.ts
 export async function POST() {
   const response = NextResponse.json({ success: true });
