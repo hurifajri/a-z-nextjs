@@ -3,6 +3,8 @@ node_modules
 dist
 .slidev
 
+docs
+
 # AI Assistant & Agent directories
 .agents
 .claude

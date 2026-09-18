@@ -287,6 +287,7 @@ Menyepakati Standar Agar Satu Tim Tidak Beda Gaya
 <div v-click class="mt-3 brutal-card bg-white p-2 text-xs">
   💡 Tidak ada aturan mutlak — yang penting <strong>konsisten dalam satu proyek</strong>. Sepakati di awal bersama tim!
 </div>
+
 ---
 
 ### Strategi Pengelompokan File
@@ -341,10 +342,10 @@ Barrel file adalah `index.ts` yang hanya me-re-export dari file lain:
 
 ```ts
 // ❌ components/index.ts — "Barrel File"
-export { Button } from './Button';
-export { Input } from './Input';
-export { Modal } from './Modal';
-export { Tabs } from './Tabs';
+export { Button } from "./Button";
+export { Input } from "./Input";
+export { Modal } from "./Modal";
+export { Tabs } from "./Tabs";
 // ... puluhan export lainnya
 ```
 
