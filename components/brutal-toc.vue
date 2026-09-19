@@ -27,11 +27,12 @@ withDefaults(
 <style scoped>
 .brutal-toc {
   transition:
-    opacity 0.45s cubic-bezier(0.16, 1, 0.3, 1),
-    transform 0.45s cubic-bezier(0.16, 1, 0.3, 1);
+    opacity 0.35s cubic-bezier(0.16, 1, 0.3, 1),
+    transform 0.35s cubic-bezier(0.16, 1, 0.3, 1);
 }
+
 .brutal-toc.slidev-vclick-hidden {
-  @apply opacity-0 pointer-events-none translate-y-4 scale-95;
+  @apply opacity-0 pointer-events-none translate-y-3;
 }
 
 :deep(.slidev-toc) {
@@ -68,69 +69,5 @@ withDefaults(
 
 :deep(li.slidev-toc-item a *) {
   @apply m-0 p-0 inline;
-}
-
-@keyframes tocItemPop {
-  from {
-    opacity: 0;
-    transform: translateY(8px) scale(0.98);
-  }
-  to {
-    opacity: 1;
-    transform: translateY(0) scale(1);
-  }
-}
-
-:deep(li.slidev-toc-item) {
-  animation: tocItemPop 0.3s cubic-bezier(0.16, 1, 0.3, 1) both;
-}
-
-:deep(li.slidev-toc-item:nth-child(1)) {
-  animation-delay: 0.02s;
-}
-:deep(li.slidev-toc-item:nth-child(2)) {
-  animation-delay: 0.05s;
-}
-:deep(li.slidev-toc-item:nth-child(3)) {
-  animation-delay: 0.08s;
-}
-:deep(li.slidev-toc-item:nth-child(4)) {
-  animation-delay: 0.11s;
-}
-:deep(li.slidev-toc-item:nth-child(5)) {
-  animation-delay: 0.14s;
-}
-:deep(li.slidev-toc-item:nth-child(6)) {
-  animation-delay: 0.17s;
-}
-:deep(li.slidev-toc-item:nth-child(7)) {
-  animation-delay: 0.2s;
-}
-:deep(li.slidev-toc-item:nth-child(8)) {
-  animation-delay: 0.23s;
-}
-:deep(li.slidev-toc-item:nth-child(9)) {
-  animation-delay: 0.26s;
-}
-:deep(li.slidev-toc-item:nth-child(10)) {
-  animation-delay: 0.29s;
-}
-:deep(li.slidev-toc-item:nth-child(11)) {
-  animation-delay: 0.32s;
-}
-:deep(li.slidev-toc-item:nth-child(12)) {
-  animation-delay: 0.35s;
-}
-:deep(li.slidev-toc-item:nth-child(13)) {
-  animation-delay: 0.38s;
-}
-:deep(li.slidev-toc-item:nth-child(14)) {
-  animation-delay: 0.41s;
-}
-:deep(li.slidev-toc-item:nth-child(15)) {
-  animation-delay: 0.44s;
-}
-:deep(li.slidev-toc-item:nth-child(16)) {
-  animation-delay: 0.47s;
 }
 </style>
