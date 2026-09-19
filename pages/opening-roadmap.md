@@ -9,4 +9,4 @@ transition: slide-up
   Dari fondasi awal hingga siap rilis produksi — 16 modul terstruktur yang insyaa Allah membimbing Antum langkah demi langkah.
 </p>
 
-<RoadmapToc v-click class="mt-3" columns="2" maxDepth="1" />
+<BrutalToc v-click class="mt-3" columns="2" maxDepth="1" />

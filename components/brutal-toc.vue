@@ -14,7 +14,7 @@ withDefaults(
 </script>
 
 <template>
-  <div class="roadmap-toc w-full mt-2">
+  <div class="brutal-toc w-full mt-2">
     <Toc
       :columns="columns"
       :max-depth="maxDepth"
@@ -25,12 +25,12 @@ withDefaults(
 </template>
 
 <style scoped>
-.roadmap-toc {
+.brutal-toc {
   transition:
     opacity 0.45s cubic-bezier(0.16, 1, 0.3, 1),
     transform 0.45s cubic-bezier(0.16, 1, 0.3, 1);
 }
-.roadmap-toc.slidev-vclick-hidden {
+.brutal-toc.slidev-vclick-hidden {
   @apply opacity-0 pointer-events-none translate-y-4 scale-95;
 }
 

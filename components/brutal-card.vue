@@ -1,6 +1,6 @@
 <script setup lang="ts">
 import { computed } from "vue";
-import { type BadgeColor } from "./BrutalBadge.vue";
+import { type BadgeColor } from "./brutal-badge.vue";
 
 export type CardColor = BadgeColor;
 

@@ -1,5 +1,5 @@
 <script setup lang="ts">
-import { type BadgeColor } from "../components/BrutalBadge.vue";
+import { type BadgeColor } from "../components/brutal-badge.vue";
 
 const props = withDefaults(
   defineProps<{
