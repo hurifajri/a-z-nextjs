@@ -25,6 +25,13 @@ const brutalRadius = {
 
 export default defineConfig({
   transformers: [transformerDirectives()],
+  safelist: [
+    ...Object.keys(brutalColors).flatMap((c) => [
+      `bg-brutal-${c}`,
+      `bg-brutal-${c}/15`,
+      `bg-brutal-${c}/20`,
+    ]),
+  ],
   theme: {
     colors: {
       brutal: brutalColors,
