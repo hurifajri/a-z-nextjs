@@ -19,7 +19,7 @@ transition: slide-up
       </div>
       <div class="font-black text-sm text-brutal-black">HTML + CSS + JS</div>
       <p class="text-xs text-gray-700 mt-1 leading-snug">
-        Struktur konten, tata letak visual, & interaktivitas logika di browser.
+        Struktur konten, tata letak visual, dan interaktivitas logika di browser.
       </p>
       <div class="mt-1.5 mb-1.5">
         <BrutalLink
@@ -36,7 +36,7 @@ transition: slide-up
 
   <!-- Edge 1 -->
   <div v-click="3" class="flow-card flex items-center justify-center shrink-0">
-    <BrutalCard class="!rounded-full !p-0 w-7 h-7 flex items-center justify-center font-black text-xs">
+    <BrutalCard class="!rounded-full !p-0 !shadow-brutal-sm hover:!shadow-brutal w-7 h-7 flex items-center justify-center font-black text-xs">
       ➔
     </BrutalCard>
   </div>
@@ -49,7 +49,7 @@ transition: slide-up
       </div>
       <div class="font-black text-sm text-brutal-black">React.js</div>
       <p class="text-xs text-gray-700 mt-1 leading-snug">
-        Berpikir berbasis komponen, manajemen state (useState), props, & reaktivitas.
+        Berpikir berbasis komponen, manajemen state (useState), props, dan reaktivitas.
       </p>
     </div>
     <div class="mt-2 pt-1.5 border-t border-dashed border-gray-300 text-xs font-bold text-gray-500">
@@ -59,7 +59,7 @@ transition: slide-up
 
   <!-- Edge 2 -->
   <div v-click="4" class="flow-card flex items-center justify-center shrink-0">
-    <BrutalCard class="!rounded-full !p-0 w-7 h-7 flex items-center justify-center font-black text-xs">
+    <BrutalCard class="!rounded-full !p-0 !shadow-brutal-sm hover:!shadow-brutal w-7 h-7 flex items-center justify-center font-black text-xs">
       ➔
     </BrutalCard>
   </div>
@@ -72,7 +72,7 @@ transition: slide-up
       </div>
       <div class="font-black text-sm text-brutal-black">TypeScript</div>
       <p class="text-xs text-gray-700 mt-1 leading-snug">
-        Keamanan tipe data, auto-complete cerdas, & cegah error sejak awal coding.
+        Keamanan tipe data, auto-complete cerdas, dan cegah error sejak awal coding.
       </p>
     </div>
     <div class="mt-2 pt-1.5 border-t border-dashed border-gray-300 text-xs font-bold text-gray-700">
@@ -82,7 +82,7 @@ transition: slide-up
 
   <!-- Edge 3 -->
   <div v-click="5" class="flow-card flex items-center justify-center shrink-0">
-    <BrutalCard color="yellow" class="!rounded-full !p-0 w-7 h-7 flex items-center justify-center font-black text-xs">
+    <BrutalCard color="yellow" class="!rounded-full !p-0 !shadow-brutal-sm hover:!shadow-brutal w-7 h-7 flex items-center justify-center font-black text-xs">
       ➔
     </BrutalCard>
   </div>
@@ -95,7 +95,7 @@ transition: slide-up
       </div>
       <div class="font-black text-sm text-brutal-black">Next.js</div>
       <p class="text-xs text-gray-900 mt-1 leading-snug">
-        Framework lengkap: Server Components, Routing otomatis, & siap rilis produksi.
+        Framework lengkap: Server Components, Routing otomatis, dan siap rilis produksi.
       </p>
     </div>
     <div class="mt-2 pt-1.5 border-t border-dashed border-brutal-black/30 text-xs font-black text-brutal-black">

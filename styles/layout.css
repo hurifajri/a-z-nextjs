@@ -28,6 +28,7 @@
   border: var(--brutal-border-sm);
   border-radius: var(--brutal-radius);
   box-shadow: var(--brutal-shadow-sm);
+  /* transform: rotate(-1deg); */
 }
 
 .slidev-layout:not(.cover):not(.intro) h2 + p {
@@ -47,6 +48,7 @@
   border: var(--brutal-border-sm);
   border-radius: var(--brutal-radius);
   box-shadow: var(--brutal-shadow);
+  /* transform: rotate(-1deg); */
 }
 
 .slidev-layout h3 {
