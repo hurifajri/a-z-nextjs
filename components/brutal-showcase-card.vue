@@ -67,62 +67,61 @@ const tagTextClass = computed(() =>
 </script>
 
 <template>
-  <BrutalCard
-    class="showcase-card !p-0 overflow-hidden flex flex-col justify-between cursor-pointer"
-    :style="rotateStyle"
-  >
-    <div
-      class="h-20 w-full border-b-2 border-brutal-black flex items-center justify-center p-1 overflow-hidden"
-      :class="bannerBgClass"
+  <div class="showcase-card-wrapper h-full" :style="rotateStyle">
+    <BrutalCard
+      class="!p-0 overflow-hidden flex flex-col justify-between cursor-pointer h-full"
     >
-      <img :src="img" :alt="title" class="w-full h-full object-contain" />
-    </div>
-    <div class="p-2 flex flex-col justify-between flex-1">
-      <div>
-        <div class="flex items-center gap-1.5 mb-1">
-          <span
-            class="text-xs font-black uppercase px-1.5 py-0.5 border border-brutal-black rounded shadow-brutal-sm"
-            :class="[tagBgClass, tagTextClass]"
-          >
-            {{ tag }}
-          </span>
-          <span class="font-black text-xs text-brutal-black truncate">
-            {{ title }}
-          </span>
-        </div>
-        <p class="text-xs text-gray-700 leading-tight font-medium line-clamp-2">
-          {{ desc }}
-        </p>
-      </div>
       <div
-        class="mt-1 pt-1 border-t border-brutal-black/10 flex items-center justify-between"
+        class="h-20 w-full border-b-2 border-brutal-black flex items-center justify-center p-1 overflow-hidden"
+        :class="bannerBgClass"
       >
-        <BrutalLink :href="href" />
+        <img :src="img" :alt="title" class="w-full h-full object-contain" />
       </div>
-    </div>
-  </BrutalCard>
+      <div class="p-2 flex flex-col justify-between flex-1">
+        <div>
+          <div class="flex items-center gap-1.5 mb-1">
+            <span
+              class="text-xs font-black uppercase px-1.5 py-0.5 border border-brutal-black rounded shadow-brutal-sm"
+              :class="[tagBgClass, tagTextClass]"
+            >
+              {{ tag }}
+            </span>
+            <span class="font-black text-xs text-brutal-black truncate">
+              {{ title }}
+            </span>
+          </div>
+          <p
+            class="text-xs text-gray-700 leading-tight font-medium line-clamp-2"
+          >
+            {{ desc }}
+          </p>
+        </div>
+        <div
+          class="mt-1 pt-1 border-t border-brutal-black/10 flex items-center justify-between"
+        >
+          <BrutalLink :href="href" />
+        </div>
+      </div>
+    </BrutalCard>
+  </div>
 </template>
 
 <style scoped>
-.showcase-card {
-  @apply shadow-brutal;
+.showcase-card-wrapper {
+  position: relative;
   transition:
     opacity 0.4s ease,
-    transform 0.25s cubic-bezier(0.34, 1.56, 0.64, 1),
-    box-shadow 0.2s ease;
-  position: relative;
+    transform 0.4s ease;
 }
 
-.showcase-card.slidev-vclick-hidden {
+.showcase-card-wrapper.slidev-vclick-hidden {
   opacity: 0;
   pointer-events: none;
   transform: translateY(16px) scale(0.95);
 }
 
-.showcase-card:hover {
-  @apply shadow-brutal-lg;
-  transform: rotate(0deg) scale(1.06) translateY(-4px);
-  z-index: 30;
+.showcase-card-wrapper:hover {
+  z-index: 10;
 }
 
 :deep(a),
