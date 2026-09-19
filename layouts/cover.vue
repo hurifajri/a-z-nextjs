@@ -19,7 +19,7 @@ const props = withDefaults(
 
 <template>
   <div
-    class="flex flex-col gap-6 justify-center items-center h-full text-center p-16"
+    class="slidev-layout cover flex flex-col gap-6 justify-center items-center h-full text-center p-16"
   >
     <!-- Top Left and Right Decorative Badge -->
     <div class="flex items-center justify-between w-full">

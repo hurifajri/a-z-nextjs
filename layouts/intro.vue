@@ -14,7 +14,7 @@ const props = withDefaults(
 </script>
 
 <template>
-  <div class="flex flex-col justify-center h-full p-16">
+  <div class="slidev-layout intro flex flex-col justify-center h-full p-16">
     <BrutalCard class="p-6 flex flex-col gap-2">
       <div v-if="$slots['badge'] || badge">
         <slot name="badge">

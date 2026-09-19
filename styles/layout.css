@@ -1,35 +1,23 @@
 /* Background & Body */
 .slidev-layout {
-  background-color: var(--brutal-canvas);
   color: var(--brutal-black);
+  background-color: var(--brutal-canvas);
   background-image: radial-gradient(
     rgba(0, 0, 0, 0.08) 1.5px,
     transparent 1.5px
   );
   background-size: 24px 24px;
-  padding: 2.5rem 3.5rem;
-  line-height: 1.6;
 }
 
-/* Headings */
-.slidev-layout h1 {
-  font-size: 2.75rem;
-  font-weight: 900;
-  line-height: 1.15;
-  letter-spacing: -0.03em;
-  color: var(--brutal-black);
-  margin-bottom: 1rem;
+.slidev-layout:not(.cover):not(.intro) {
+  padding: 1rem;
 }
 
 /* Headings: h2 badge and stacked subtitle p for content slides */
 .slidev-layout:not(.cover):not(.intro) h2 {
-  display: block;
   width: fit-content;
   position: relative;
   z-index: 2;
-  margin-top: -1.5rem;
-  margin-left: -2.5rem;
-  margin-bottom: 1rem;
   padding: 0.35rem 0.85rem;
   font-size: 1.35rem;
   font-weight: 900;
@@ -42,20 +30,15 @@
   box-shadow: var(--brutal-shadow-sm);
 }
 
-.slidev-layout:not(.cover):not(.intro) h2:has(+ p) {
-  margin-bottom: 0;
-}
-
 .slidev-layout:not(.cover):not(.intro) h2 + p {
   display: block;
   width: fit-content;
-  max-width: 90%;
   position: relative;
   z-index: 1;
   margin-top: -8px;
-  margin-left: -1.95rem;
-  margin-bottom: 1.25rem;
-  padding: 0.75rem 1rem 0.35rem 1rem;
+  margin-left: 1rem;
+  margin-bottom: 24px;
+  padding: 0.75rem 0.75rem 0.35rem 0.75rem;
   font-size: 0.88rem;
   font-weight: 700;
   line-height: 1.4;
@@ -64,17 +47,6 @@
   border: var(--brutal-border-sm);
   border-radius: var(--brutal-radius);
   box-shadow: var(--brutal-shadow);
-}
-
-/* Fallback/standard h2 for cover layout */
-.slidev-layout.cover h2 {
-  color: var(--brutal-black);
-  font-size: 2.35rem;
-  font-weight: 900;
-  line-height: 1.2;
-  letter-spacing: -0.025em;
-  margin-top: 1.25rem;
-  margin-bottom: 0.75rem;
 }
 
 .slidev-layout h3 {

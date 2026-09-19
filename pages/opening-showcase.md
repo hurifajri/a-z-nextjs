@@ -9,7 +9,7 @@ hideInToc: true
 </p>
 
 <!-- 4 Columns × 2 Rows Showcase Grid with Rotated Neobrutalist Cards (Click Animation Fade-In) -->
-<div class="grid grid-cols-4 gap-3.5 px-1">
+<div class="grid grid-cols-4 gap-6 px-1">
 
   <!-- 01. E-Commerce -->
   <div
