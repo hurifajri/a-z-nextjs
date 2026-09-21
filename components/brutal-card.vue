@@ -15,14 +15,14 @@ const props = withDefaults(
 );
 
 const colorClass = computed(() =>
-  props.color ? `bg-brutal-${props.color}` : "bg-brutal-white",
+  props.color ? `bg-brutal-${props.color}` : "bg-brutal-cream",
 );
 </script>
 
 <template>
   <component
     :is="as"
-    class="text-sm p-2 border-2 border-brutal-black shadow-brutal hover:shadow-brutal-lg rounded-lg transition-all duration-150 hover:-translate-x-0.5 hover:-translate-y-0.5"
+    class="text-sm p-2 border-2 border-brutal-black shadow-brutal hover:shadow-brutal-lg rounded-3xl transition-all duration-150 hover:-translate-x-0.5 hover:-translate-y-0.5"
     :class="colorClass"
   >
     <slot />

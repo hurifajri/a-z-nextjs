@@ -1,7 +1,8 @@
 import { defineConfig, transformerDirectives } from "unocss";
 
 const brutalColors = {
-  canvas: "#fffdf5",
+  canvas: "#cdee2d",
+  cream: "#fffff6",
   black: "#000000",
   white: "#ffffff",
   yellow: "#ffe600",

@@ -26,12 +26,7 @@ withDefaults(
 
 <style scoped>
 .brutal-toc {
-  flex: 1;
-  display: flex;
-  flex-direction: column;
-  transition:
-    opacity 0.35s cubic-bezier(0.16, 1, 0.3, 1),
-    transform 0.35s cubic-bezier(0.16, 1, 0.3, 1);
+  @apply flex-1 flex flex-col transition-all duration-350 ease-[cubic-bezier(0.16,1,0.3,1)];
 }
 
 .brutal-toc.slidev-vclick-hidden {
@@ -39,48 +34,28 @@ withDefaults(
 }
 
 :deep(.slidev-toc) {
-  flex: 1;
-  column-count: auto !important;
+  @apply flex-1 !columns-auto;
 }
 
 :deep(ol),
 :deep(ul),
 :deep(.slidev-toc-list) {
-  display: grid;
-  grid-template-columns: repeat(2, minmax(0, 1fr));
-  grid-auto-flow: column;
-  grid-template-rows: repeat(8, minmax(0, 1fr));
-  gap: 0.5rem 1.25rem;
-  height: 100%;
+  @apply grid grid-cols-2 grid-flow-col grid-rows-8 gap-y-2 gap-x-5;
 }
 
 :deep(li.slidev-toc-item) {
-  @apply break-inside-avoid list-none box-border w-full bg-brutal-white border-brutal-sm shadow-brutal-sm rounded-md;
-  padding: 0 0.85rem;
-  transition:
-    transform 0.1s ease,
-    box-shadow 0.1s ease,
-    background-color 0.1s ease;
+  @apply break-inside-avoid list-none box-border w-full bg-brutal-white border-brutal-sm shadow-brutal-sm rounded-md py-3 px-3 transition-all duration-100 ease;
 }
 
 :deep(li.slidev-toc-item:hover) {
-  @apply bg-brutal-yellow;
-  transform: translate(-1.5px, -1.5px);
-  box-shadow: 3.5px 3.5px 0px theme("colors.brutal.black");
-}
-
-:deep(li.slidev-toc-item::marker) {
-  @apply hidden content-empty;
+  @apply bg-brutal-yellow -translate-x-[1.5px] -translate-y-[1.5px] shadow-[3.5px_3.5px_0px_#000000];
 }
 
 :deep(li.slidev-toc-item a) {
-  @apply text-brutal-black font-bold text-xs leading-tight no-underline text-left;
-  display: flex;
-  align-items: center;
-  height: 100%;
+  @apply text-brutal-black font-bold text-xs leading-tight no-underline text-left flex items-center h-full;
 }
 
 :deep(li.slidev-toc-item a *) {
-  @apply m-0 p-0 inline;
+  @apply inline;
 }
 </style>

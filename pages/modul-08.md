@@ -150,10 +150,16 @@ export default function UserList() {
 }
 ```
 
-<div v-click class="mt-2 flex items-center justify-between text-xs text-gray-800 bg-yellow-50 p-2 border border-brutal-black rounded shadow-brutal-sm">
-  <span>🛡️ <strong>Wajib Pasang:</strong> <code>@tanstack/eslint-plugin-query</code></span>
-  <span class="text-xs text-gray-600">Otomatis cegah bug queryKey & reactivity</span>
-</div>
+<BrutalCard v-click class="mt-2 bg-brutal-yellow/20">
+  <div class="flex items-center gap-2 mb-1">
+    <span class="bg-brutal-yellow text-brutal-black text-xs font-black px-2 py-0.5 border border-brutal-black rounded shadow-brutal-sm">
+      💡 WAJIB PASANG: ESLint Plugin TanStack Query
+    </span>
+  </div>
+  <p class="text-xs text-gray-800 leading-relaxed">
+    Plugin resmi <code>@tanstack/eslint-plugin-query</code> mencegah bug berbahaya: memastikan <strong>dependensi queryKey lengkap</strong> (mencegah data stale/basi), mencegah instansiasi ganda <code>QueryClient</code> di render loop, serta melarang destructuring yang merusak reactivity tracking. <strong>Aturan AST spesifik ini belum ada di Biome maupun Oxlint</strong> — inilah alasan proyek TanStack Query tetap mempertahankan ESLint!
+  </p>
+</BrutalCard>
 
 ---
 

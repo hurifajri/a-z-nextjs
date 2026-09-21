@@ -1,5 +1,11 @@
 ---
 theme: none
+colorSchema: light
+transition: slide-left
+fonts:
+  sans: Space Grotesk
+  mono: Space Mono
+  weights: "400,500,600,700"
 src: ./pages/cover.md
 ---
 

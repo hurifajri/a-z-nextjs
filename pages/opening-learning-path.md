@@ -13,23 +13,21 @@ transition: slide-up
 <div class="flex items-stretch justify-between gap-2.5 mt-2">
   <!-- Node 1: HTML, CSS & JS -->
   <BrutalCard v-click="1" class="flow-card flex-1 flex flex-col justify-between">
-    <div>
-      <div class="text-xs font-black uppercase tracking-wider bg-brutal-yellow px-1.5 py-0.5 border border-brutal-black rounded inline-block mb-1.5">
+    <div class="flex flex-col gap-2 items-start">
+      <BrutalBadge>
         01. FONDASI
-      </div>
+      </BrutalBadge>
       <div class="font-black text-sm text-brutal-black">HTML + CSS + JS</div>
-      <p class="text-xs text-gray-700 mt-1 leading-snug">
+      <p class="text-xs text-gray-700 leading-snug">
         Struktur konten, tata letak visual, dan interaktivitas logika di browser.
       </p>
-      <div class="mt-1.5 mb-1.5">
         <BrutalLink
           v-click="2"
           href="https://sandbox.hsi.id/learning"
-          class="flow-card"
+          class="flow-card mb-2"
         />
-      </div>
     </div>
-    <div class="pt-1.5 border-t border-dashed border-gray-300 text-xs font-bold text-gray-500">
+    <div class="pt-2 border-t border-dashed border-gray-300 text-xs font-bold text-gray-500">
       Wajib dipahami
     </div>
   </BrutalCard>
@@ -43,16 +41,16 @@ transition: slide-up
 
   <!-- Node 2: React.js -->
   <BrutalCard v-click="3" class="flow-card flex-1 flex flex-col justify-between">
-    <div>
-      <div class="text-xs font-black uppercase tracking-wider bg-brutal-cyan px-1.5 py-0.5 border border-brutal-black rounded inline-block mb-1.5">
+    <div class="flex flex-col gap-2 items-start">
+      <BrutalBadge color="cyan">
         02. UI LIBRARY
-      </div>
+      </BrutalBadge>
       <div class="font-black text-sm text-brutal-black">React.js</div>
-      <p class="text-xs text-gray-700 mt-1 leading-snug">
+      <p class="text-xs text-gray-700 leading-snug">
         Berpikir berbasis komponen, manajemen state (useState), props, dan reaktivitas.
       </p>
     </div>
-    <div class="mt-2 pt-1.5 border-t border-dashed border-gray-300 text-xs font-bold text-gray-500">
+    <div class="pt-2 border-t border-dashed border-gray-300 text-xs font-bold text-gray-500">
       Arsitektur UI modern
     </div>
   </BrutalCard>
@@ -66,16 +64,16 @@ transition: slide-up
 
   <!-- Node 3: TypeScript -->
   <BrutalCard v-click="4" class="flow-card flex-1 flex flex-col justify-between">
-    <div>
-      <div class="text-xs font-black uppercase tracking-wider bg-brutal-pink text-brutal-white px-1.5 py-0.5 border border-brutal-black rounded inline-block mb-1.5">
+    <div class="flex flex-col gap-2 items-start">
+      <BrutalBadge color="pink">
         03. TYPE SAFETY
-      </div>
+      </BrutalBadge>
       <div class="font-black text-sm text-brutal-black">TypeScript</div>
-      <p class="text-xs text-gray-700 mt-1 leading-snug">
+      <p class="text-xs text-gray-700 leading-snug">
         Keamanan tipe data, auto-complete cerdas, dan cegah error sejak awal coding.
       </p>
     </div>
-    <div class="mt-2 pt-1.5 border-t border-dashed border-gray-300 text-xs font-bold text-gray-700">
+    <div class="pt-2 border-t border-dashed border-gray-300 text-xs font-bold text-gray-700">
       Standar industri modern
     </div>
   </BrutalCard>
@@ -89,16 +87,16 @@ transition: slide-up
 
   <!-- Node 4: Next.js -->
   <BrutalCard v-click="5" color="yellow" class="flow-card flex-1 flex flex-col justify-between">
-    <div>
-      <div class="text-xs font-black uppercase tracking-wider bg-brutal-white text-brutal-black px-1.5 py-0.5 border border-brutal-black rounded inline-block mb-1.5">
+    <div class="flex flex-col gap-2 items-start">
+      <BrutalBadge color="green">
         04. FRAMEWORK
-      </div>
+      </BrutalBadge>
       <div class="font-black text-sm text-brutal-black">Next.js</div>
-      <p class="text-xs text-gray-900 mt-1 leading-snug">
+      <p class="text-xs text-gray-900 leading-snug">
         Framework lengkap: Server Components, Routing otomatis, dan siap rilis produksi.
       </p>
     </div>
-    <div class="mt-2 pt-1.5 border-t border-dashed border-brutal-black/30 text-xs font-black text-brutal-black">
+    <div class="pt-2 border-t border-dashed border-brutal-black/30 text-xs font-black text-brutal-black">
       🎯 Tujuan kita
     </div>
   </BrutalCard>

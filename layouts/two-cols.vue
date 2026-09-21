@@ -18,14 +18,14 @@ const style = computed(() => handleBackground(props.background));
 
 <template>
   <div
-    class="h-full flex flex-col justify-between p-2"
+    class="slidev-layout two-cols h-full flex flex-col justify-between"
     :class="props.class"
     :style="style"
   >
     <div>
       <slot />
     </div>
-    <div class="grid grid-cols-2 gap-5 mt-2 flex-1 min-h-0">
+    <div class="grid grid-cols-2 gap-4 mt-2 flex-1 min-h-0">
       <BrutalCard class="flex flex-col h-fit">
         <slot name="left" />
       </BrutalCard>
