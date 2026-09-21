@@ -14,7 +14,7 @@ withDefaults(
 </script>
 
 <template>
-  <div class="brutal-toc w-full mt-2">
+  <div class="brutal-toc">
     <Toc
       :columns="columns"
       :max-depth="maxDepth"
@@ -26,6 +26,9 @@ withDefaults(
 
 <style scoped>
 .brutal-toc {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
   transition:
     opacity 0.35s cubic-bezier(0.16, 1, 0.3, 1),
     transform 0.35s cubic-bezier(0.16, 1, 0.3, 1);
@@ -36,17 +39,24 @@ withDefaults(
 }
 
 :deep(.slidev-toc) {
-  @apply columns-2 gap-5;
+  flex: 1;
+  column-count: auto !important;
 }
 
 :deep(ol),
 :deep(ul),
 :deep(.slidev-toc-list) {
-  @apply list-none p-0 m-0;
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  grid-auto-flow: column;
+  grid-template-rows: repeat(8, minmax(0, 1fr));
+  gap: 0.5rem 1.25rem;
+  height: 100%;
 }
 
 :deep(li.slidev-toc-item) {
-  @apply break-inside-avoid list-none block box-border w-full mb-1.5 py-1.5 pr-3.5 pl-4.5 bg-brutal-white border-brutal-sm shadow-brutal-sm rounded-md;
+  @apply break-inside-avoid list-none box-border w-full bg-brutal-white border-brutal-sm shadow-brutal-sm rounded-md;
+  padding: 0 0.85rem;
   transition:
     transform 0.1s ease,
     box-shadow 0.1s ease,
@@ -64,7 +74,10 @@ withDefaults(
 }
 
 :deep(li.slidev-toc-item a) {
-  @apply text-brutal-black block w-full box-border p-0 m-0 font-bold text-xs leading-tight no-underline text-left;
+  @apply text-brutal-black font-bold text-xs leading-tight no-underline text-left;
+  display: flex;
+  align-items: center;
+  height: 100%;
 }
 
 :deep(li.slidev-toc-item a *) {

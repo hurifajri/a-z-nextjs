@@ -13,6 +13,12 @@
   padding: 1rem;
 }
 
+.slidev-layout:has(.brutal-toc) {
+  display: flex;
+  flex-direction: column;
+  height: 100%;
+}
+
 /* Headings: h2 badge and stacked subtitle p for content slides */
 .slidev-layout:not(.cover):not(.intro) h2 {
   width: fit-content;
