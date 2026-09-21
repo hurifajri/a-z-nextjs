@@ -43,7 +43,7 @@ const props = withDefaults(
     </div>
 
     <!-- Center Hero Card -->
-    <BrutalCard class="flex flex-col gap-6 p-6">
+    <BrutalCard class="flex flex-col gap-6 p-6 !rounded-3xl">
       <slot />
     </BrutalCard>
   </div>

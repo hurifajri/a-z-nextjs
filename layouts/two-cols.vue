@@ -11,9 +11,29 @@ const props = defineProps({
     type: String,
     default: "",
   },
+  leftCard: {
+    type: [Boolean, String],
+    default: true,
+  },
+  rightCard: {
+    type: [Boolean, String],
+    default: true,
+  },
 });
 
 const style = computed(() => handleBackground(props.background));
+
+const parseBooleanProp = (val: unknown): boolean => {
+  if (typeof val === "boolean") return val;
+  if (typeof val === "string") {
+    if (val.toLowerCase() === "false") return false;
+    if (val.toLowerCase() === "true") return true;
+  }
+  return Boolean(val);
+};
+
+const hasLeftCard = computed(() => parseBooleanProp(props.leftCard));
+const hasRightCard = computed(() => parseBooleanProp(props.rightCard));
 </script>
 
 <template>
@@ -25,23 +45,30 @@ const style = computed(() => handleBackground(props.background));
     <div>
       <slot />
     </div>
-    <div class="grid grid-cols-2 gap-4 mt-2 flex-1 min-h-0">
-      <BrutalCard class="flex flex-col h-fit">
+    <div class="grid grid-cols-2 gap-4 flex-1 min-h-0">
+      <BrutalCard v-if="hasLeftCard" class="flex flex-col h-fit">
         <slot name="left" />
       </BrutalCard>
-      <BrutalCard class="flex flex-col h-fit">
+      <div v-else class="flex flex-col h-fit">
+        <slot name="left" />
+      </div>
+
+      <BrutalCard v-if="hasRightCard" class="flex flex-col h-fit">
         <slot name="right" />
       </BrutalCard>
+      <div v-else class="flex flex-col h-fit">
+        <slot name="right" />
+      </div>
     </div>
   </div>
 </template>
 
 <style scoped>
 :deep(h3) {
-  @apply text-brutal-black text-2xl font-extrabold leading-tight tracking-tight my-2;
+  @apply text-brutal-black text-2xl font-extrabold leading-tight tracking-tight;
 }
 
 :deep(h4) {
-  @apply text-brutal-black text-lg font-extrabold leading-snug my-2;
+  @apply text-brutal-black text-lg font-extrabold leading-snug;
 }
 </style>

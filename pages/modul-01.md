@@ -17,10 +17,9 @@ Durasi target: 45-60 menit.
 
 ---
 
-### Kenapa Kita Butuh Next.js?
+### Kenapa Next.js?
 
 Standar Industri Modern untuk Membangun Aplikasi Web React yang Cepat, Aman, dan Skalabel.
-
 Next.js bukan sekadar React dengan router bawaan. **Next.js adalah framework fullstack** yang memperluas kemampuan React ke server, menghadirkan performa tinggi dan developer experience kelas atas.
 
 <div class="grid grid-cols-3 gap-4 mt-6">
@@ -88,7 +87,7 @@ Melihat Perbedaan Perjalanan Data dari Browser ke Server
 
 #### React Biasa (SPA)
 
-```mermaid {scale: 0.85}
+```mermaid {scale: 0.75}
 sequenceDiagram
     participant B as 🌐 Browser
     participant S as 🖥️ Server
@@ -104,7 +103,7 @@ sequenceDiagram
 
 #### Next.js (App Router)
 
-```mermaid {scale: 1.075}
+```mermaid {scale: 1}
 sequenceDiagram
     participant B as 🌐 Browser
     participant S as 🖥️ Server
@@ -202,6 +201,8 @@ Jelaskan: src/ directory memisahkan kode sumber dari config files di root.
 
 ---
 layout: two-cols
+leftCard: false
+rightCard: false
 ---
 
 ### Anatomi Project Next.js
@@ -229,17 +230,17 @@ my-next-app/
 
 <div class="space-y-3">
 
-<BrutalCard class="bg-brutal-yellow/30 text-xs">
+<BrutalCard>
   <div class="font-black">📁 src/app/ — Jantung Aplikasi</div>
   <p class="text-gray-700 mt-1"><strong>layout.tsx</strong> = pembungkus semua halaman<br/><strong>page.tsx</strong> = halaman beranda (<code>/</code>)<br/><strong>globals.css</strong> = stylesheet global Tailwind</p>
 </BrutalCard>
 
-<BrutalCard v-click="1" class="bg-brutal-cyan/30 text-xs">
+<BrutalCard v-click="1">
   <div class="font-black">📁 public/ — Aset Statis</div>
   <p class="text-gray-700 mt-1">Gambar, favicon, dan file statis lainnya yang bisa diakses langsung via URL tanpa proses build.</p>
 </BrutalCard>
 
-<BrutalCard v-click="2" class="bg-brutal-pink/20 text-xs">
+<BrutalCard v-click="2">
   <div class="font-black">⚙️ File Konfigurasi</div>
   <p class="text-gray-700 mt-1"><strong>next.config.ts</strong> = atur framework<br/><strong>tailwind.config.ts</strong> = atur styling<br/><strong>tsconfig.json</strong> = atur TypeScript</p>
 </BrutalCard>
