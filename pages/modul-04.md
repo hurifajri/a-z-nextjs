@@ -10,17 +10,19 @@ level: 1
 Memahami paradigma baru di React Server Components — kapan komponen dijalankan di server dan kapan di browser.
 
 ---
+class: module-content
+---
 
 ### Default = Server Component
 
-Di App Router, setiap komponen otomatis berjalan di server!
+Page dan layout App Router default Server Components; import di bawah client boundary mengikuti sisi client.
 
 <v-switch>
 <template #1>
 
 **Sebelumnya (React Biasa / Pages Router)**
 
-- Semua komponen dirender di browser (client-side)
+- SPA umumnya render di browser; Pages Router juga mendukung SSR/SSG
 - Seluruh JavaScript dikirim ke browser pengunjung
 - Bundle makin besar seiring aplikasi tumbuh
 
@@ -30,13 +32,14 @@ Di App Router, setiap komponen otomatis berjalan di server!
 **Sekarang (App Router)**
 
 - Komponen dirender di **server** secara default
-- _Zero client-side JavaScript_ untuk komponen statis!
-- Hanya kode yang benar-benar interaktif dikirim ke browser ⚡
+- Implementasi Server Component tidak masuk bundle browser
+- Client boundary menentukan modul yang dikirim; framework runtime tetap ada
 
 </template>
 </v-switch>
 
 ---
+class: module-content
 layout: two-cols
 ---
 
@@ -77,13 +80,15 @@ Mari bandingkan keduanya secara langsung
 </v-clicks>
 
 ---
+class: module-content
+---
 
 ### Menandai Client Component
 
 Cukup tambahkan `"use client"` di baris paling atas!
 
 ```tsx {1|3|5-6|all}
-"use client"; // 👈 This directive switches Server → Client!
+"use client"; // Batas module graph client, bukan menonaktifkan SSR
 
 import { useState } from "react";
 
@@ -100,6 +105,8 @@ export default function Counter() {
   ⚠️ <strong>Tanpa</strong> <code>"use client"</code>, kode di atas akan ERROR karena <code>useState</code> dan <code>onClick</code> tidak tersedia di Server Components!
 </BrutalCard>
 
+---
+class: module-content
 ---
 
 ### Evolusi Komponen: Server → Client
@@ -154,6 +161,8 @@ export default function SearchBar() {
 ````
 
 ---
+class: module-content
+---
 
 ### Kapan Pakai Server vs Client?
 
@@ -161,7 +170,7 @@ Aturan praktis yang sederhana
 
 <v-clicks>
 
-1. **Apakah butuh interaksi user?** (Klik, Ketik, Hover) → _Client Component_
+1. **Apakah butuh interaksi user?** dengan event handler React (onClick, onChange) → _Client Component_
 2. **Apakah butuh State atau Lifecycle?** (`useState`, `useEffect`) → _Client Component_
 3. **Apakah pakai Browser APIs?** (Geolocation, localStorage) → _Client Component_
 4. **Selain di atas?** → Biarkan tetap sebagai **Server Component**!
@@ -173,6 +182,8 @@ Aturan praktis yang sederhana
 </BrutalCard>
 
 ---
+zoom: 0.95
+class: module-content
 layout: two-cols
 ---
 
@@ -196,6 +207,7 @@ export default async function ProductPage({
   const { id } = await params;
   // Fetch data directly on the server!
   const res = await fetch(`https://api.example.com/products/${id}`);
+  if (!res.ok) throw new Error("Product unavailable");
   const product = await res.json();
 
   return (
@@ -218,25 +230,17 @@ export default async function ProductPage({
 import { useState } from "react";
 
 export default function AddToCart({ id }: { id: string }) {
-  const [loading, setLoading] = useState(false);
-
-  async function handleAdd() {
-    setLoading(true);
-    await fetch("/api/cart", {
-      method: "POST",
-      body: JSON.stringify({ id }),
-    });
-    setLoading(false);
-  }
-
+  const [quantity, setQuantity] = useState(0);
   return (
-    <button onClick={handleAdd}>
-      {loading ? "Adding..." : "🛒 Add to Cart"}
+    <button onClick={() => setQuantity((n) => n + 1)}>
+      Product {id}: {quantity} in local cart
     </button>
   );
 }
 ```
 
+---
+class: module-content
 ---
 
 ### Composition Pattern
@@ -262,9 +266,11 @@ export default function InteractiveLayout({
 ```
 
 <BrutalCard v-click class="mt-4 text-sm">
-  ⚠️ Jika Antum <strong>import langsung</strong> Server Component di dalam file Client Component, dia ikut berubah jadi Client. Solusinya: kirim sebagai <code>children</code> (props).
+  ⚠️ Jika Antum <strong>import langsung</strong> Server Component di dalam file Client Component, modulnya masuk client graph; kode server-only/async dapat gagal build. Solusinya: kirim sebagai <code>children</code> (props).
 </BrutalCard>
 
+---
+class: module-content
 ---
 
 ### Kesalahan Umum yang Sering Terjadi
@@ -281,6 +287,43 @@ Pesan error yang mungkin Antum temui dan cara mengatasinya
 </v-clicks>
 
 ---
+class: module-content
+---
+
+### Client Component Juga Bisa Dirender di Server
+
+1. Initial request: server menghasilkan HTML preview, termasuk Client Components.
+2. Browser menerima HTML dan RSC payload.
+3. JavaScript meng-hydrate bagian client agar event handler aktif.
+
+- Akses `window` / `localStorage` di effect atau event handler, bukan saat render server.
+- Props lintas boundary harus serializable menurut React; jangan kirim secret.
+- Tambahkan `import "server-only"` pada modul database/secret.
+- Hover CSS dan form HTML dasar tidak otomatis membutuhkan `"use client"`.
+
+<!--
+Sumber: https://react.dev/reference/rsc/use-client
+-->
+
+---
+class: module-content
+---
+
+### Prediksi: Batas Server dan Client
+
+<LearningCheck
+  question="Halaman produk membaca database dan memiliki tombol favorit. Di mana batas client?"
+  :options='["Seluruh halaman diberi use client", "Hanya komponen tombol yang memerlukan state/event", "Database dipindah ke browser"]'
+  :answer="1"
+  explanation="Page dapat tetap Server Component; tombol menjadi Client Component. Data yang melewati batas harus dapat diserialisasi."
+/>
+
+<!--
+Fasilitasi: beri 30 detik untuk prediksi pribadi, lalu diskusi berpasangan.
+Minta peserta menjelaskan mengapa opsi lain tidak cukup. Gunakan Ulangi prediksi untuk kelompok berikutnya.
+-->
+
+---
 layout: intro
 badge: "RANGKUMAN"
 badgeColor: "yellow"
@@ -293,3 +336,10 @@ transition: slide-up
 1. **Server Component = Default**: Biarkan sebanyak mungkin komponen di server — lebih cepat, lebih ringan, lebih aman.
 2. **`"use client"` Hanya Saat Perlu**: Gunakan hanya pada komponen yang memerlukan interaksi user, hooks React, atau browser API.
 3. **Pisahkan Daun Interaktif**: Buat komponen client sekecil mungkin (tombol, form, toggle) dan biarkan sisanya tetap di server.
+
+<!--
+Checkpoint: Batas Server dan Client
+Buat page server dengan tombol client. Pastikan secret tidak dikirim sebagai props dan initial render bebas akses window/localStorage.
+Sumber primer: https://nextjs.org/docs/app/getting-started/server-and-client-components
+Audit: 25 September 2026.
+-->

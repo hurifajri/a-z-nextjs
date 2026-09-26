@@ -9,6 +9,12 @@ level: 1
 
 Memahami cara menyimpan data sementara dengan useState, mengelola efek samping dengan useEffect, teknik berbagi state, serta menghindari jebakan anti-pattern di React.
 
+<!--
+Contoh bertanda fragment/sketsa memerlukan konteks komponen atau import. Hook dipanggil di dalam function component/custom hook; bukan pada module scope.
+-->
+
+---
+class: module-content
 ---
 
 ### Apa Itu State?
@@ -18,6 +24,7 @@ Data yang bisa berubah dan memengaruhi tampilan komponen
 ````md magic-move
 ```tsx
 // ❌ Regular variable: UI will not update when value changes!
+"use client";
 export default function Counter() {
   let count = 0;
 
@@ -51,12 +58,14 @@ export default function Counter() {
 ````
 
 ---
+class: module-content
+---
 
 ### Anatomi useState
 
 Memahami setiap bagian dari hook useState
 
-```tsx {1|3|5-6|8|all}
+```tsx {1-2|5-9|16-19|all}
 "use client";
 import { useState } from "react";
 
@@ -82,6 +91,8 @@ export default function Profile() {
 ```
 
 ---
+class: module-content
+---
 
 ### Update State untuk Array dan Object
 
@@ -101,14 +112,14 @@ setItems(items); // ← React does not detect changes!
 const [items, setItems] = useState(["Apple", "Orange"]);
 
 // Add item
-setItems([...items, "Mango"]);
+setItems((prev) => [...prev, "Mango"]);
 
 // Remove item
-setItems(items.filter((i) => i !== "Orange"));
+setItems((prev) => prev.filter((i) => i !== "Orange"));
 
 // Update object
 const [user, setUser] = useState({ name: "John Doe", age: 25 });
-setUser({ ...user, age: 26 });
+setUser((prev) => ({ ...prev, age: 26 }));
 ```
 ````
 
@@ -117,17 +128,19 @@ setUser({ ...user, age: 26 });
 </BrutalCard>
 
 ---
+class: module-content
+---
 
 ### useEffect: Mengelola Efek Samping
 
 Menjalankan kode di luar siklus render — fetch data, timer, subscription
 
-```tsx {1-3|5-10|12-15|all}
+```tsx {5|8-11|13-15|17|all}
 "use client";
 import { useState, useEffect } from "react";
 
 export default function Clock() {
-  const [time, setTime] = useState(new Date());
+  const [time, setTime] = useState<Date | null>(null);
 
   // useEffect(callback, dependencyArray)
   useEffect(() => {
@@ -137,18 +150,20 @@ export default function Clock() {
 
     // Cleanup: clear when component unmounts
     return () => clearInterval(timer);
-  }, []); // [] = run once on mount
+  }, []); // Setup saat mount; Strict Mode menguji setup → cleanup → setup di dev
 
-  return <p>Time: {time.toLocaleTimeString("en-US")}</p>;
+  return <p>Time: {time ? time.toLocaleTimeString("en-US") : "—"}</p>;
 }
 ```
 
 <div v-click class="mt-3 grid grid-cols-3 gap-2 text-xs">
-  <BrutalCard class="text-center"><code>[]</code><br/>Jalankan <strong>1x</strong> saat mount</BrutalCard>
+  <BrutalCard class="text-center"><code>[]</code><br/>Setup saat <strong>mount</strong></BrutalCard>
   <BrutalCard class="text-center"><code>[value]</code><br/>Jalankan saat <strong>value berubah</strong></BrutalCard>
-  <BrutalCard class="text-center"><em>tanpa array</em><br/>Jalankan <strong>setiap render</strong></BrutalCard>
+  <BrutalCard class="text-center"><em>tanpa array</em><br/>Jalankan setelah <strong>setiap commit</strong></BrutalCard>
 </div>
 
+---
+class: module-content
 ---
 
 ### React Pitfall: Derived State di useEffect
@@ -200,6 +215,7 @@ function ShoppingCart({
 </BrutalCard>
 
 ---
+class: module-content
 layout: two-cols
 ---
 
@@ -255,6 +271,7 @@ function Greeting({ name }: { name: string }) {
 ```
 
 ---
+class: module-content
 layout: two-cols
 ---
 
@@ -304,6 +321,56 @@ function Dashboard() {
 - Hemat beban re-render browser
 
 ---
+class: module-content
+---
+
+### State adalah Snapshot, Effect untuk Sinkronisasi
+
+```tsx
+// Dalam event handler: tiga update berdasarkan state sebelumnya
+setCount((n) => n + 1);
+setCount((n) => n + 1);
+setCount((n) => n + 1); // Hasil akhir +3
+```
+
+- Setter menjadwalkan render; variabel pada handler saat ini tetap snapshot lama.
+- Gunakan updater function ketika update bergantung pada nilai sebelumnya.
+- Effect menyinkronkan sistem eksternal: timer, subscription, browser API.
+- Sertakan dependensi reaktif dan cleanup; jangan menyembunyikan warning Hooks.
+- Form submit adalah event pengguna: proses di handler, bukan effect.
+
+<!--
+Sumber: https://react.dev/reference/react/useEffect
+-->
+
+---
+class: module-content
+---
+
+### Lab: Referensi Lama atau Array Baru?
+
+Prediksi tiga output, lalu tekan **Run**. Ubah `push` menjadi pembaruan immutable.
+
+```ts {monaco-run} {autorun:false, height:'210px'}
+const original = ["Apple", "Orange"];
+const mutated = original;
+mutated.push("Mango");
+const copied = [...original, "Pear"];
+console.log("referensi mutasi sama:", Object.is(original, mutated));
+console.log("referensi salinan sama:", Object.is(original, copied));
+console.log("panjang original:", original.length);
+```
+
+**Hasil awal:** `true`, `false`, `3`. Target setelah perbaikan: `false`, `false`, `2`.
+
+Ini eksperimen JavaScript tentang referensi; bukan runtime React. Di React, gunakan setter dan updater ketika bergantung pada state sebelumnya.
+
+<!--
+Durasi 3 menit. Ganti alias + push dengan const mutated = [...original, "Mango"].
+Tanyakan: mengapa original tetap dua item? Jangan menyimpulkan setiap referensi baru selalu membuat seluruh UI dirender ulang.
+-->
+
+---
 layout: intro
 badge: "RANGKUMAN"
 badgeColor: "yellow"
@@ -316,3 +383,10 @@ transition: slide-up
 1. **useState & Immutability**: Gunakan `useState` agar UI reaktif. Jangan mutasi langsung — selalu buat salinan array/object baru dengan spread operator.
 2. **Hindari Derived State di useEffect**: Jangan buat state baru untuk nilai yang bisa dihitung langsung dari props/state lain saat render.
 3. **Lifting State & Colocation**: Angkat state ke parent jika dipakai bersama, tapi hindari _God Component_ dengan menaruh state sedekat mungkin dengan komponen pemakainya.
+
+<!--
+Checkpoint: State dan Cleanup
+Buktikan tiga functional updates menghasilkan +3. Mount/unmount Clock tanpa timer ganda, dan pastikan placeholder awal sama di server serta client.
+Sumber primer: https://react.dev/reference/react/useEffect
+Audit: 25 September 2026.
+-->

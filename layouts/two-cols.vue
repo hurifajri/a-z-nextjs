@@ -60,6 +60,9 @@ const hasRightCard = computed(() => parseBooleanProp(props.rightCard));
         <slot name="right" />
       </div>
     </div>
+    <div v-if="$slots.bottom" class="mt-3">
+      <slot name="bottom" />
+    </div>
   </div>
 </template>
 

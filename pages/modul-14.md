@@ -5,231 +5,244 @@ badgeColor: "yellow"
 level: 1
 ---
 
-## 14. Proxy (ex-Middleware) & Auth Pattern
+## 14. Proxy & Auth Pattern
 
-Melindungi halaman dengan Next.js Proxy (dulu Middleware), mengelola sesi pengguna, dan membuat guard untuk rute yang memerlukan login.
-
----
-
-### Apa Itu Proxy (Middleware) di Next.js?
-
-Kode yang berjalan SEBELUM request sampai ke halaman
-
-```text
-User request → Proxy / Middleware → Page/Route Handler
-                        ↓
-               Cek cookie / redirect
-```
-
-<v-clicks>
-
-- 🛡️ **Auth Guard** — Redirect ke login jika belum punya token/session
-- 🔄 **Redirect** — Arahkan user ke halaman yang tepat
-- 🌐 **Rewrite** — Ubah URL tanpa redirect (untuk A/B testing, multitenant)
-- 📝 **Modifikasi Headers** — Sisipkan request id atau pathname info
-
-</v-clicks>
-
-<BrutalCard v-click class="mt-4">
-  📁 <strong>Evolusi Next.js 16:</strong> File kini dinamai <code>proxy.ts</code> di <strong>root project</strong> (menggantikan <code>middleware.ts</code> di Next.js 12–15) untuk memperjelas perannya sebagai batas jaringan (network boundary).
-</BrutalCard>
+Memisahkan redirect untuk pengalaman pengguna dari verifikasi sesi dan otorisasi data di server.
 
 ---
-
-### Membuat Proxy (`proxy.ts`)
-
-File `proxy.ts` (atau `middleware.ts` di Next.js 15) di root project
-
-```tsx {1-3|5-10|12-18|all}
-// proxy.ts (Next.js 16) or middleware.ts (Next.js 15)
-import { NextResponse } from "next/server";
-import type { NextRequest } from "next/server";
-
-export function proxy(request: NextRequest) {
-  const token = request.cookies.get("token")?.value;
-
-  // If unauthenticated and accessing a protected route
-  if (!token && request.nextUrl.pathname.startsWith("/dashboard")) {
-    return NextResponse.redirect(new URL("/login", request.url));
-  }
-
-  // If already authenticated and accessing login page
-  if (token && request.nextUrl.pathname === "/login") {
-    return NextResponse.redirect(new URL("/dashboard", request.url));
-  }
-
-  return NextResponse.next(); // Proceed to page
-}
-
-// Specify matched routes to protect
-export const config = {
-  matcher: ["/dashboard/:path*", "/settings/:path*", "/login"],
-};
-```
-
+class: module-content
 ---
 
-### Pola Matcher
+### Tiga Tanggung Jawab yang Berbeda
 
-Menentukan halaman mana yang diproses oleh middleware
+| Lapisan            | Pertanyaan                                | Lokasi                                          |
+| :----------------- | :---------------------------------------- | :---------------------------------------------- |
+| Authentication     | Siapa pengguna ini?                       | Library/layanan auth dan verifikasi sesi        |
+| Session management | Apakah sesi masih berlaku?                | Cookie + session store / token terverifikasi    |
+| Authorization      | Bolehkah pengguna mengakses resource ini? | Data access layer, Route Handler, Server Action |
 
-```tsx {2|3|4|5|all}
-export const config = {
-  matcher: [
-    "/dashboard/:path*", // /dashboard and all subpaths
-    "/settings/:path*", // /settings and all subpaths
-    "/profile", // Only /profile
-    "/((?!api|_next|favicon.ico).*)", // All routes except API and static assets
-  ],
-};
-```
+Proxy membantu redirect awal. Menyembunyikan tombol atau redirect di client tidak melindungi endpoint.
 
-<div v-click class="mt-4 grid grid-cols-2 gap-3 text-xs">
-  <BrutalCard>
-    <strong>:path*</strong><br/>
-    Cocokkan semua sub-path<br/>
-    <code>/dashboard/settings/...</code>
-  </BrutalCard>
-  <BrutalCard>
-    <strong>((?!pattern).*)</strong><br/>
-    Cocokkan semua kecuali pattern<br/>
-    Exclude API routes, assets
-  </BrutalCard>
-</div>
+**Kontrak contoh:** `getVerifiedSession()` adalah adapter aplikasi, bukan API Next.js. Implementasikan dengan library auth yang dipilih, termasuk expiry dan revocation.
+
+<!--
+Sumber: https://nextjs.org/docs/app/guides/authentication
+-->
 
 ---
-layout: two-cols
+class: module-content
+clicks: 3
 ---
 
-### Protected Route Pattern
+### Ikuti Request: Siapa Boleh Mengubah Todo?
 
-Dua lapisan perlindungan: Proxy / Middleware + Client Check
+Proxy membantu redirect awal. Setiap mutasi tetap memerlukan pemeriksaan di server.
 
-::left::
+<AuthFlow :step="$clicks" />
 
-#### Lapisan 1: Proxy (Server-side)
+<BrutalCard v-click="3">Uji pembeda: pengguna A mengganti ID Todo menjadi milik B. Database harus tetap tidak berubah.</BrutalCard>
 
-```tsx
-// proxy.ts — Server-side guard
+<!--
+[click] Verifikasi sesi di server, jangan hanya keberadaan cookie.
+[click] Otorisasi dekat query, gunakan identitas dari sesi.
+[click] Baru ubah data dan kirim respons aman. Bahas jalur penolakan pada tiap pemeriksaan.
+-->
+
+---
+class: module-content
+---
+
+### Membuat Proxy untuk Redirect Awal
+
+Jika memakai `src/app`, letakkan file di `src/proxy.ts`; jika `app` di root, gunakan `proxy.ts` di root.
+
+```ts
+// src/proxy.ts — pemeriksaan keberadaan cookie, bukan bukti login
+import { NextResponse, type NextRequest } from "next/server";
+
 export function proxy(req: NextRequest) {
-  const token = req.cookies.get("token");
-
-  if (!token) {
+  if (!req.cookies.get("session")?.value) {
     return NextResponse.redirect(new URL("/login", req.url));
   }
-
   return NextResponse.next();
 }
+
+export const config = {
+  matcher: ["/dashboard/:path*", "/settings/:path*", "/todos/:path*"],
+};
 ```
 
-Redirect SEBELUM halaman dirender!
-
-::right::
-
-#### Lapisan 2: Client Guard
-
-```tsx
-// hooks/useAuth.ts — Client-side check
-"use client";
-export function useAuth() {
-  const router = useRouter();
-  const [user, setUser] = useState(null);
-
-  useEffect(() => {
-    const token = localStorage.getItem("token");
-    if (!token) {
-      router.push("/login");
-      return;
-    }
-    // Fetch user data...
-  }, []);
-
-  return { user };
-}
-```
-
-Cek tambahan di sisi client!
+Cookie palsu tetap bisa melewati cek ini. Setiap pembacaan/mutasi privat harus memverifikasi sesi di server. Jangan redirect `/login` hanya karena cookie ada: sesi kedaluwarsa dapat menyebabkan loop.
 
 ---
-
-### Proxy: Menambahkan Header & Cookie
-
-Menambahkan informasi ke setiap request di tingkat network
-
-```tsx {3-6|8-11|all}
-export function proxy(request: NextRequest) {
-  const response = NextResponse.next();
-
-  // Attach custom headers
-  response.headers.set("x-request-id", crypto.randomUUID());
-  response.headers.set("x-pathname", request.nextUrl.pathname);
-
-  // Set cookie
-  if (!request.cookies.has("visited")) {
-    response.cookies.set("visited", "true", {
-      httpOnly: true,
-      maxAge: 60 * 60 * 24, // 1 day
-    });
-  }
-
-  return response;
-}
-```
-
+class: module-content
 ---
 
-### Pola Auth Lengkap: Login → Cookie → Proxy
+### Matcher dan Runtime
 
-Alur autentikasi end-to-end yang aman
+- `:path*` mencakup route dan subpath; tentukan daftar protected route dengan sengaja.
+- Matcher adalah filter eksekusi Proxy, bukan daftar semua resource yang aman.
+- API yang tidak masuk matcher tetap wajib melakukan auth sendiri.
+- Next.js 16 mengganti nama Middleware menjadi Proxy; ikuti runtime yang didukung versi terpasang.
+- Hindari query database mahal di setiap prefetch; letakkan pemeriksaan otoritatif dekat akses data.
 
-````md magic-move
-```tsx
-// 1. Login: Store token in cookie (not localStorage!)
-// app/api/auth/login/route.ts
-export async function POST(req: Request) {
-  const { email, password } = await req.json();
-  // ... validate credentials
-
-  const token = generateJWT({ userId: user.id });
-
-  const response = NextResponse.json({ success: true });
-  response.cookies.set("token", token, {
-    httpOnly: true, // Inaccessible via JavaScript
-    secure: true, // Only transmitted over HTTPS
-    maxAge: 60 * 60 * 8, // 8 hours
-  });
-  return response;
-}
+```text
+Request → Proxy (redirect awal)
+        → Page / Route Handler / Server Action
+        → Verifikasi sesi + izin resource
+        → Database / Backend
 ```
 
-```tsx
-// 2. Proxy: Inspect cookie on every request
-// proxy.ts (Next.js 16)
-export function proxy(request: NextRequest) {
-  const token = request.cookies.get("token")?.value;
+<!--
+Sumber: https://nextjs.org/docs/app/api-reference/file-conventions/proxy
+-->
 
-  if (!token && request.nextUrl.pathname.startsWith("/dashboard")) {
-    return NextResponse.redirect(new URL("/login", request.url));
-  }
+---
+class: module-content
+---
 
-  return NextResponse.next();
-}
+### Kontrak Adapter Sesi
+
+Contoh tipe berikut merupakan batas integrasi yang harus diimplementasikan aplikasi
+
+```ts
+// src/lib/auth.ts — kontrak, bukan implementasi autentikasi
+export type VerifiedSession = {
+  userId: string;
+  accessToken?: string; // Hanya diperlukan bila ada backend upstream
+};
+// getVerifiedSession(): Promise<VerifiedSession | null>
 ```
 
-```tsx
-// 3. Logout: Remove cookie
-// app/api/auth/logout/route.ts
-export async function POST() {
-  const response = NextResponse.json({ success: true });
-  response.cookies.delete("token");
-  return response;
-}
-```
-````
+Adapter harus:
 
-<BrutalCard v-click class="mt-3">
-  🔐 <strong>httpOnly cookie</strong> lebih aman daripada localStorage karena tidak bisa diakses oleh JavaScript (XSS attack proof).
-</BrutalCard>
+1. Membaca cookie menggunakan `await cookies()` atau API library auth.
+2. Memverifikasi token atau lookup opaque session; mengecek expiry dan revocation.
+3. Mengembalikan identitas dari sesi terverifikasi, bukan dari body/header buatan pengguna.
+4. Memisahkan kegagalan sesi (401) dari kegagalan layanan (5xx); jangan menganggap semua error sebagai logout.
+
+Gunakan library auth yang dipelihara. Jangan membuat signing, password hashing, atau rotasi token sendiri untuk contoh kelas.
+
+---
+class: module-content
+---
+
+### Otorisasi Dekat Query Database
+
+Tambahkan `userId` dan migration pada schema Todo sebelum mengaktifkan multi-user
+
+```ts
+// Fragment Route Handler: import db, todos, eq, and sesuai modul database
+import { getVerifiedSession } from "@/lib/auth";
+import { and, eq } from "drizzle-orm";
+
+const session = await getVerifiedSession();
+if (!session)
+  return Response.json({ error: "Unauthenticated" }, { status: 401 });
+
+// id dan input sudah lolos schema Modul 11
+const [updated] = await db
+  .update(todos)
+  .set({ done: input.done })
+  .where(and(eq(todos.id, id), eq(todos.userId, session.userId)))
+  .returning();
+if (!updated) return Response.json({ error: "Not found" }, { status: 404 });
+return Response.json(updated);
+```
+
+Terapkan scope pengguna pada **GET, POST, PATCH, DELETE**, termasuk Server Actions. Saat POST, isi `userId` dari sesi. Jangan percaya `userId` dari form.
+
+---
+class: module-content
+---
+
+### Cookie Sesi dan Siklus Login
+
+```ts
+// Fragment setelah kredensial terverifikasi dan sesi server berhasil dibuat
+response.cookies.set("session", sessionId, {
+  httpOnly: true,
+  secure: process.env.NODE_ENV === "production",
+  sameSite: "lax",
+  path: "/",
+  maxAge: 60 * 60 * 8,
+});
+```
+
+- Production memakai HTTPS dan secret acak dari secret manager.
+- Rotasi sesi saat login/perubahan privilege; tetapkan expiry di server juga.
+- Logout: revoke sesi/refresh token di server, lalu hapus cookie dengan scope yang sama.
+- HttpOnly membatasi pencurian cookie via JavaScript; **XSS tetap dapat melakukan aksi sebagai pengguna**.
+- Cookie dikirim otomatis: SameSite membantu, tetapi bukan pengganti seluruh perlindungan CSRF.
+
+<!--
+Contoh ini tidak menyediakan endpoint login lengkap; library auth menangani verifikasi kredensial dan session store.
+-->
+
+---
+class: module-content
+---
+
+### Mutasi Cookie Memerlukan Perlindungan CSRF
+
+Untuk Route Handler same-origin, validasi Origin terhadap origin deployment tepercaya
+
+```ts
+// Fragment awal POST/PATCH/DELETE; APP_ORIGIN berasal dari konfigurasi server
+const allowedOrigin = process.env.APP_ORIGIN;
+if (!allowedOrigin) throw new Error("APP_ORIGIN is required");
+if (request.headers.get("origin") !== allowedOrigin) {
+  return Response.json({ error: "Forbidden origin" }, { status: 403 });
+}
+// Lanjutkan verifikasi sesi, schema, lalu otorisasi resource
+```
+
+- Jangan mengambil origin tepercaya langsung dari header Host yang belum divalidasi.
+- Ini contoh strict browser same-origin: request tanpa Origin ditolak. Desain client non-browser terpisah.
+- Gunakan mekanisme CSRF library bila alur auth memerlukannya; jangan mutasi pada GET.
+- Rate limit login/reset password, cegah open redirect, dan jangan log kredensial.
+
+<!--
+Sumber: https://cheatsheetseries.owasp.org/cheatsheets/Cross-Site_Request_Forgery_Prevention_Cheat_Sheet.html
+-->
+
+---
+class: module-content
+---
+
+### Header Request vs Header Response
+
+```ts
+// Fragment alternatif di dalam proxy(req); gabungkan dengan guard bila diperlukan
+const requestId = crypto.randomUUID();
+const headers = new Headers(req.headers);
+headers.set("x-request-id", requestId);
+
+const response = NextResponse.next({ request: { headers } });
+response.headers.set("x-request-id", requestId);
+return response;
+```
+
+- Request header diteruskan ke aplikasi; response header dikirim ke browser.
+- Jangan menggunakan `x-user-id` kiriman browser sebagai bukti identitas.
+- Log request ID untuk menghubungkan error browser dan server tanpa membocorkan sesi.
+
+---
+class: module-content
+---
+
+### Checkpoint Keamanan Auth
+
+| Skenario                             | Hasil yang diharapkan                   |
+| :----------------------------------- | :-------------------------------------- |
+| Tanpa cookie membuka halaman privat  | Redirect login                          |
+| Cookie palsu / expired memanggil API | 401; tidak ada data privat              |
+| User A mengubah Todo user B          | 404/403; row tidak berubah              |
+| Mutasi dari origin lain              | Ditolak oleh kebijakan CSRF             |
+| Logout lalu gunakan sesi lama        | Sesi ditolak sesuai strategi revocation |
+| Panggil endpoint tanpa melewati UI   | Verifikasi sesi dan izin tetap berjalan |
+
+Uji secara otomatis pada boundary server dan E2E. Lulus redirect saja belum berarti autentikasi benar.
 
 ---
 layout: intro
@@ -241,6 +254,6 @@ transition: slide-up
 
 ## 3 Hal Penting dari Modul 14
 
-1. **Proxy (ex-Middleware) = Gerbang Utama**: Tulis di `proxy.ts` (atau `middleware.ts` di versi sebelumnya). Cek token/cookie, redirect, atau modifikasi headers SEBELUM halaman dirender.
-2. **Matcher = Filter Rute**: Gunakan `config.matcher` untuk menentukan rute mana saja yang diproses. Hindari memproses API dan asset statis.
-3. **httpOnly Cookie > localStorage**: Simpan token autentikasi di httpOnly cookie agar aman dari serangan XSS dan langsung terbaca oleh server.
+1. **Proxy untuk redirect awal:** lokasi sejajar `app/`; keberadaan cookie bukan verifikasi sesi.
+2. **Auth di setiap akses data:** verifikasi identitas dan ownership di server.
+3. **Kelola siklus sesi:** cookie, CSRF, expiry, revocation, dan pengujian akses lintas pengguna.

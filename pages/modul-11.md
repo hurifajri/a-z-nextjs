@@ -7,309 +7,436 @@ level: 1
 
 ## 11. Mini Project: Todo App (Fullstack)
 
-Praktek langsung membangun aplikasi Todo fullstack — menggabungkan semua konsep dari modul 1 hingga 10.
+Membangun CRUD lokal yang persisten, tervalidasi, dan dapat diuji. Menggabungkan Modul 01–10.
 
 ---
+class: module-content
+---
 
-### Apa yang Akan Kita Bangun?
+### Target dan Batas Latihan
 
-Aplikasi Todo fullstack dengan fitur lengkap
+- Tambah judul, tandai selesai, hapus, dan baca ulang setelah reload.
+- SQLite lokal + Drizzle; Node.js runtime, **Cache Components nonaktif**.
+- Server Component membaca database langsung; browser memutasi lewat Route Handler.
+- Validasi input, pending/error state, dan respons 400/404 harus berfungsi.
+- **Demo single-user lokal.** Tambahkan sesi dan ownership dari Modul 14 sebelum dipublikasikan.
 
-<div class="grid grid-cols-3 gap-3 mt-6">
-  <BrutalCard v-click>
-    <div class="font-black text-lg mb-1">📝 CRUD Todo</div>
-    <p class="text-xs text-gray-600">Tambah, tandai selesai, dan hapus catatan tugas.</p>
-  </BrutalCard>
-  <BrutalCard v-click>
-    <div class="font-black text-lg mb-1">🗄️ Database</div>
-    <p class="text-xs text-gray-600">Data tersimpan di SQLite via Drizzle ORM + Route Handlers.</p>
-  </BrutalCard>
-  <BrutalCard v-click>
-    <div class="font-black text-lg mb-1">🎨 Multi Halaman</div>
-    <p class="text-xs text-gray-600">Navigasi antar halaman dengan layout bersama dan styling Tailwind.</p>
-  </BrutalCard>
-</div>
-
-<BrutalCard v-click class="mt-6 bg-yellow-100 text-center">
-  🎯 Ini adalah <strong>checkpoint</strong> — kita akan menggunakan konsep dari <strong>Modul 01 sampai 10</strong> dalam satu project nyata!
+<BrutalCard class="mt-4 text-sm">
+  Modul ini berisi bagian inti per file. Root layout, Navbar, dan loading.tsx memakai pola Modul 02–07.
 </BrutalCard>
 
+---
+class: module-content
 ---
 
 ### Struktur Project
 
-Anatomi project Todo App kita
-
-```text {1-4|5-8|9-12|all}
+```text
 src/
 ├── app/
-│   ├── layout.tsx          ← Global layout + Navbar
-│   ├── page.tsx            ← Home page
-│   ├── todos/
-│   │   ├── page.tsx        ← Todo list page (Server Component)
-│   │   └── loading.tsx     ← Skeleton loading
-│   ├── about/
-│   │   └── page.tsx        ← About page
-│   └── api/
-│       └── todos/
-│           ├── route.ts    ← GET + POST (all todos)
-│           └── [id]/
-│               └── route.ts ← PUT + DELETE (per todo)
+│   ├── layout.tsx              # Root layout + Navbar
+│   ├── todos/page.tsx          # Server Component
+│   ├── todos/loading.tsx
+│   └── api/todos/
+│       ├── route.ts            # GET + POST
+│       └── [id]/route.ts       # PATCH + DELETE
 ├── db/
-│   ├── schema.ts           ← Drizzle table schema
-│   └── index.ts            ← Database connection
+│   ├── index.ts               # Server-only connection
+│   └── schema.ts
+├── lib/todo-schema.ts         # Validasi + tipe API bersama
 └── components/
-    ├── Navbar.tsx           ← Navigation (Client Component)
-    ├── TodoForm.tsx         ← Add todo form (Client)
-    └── TodoItem.tsx         ← Todo item with actions (Client)
+    ├── TodoForm.tsx
+    └── TodoItem.tsx
+
+drizzle.config.ts              # Di root project
 ```
 
 ---
-layout: two-cols
+class: module-content
 ---
 
-### Backend: API Route
+### Setup Database Lokal
 
-Route Handler untuk CRUD Todo
+```bash
+npm install drizzle-orm better-sqlite3 valibot server-only
+npm install -D drizzle-kit @types/better-sqlite3
+```
 
-::left::
+```ts
+// drizzle.config.ts
+import { defineConfig } from "drizzle-kit";
+export default defineConfig({
+  dialect: "sqlite",
+  schema: "./src/db/schema.ts",
+  out: "./drizzle",
+  dbCredentials: { url: "./local.db" },
+});
+```
 
-#### GET + POST (`route.ts`)
+Setelah menulis schema pada slide berikut:
 
-```tsx {3-6|8-16|all}
-// app/api/todos/route.ts
+```bash
+npx drizzle-kit generate
+npx drizzle-kit migrate
+```
+
+Commit file migration. Abaikan `local.db` dan sidecar SQLite di Git. Jalankan CLI dari root project.
+
+<!--
+Sumber: https://orm.drizzle.team/docs/get-started/sqlite-new
+-->
+
+---
+class: module-content
+---
+
+### Schema dan Koneksi
+
+```ts
+// src/db/schema.ts
+import { sqliteTable, integer, text } from "drizzle-orm/sqlite-core";
+export const todos = sqliteTable("todos", {
+  id: integer("id").primaryKey({ autoIncrement: true }),
+  title: text("title").notNull(),
+  done: integer("done", { mode: "boolean" }).notNull().default(false),
+});
+```
+
+```ts
+// src/db/index.ts — khusus Node.js, file persisten lokal
+import "server-only";
+import Database from "better-sqlite3";
+import { drizzle } from "drizzle-orm/better-sqlite3";
+const sqlite = new Database("./local.db");
+export const db = drizzle(sqlite);
+```
+
+File SQLite ini bukan penyimpanan persisten untuk deployment serverless. Strategi deploy dibahas di Modul 16.
+
+---
+class: module-content
+---
+
+### Kontrak Input yang Dibagikan
+
+```ts
+// src/lib/todo-schema.ts
+import * as v from "valibot";
+export const CreateTodoSchema = v.object({
+  title: v.pipe(v.string(), v.trim(), v.minLength(1), v.maxLength(200)),
+});
+export const UpdateTodoSchema = v.strictObject({ done: v.boolean() });
+export const TodoIdSchema = v.pipe(
+  v.string(),
+  v.regex(/^[1-9]\d*$/),
+  v.transform(Number),
+  v.safeInteger(),
+);
+export type Todo = { id: number; title: string; done: boolean };
+```
+
+- Whitespace-only title ditolak; judul dibatasi 200 karakter.
+- PATCH hanya menerima `done`: `id`, `title`, atau `userId` bukan field update ini.
+- ID harus integer positif yang aman; `abc`, `0`, dan `1.5` ditolak.
+- TypeScript membantu saat coding; Valibot memeriksa input pada runtime.
+
+---
+class: module-content
+---
+
+### Backend: Collection GET + POST
+
+```ts
+// src/app/api/todos/route.ts — demo lokal tanpa autentikasi
+import * as v from "valibot";
 import { db } from "@/db";
 import { todos } from "@/db/schema";
+import { CreateTodoSchema } from "@/lib/todo-schema";
 
 export async function GET() {
-  const all = await db.select().from(todos);
-  return NextResponse.json(all);
+  return Response.json(await db.select().from(todos).orderBy(todos.id));
 }
 
 export async function POST(req: Request) {
-  const { title } = await req.json();
-  const [todo] = await db.insert(todos).values({ title }).returning();
-  return NextResponse.json(todo, { status: 201 });
+  const input = v.safeParse(
+    CreateTodoSchema,
+    await req.json().catch(() => null),
+  );
+  if (!input.success) {
+    return Response.json({ error: "Invalid title" }, { status: 400 });
+  }
+  const [todo] = await db.insert(todos).values(input.output).returning();
+  return Response.json(todo, { status: 201 });
 }
 ```
 
-::right::
+JSON yang rusak masuk jalur 400. Error database yang tak terduga masuk log server; jangan kirim detail koneksi ke browser.
 
-#### PUT + DELETE (`[id]/route.ts`)
+---
+class: module-content
+---
 
-```tsx {3-10|12-17|all}
-// app/api/todos/[id]/route.ts
-export async function PUT(
-  req: Request,
-  { params }: { params: Promise<{ id: string }> },
-) {
-  const { id } = await params;
-  const body = await req.json();
-  await db
+### Backend: PATCH dengan Allowlist
+
+```ts
+// src/app/api/todos/[id]/route.ts — bagian 1
+import * as v from "valibot";
+import { eq } from "drizzle-orm";
+import { db } from "@/db";
+import { todos } from "@/db/schema";
+import { TodoIdSchema, UpdateTodoSchema } from "@/lib/todo-schema";
+type Context = { params: Promise<{ id: string }> };
+
+export async function PATCH(req: Request, { params }: Context) {
+  const id = v.safeParse(TodoIdSchema, (await params).id);
+  const input = v.safeParse(
+    UpdateTodoSchema,
+    await req.json().catch(() => null),
+  );
+  if (!id.success || !input.success) {
+    return Response.json({ error: "Invalid input" }, { status: 400 });
+  }
+  const [todo] = await db
     .update(todos)
-    .set(body)
-    .where(eq(todos.id, Number(id)));
-  return NextResponse.json({ ok: true });
-}
-
-export async function DELETE(
-  req: Request,
-  { params }: { params: Promise<{ id: string }> },
-) {
-  const { id } = await params;
-  await db.delete(todos).where(eq(todos.id, Number(id)));
-  return NextResponse.json({ ok: true });
+    .set({ done: input.output.done })
+    .where(eq(todos.id, id.output))
+    .returning();
+  if (!todo) return Response.json({ error: "Not found" }, { status: 404 });
+  return Response.json(todo);
 }
 ```
+
+Update dan deteksi item tak ditemukan memakai hasil query yang sama.
 
 ---
-
-### Frontend: Layout dan Navbar
-
-Kerangka halaman yang konsisten di semua halaman
-
-```tsx
-// app/layout.tsx
-import Navbar from "@/components/Navbar";
-
-export default function RootLayout({
-  children,
-}: {
-  children: React.ReactNode;
-}) {
-  return (
-    <html lang="en">
-      <body className="bg-gray-50 min-h-screen">
-        <Navbar />
-        <main className="max-w-2xl mx-auto p-6">{children}</main>
-      </body>
-    </html>
-  );
-}
-```
-
-```tsx
-// components/Navbar.tsx
-"use client";
-import Link from "next/link";
-import { usePathname } from "next/navigation";
-
-export default function Navbar() {
-  const path = usePathname();
-  return (
-    <nav className="flex gap-4 p-4 border-b-2 border-black bg-white">
-      <Link href="/" className={path === "/" ? "font-bold" : ""}>
-        Home
-      </Link>
-      <Link href="/todos" className={path === "/todos" ? "font-bold" : ""}>
-        Todos
-      </Link>
-      <Link href="/about" className={path === "/about" ? "font-bold" : ""}>
-        About
-      </Link>
-    </nav>
-  );
-}
-```
-
+class: module-content
 ---
 
-### Frontend: Halaman Todos
+### Backend: DELETE dan Kontrak Respons
 
-Server Component yang fetch data dan render daftar
+```ts
+// src/app/api/todos/[id]/route.ts — bagian 2, gunakan import di slide sebelumnya
+export async function DELETE(_req: Request, { params }: Context) {
+  const id = v.safeParse(TodoIdSchema, (await params).id);
+  if (!id.success) {
+    return Response.json({ error: "Invalid ID" }, { status: 400 });
+  }
+  const [deleted] = await db
+    .delete(todos)
+    .where(eq(todos.id, id.output))
+    .returning({ id: todos.id });
+  if (!deleted) return Response.json({ error: "Not found" }, { status: 404 });
+  return new Response(null, { status: 204 });
+}
+```
 
-```tsx {1-5|7-14|all}
-// app/todos/page.tsx (Server Component)
+| Hasil                     | Respons         |
+| :------------------------ | :-------------- |
+| Berhasil dihapus          | 204, tanpa body |
+| ID tidak valid            | 400             |
+| ID valid tetapi tidak ada | 404             |
+
+Jangan memanggil `res.json()` pada respons 204.
+
+---
+class: module-content
+---
+
+### Frontend: Server Membaca Database Langsung
+
+```tsx
+// src/app/todos/page.tsx
+import { connection } from "next/server";
+import { db } from "@/db";
+import { todos } from "@/db/schema";
 import TodoForm from "@/components/TodoForm";
 import TodoItem from "@/components/TodoItem";
 
 export default async function TodosPage() {
-  const res = await fetch("http://localhost:3000/api/todos", {
-    cache: "no-store",
-  });
-  const todos = await res.json();
-
+  await connection(); // Request-time pada model tanpa Cache Components
+  const items = await db.select().from(todos).orderBy(todos.id);
   return (
-    <div>
-      <h1 className="text-2xl font-bold mb-4">📝 Todo List</h1>
+    <main>
+      <h1>Todo List</h1>
       <TodoForm />
-      <div className="mt-4 space-y-2">
-        {todos.length === 0 && <p className="text-gray-500">No todos yet.</p>}
-        {todos.map((todo) => (
+      {items.length === 0 && <p>No todos yet.</p>}
+      <ul>
+        {items.map((todo) => (
           <TodoItem key={todo.id} todo={todo} />
         ))}
-      </div>
-    </div>
+      </ul>
+    </main>
   );
 }
 ```
 
+Tidak perlu HTTP ke API milik sendiri dari Server Component. Ini menghindari ketergantungan localhost saat build/deploy.
+
+---
+zoom: 0.85
+class: module-content
 ---
 
-### Frontend: Komponen Interaktif
+### Frontend: Form dengan Pending dan Error
 
-Client Components untuk form dan aksi
-
-````md magic-move
 ```tsx
-// components/TodoForm.tsx — Add todo form
+// src/components/TodoForm.tsx — bagian 1
 "use client";
-import { useState } from "react";
+import { useState, type FormEvent } from "react";
 import { useRouter } from "next/navigation";
 
 export default function TodoForm() {
   const [title, setTitle] = useState("");
+  const [pending, setPending] = useState(false);
+  const [error, setError] = useState("");
   const router = useRouter();
-
-  async function handleSubmit(e: React.FormEvent) {
+  async function submit(e: FormEvent<HTMLFormElement>) {
     e.preventDefault();
-    await fetch("/api/todos", {
-      method: "POST",
-      headers: { "Content-Type": "application/json" },
-      body: JSON.stringify({ title }),
-    });
-    setTitle("");
-    router.refresh(); // Refresh Server Component!
+    if (pending) return;
+    setPending(true);
+    setError("");
+    try {
+      const res = await fetch("/api/todos", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ title }),
+      });
+      if (!res.ok) throw new Error(`Save failed (${res.status})`);
+      setTitle("");
+      router.refresh();
+    } catch {
+      setError("Unable to save. Check title and retry.");
+    } finally {
+      setPending(false);
+    }
   }
-
-  return (
-    <form onSubmit={handleSubmit} className="flex gap-2">
-      <input
-        value={title}
-        onChange={(e) => setTitle(e.target.value)}
-        placeholder="Write a new todo..."
-        className="flex-1 border-2 p-2 rounded"
-      />
-      <button className="bg-black text-white px-4 py-2 rounded font-bold">
-        Add
-      </button>
-    </form>
-  );
+  // Return JSX pada slide berikut
 }
 ```
-
-```tsx
-// components/TodoItem.tsx — Todo item with toggle and delete
-"use client";
-import { useRouter } from "next/navigation";
-
-export default function TodoItem({
-  todo,
-}: {
-  todo: { id: number; title: string; done: boolean };
-}) {
-  const router = useRouter();
-
-  async function toggleDone() {
-    await fetch(`/api/todos/${todo.id}`, {
-      method: "PUT",
-      headers: { "Content-Type": "application/json" },
-      body: JSON.stringify({ done: !todo.done }),
-    });
-    router.refresh();
-  }
-
-  async function deleteTodo() {
-    await fetch(`/api/todos/${todo.id}`, { method: "DELETE" });
-    router.refresh();
-  }
-
-  return (
-    <div className="flex items-center gap-3 p-3 border-2 rounded">
-      <button onClick={toggleDone}>{todo.done ? "✅" : "⬜"}</button>
-      <span
-        className={todo.done ? "line-through text-gray-400 flex-1" : "flex-1"}
-      >
-        {todo.title}
-      </span>
-      <button onClick={deleteTodo} className="text-red-500">
-        🗑️
-      </button>
-    </div>
-  );
-}
-```
-````
 
 ---
+class: module-content
+---
 
-### Konsep yang Digunakan
+### Frontend: Markup Form yang Bisa Diakses
 
-Checklist materi dari Modul 01–10 yang diterapkan di project ini
+```tsx
+// Return di dalam TodoForm
+return (
+  <form onSubmit={submit}>
+    <label htmlFor="todo-title">Title</label>
+    <input
+      id="todo-title"
+      value={title}
+      required
+      maxLength={200}
+      disabled={pending}
+      aria-describedby="todo-error"
+      onChange={(e) => setTitle(e.target.value)}
+    />
+    <button disabled={pending || !title.trim()}>
+      {pending ? "Saving..." : "Add"}
+    </button>
+    <p id="todo-error" role="alert">
+      {error}
+    </p>
+  </form>
+);
+```
 
-<v-clicks>
+- Judul baru dikosongkan setelah respons sukses; input tidak hilang saat gagal.
+- Pending di sini mencakup request mutasi; loading route menangani pembacaan ulang.
+- `router.refresh()` cukup karena query halaman ini **tidak di-cache**.
+- Jika nanti memakai cache, invalidasi cache yang sesuai setelah write berhasil.
 
-- ✅ **Modul 01–02**: Struktur folder App Router, setup project, Tailwind CSS
-- ✅ **Modul 03**: Routing (`/`, `/todos`, `/about`), Link, usePathname
-- ✅ **Modul 04**: Server Components (page.tsx) vs Client Components (form, item)
-- ✅ **Modul 05**: useState untuk form input
-- ✅ **Modul 06**: (Opsional) Context untuk global state
-- ✅ **Modul 07**: Data fetching di Server Component, loading.tsx
-- ✅ **Modul 08**: Menampilkan data, empty state
-- ✅ **Modul 09**: Form + validasi + POST/PUT/DELETE
-- ✅ **Modul 10**: Route Handlers + Drizzle ORM (fullstack!)
+---
+zoom: 0.82
+class: module-content
+---
 
-</v-clicks>
+### Frontend: Toggle dan Delete
+
+```tsx
+// src/components/TodoItem.tsx — bagian 1
+"use client";
+import { useState } from "react";
+import { useRouter } from "next/navigation";
+import type { Todo } from "@/lib/todo-schema";
+
+export default function TodoItem({ todo }: { todo: Todo }) {
+  const router = useRouter();
+  const [pending, setPending] = useState(false);
+  const [error, setError] = useState("");
+  async function mutate(method: "PATCH" | "DELETE") {
+    if (pending) return;
+    setPending(true);
+    setError("");
+    try {
+      const res = await fetch(`/api/todos/${todo.id}`, {
+        method,
+        ...(method === "PATCH"
+          ? {
+              headers: { "Content-Type": "application/json" },
+              body: JSON.stringify({ done: !todo.done }),
+            }
+          : {}),
+      });
+      if (!res.ok) throw new Error(`HTTP ${res.status}`);
+      router.refresh();
+    } catch {
+      setError("Unable to update. Please retry.");
+    } finally {
+      setPending(false);
+    }
+  }
+  // Return JSX pada slide berikut
+}
+```
+
+---
+class: module-content
+---
+
+### Frontend: Nama Tombol dan Status
+
+```tsx
+// Return di dalam TodoItem
+return (
+  <li>
+    <span>{todo.title}</span>
+    <button
+      disabled={pending}
+      aria-pressed={todo.done}
+      onClick={() => mutate("PATCH")}
+    >
+      {todo.done ? "Mark incomplete" : "Mark complete"}: {todo.title}
+    </button>
+    <button disabled={pending} onClick={() => mutate("DELETE")}>
+      Delete: {todo.title}
+    </button>
+    <p role="alert">{error}</p>
+  </li>
+);
+```
+
+**Pengembangan lanjutan:** pertahankan pending sampai UI baru terpasang menggunakan transition; uji klik cepat dan mutasi bersamaan. Untuk multi-user, tambahkan ownership dan penanganan konflik.
+
+---
+class: module-content
+---
+
+### Checkpoint: Buktikan Alur CRUD
+
+| Skenario                        | Hasil yang harus terlihat                  |
+| :------------------------------ | :----------------------------------------- |
+| Tambah judul valid              | 201, item tampil, bertahan setelah restart |
+| Kirim title kosong / JSON rusak | 400, tidak ada row baru                    |
+| PATCH dengan field `id`         | 400, row tidak berubah                     |
+| Toggle lalu reload              | Status selesai tetap tersimpan             |
+| Hapus ID yang sudah tidak ada   | 404; UI menampilkan kegagalan              |
+| Simulasikan jaringan putus      | Tombol pulih, input tidak hilang           |
+
+Lanjutkan pengujian browser pada Modul 15. Auth dan isolasi data pengguna merupakan tahap berikutnya, sebelum deploy publik.
 
 ---
 layout: intro
@@ -319,8 +446,8 @@ hideInToc: true
 transition: slide-up
 ---
 
-## Selamat! Antum Baru Saja Membangun Aplikasi Fullstack! 🎉
+## 3 Hal Penting dari Modul 11
 
-1. **Backend**: Route Handlers + Drizzle ORM untuk CRUD API dengan database.
-2. **Frontend**: Server Components untuk data, Client Components untuk interaksi.
-3. **Navigasi**: Multi-halaman dengan layout bersama, active link styling.
+1. **Satu kontrak CRUD:** schema, metode HTTP, dan frontend memakai field yang sama.
+2. **Batas server jelas:** database server-only; browser memakai endpoint tervalidasi.
+3. **Selesai berarti teruji:** persistence, error, pending, dan akses keyboard harus terbukti.

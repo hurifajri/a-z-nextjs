@@ -9,6 +9,12 @@ level: 1
 
 Membuat API sendiri di Next.js! Selain consume API, Next.js juga bisa menjadi backend fullstack.
 
+<!--
+Contoh bertanda fragment/sketsa memerlukan konteks komponen atau import. Hook dipanggil di dalam function component/custom hook; bukan pada module scope.
+-->
+
+---
+class: module-content
 ---
 
 ### Mindset Shift: Next.js = Fullstack!
@@ -40,6 +46,8 @@ Selama ini kita **consume** API yang sudah dibuat orang lain...
   </BrutalCard>
 </div>
 
+---
+class: module-content
 ---
 
 ### Route Handlers: API di Next.js
@@ -73,10 +81,12 @@ export async function POST(request: Request) {
 </BrutalCard>
 
 ---
+class: module-content
+---
 
-### CRUD Lengkap dengan Route Handlers
+### Bentuk Endpoint CRUD (Sketsa Kontrak)
 
-Semua operasi data dalam satu file route
+GET/POST di collection; PATCH/DELETE di item. Sketsa berikut belum persisten.
 
 ````md magic-move
 ```tsx
@@ -107,8 +117,8 @@ export async function POST(request: Request) {
 ```
 
 ```tsx
-// app/api/todos/[id]/route.ts — PUT + DELETE per item
-export async function PUT(
+// app/api/todos/[id]/route.ts — PATCH + DELETE per item
+export async function PATCH(
   request: Request,
   { params }: { params: Promise<{ id: string }> },
 ) {
@@ -130,6 +140,8 @@ export async function DELETE(
 ````
 
 ---
+class: module-content
+---
 
 ### Pengenalan Drizzle ORM
 
@@ -141,7 +153,7 @@ ORM Modern yang Ringan, Type-Safe, dan Mendukung Multi-Database
       <span>🪶 Keunggulan Utama Drizzle</span>
     </div>
     <ul class="space-y-1 text-xs text-gray-700">
-      <li>• <strong>Sangat Ringan:</strong> Tanpa binary engine besar seperti Prisma.</li>
+      <li>• <strong>Sangat Ringan:</strong> SQL-oriented dengan driver sesuai database; bandingkan ORM pada kebutuhan nyata.</li>
       <li>• <strong>Type-Safe Otomatis:</strong> Tipe TypeScript langsung dari schema.</li>
       <li>• <strong>Dekat dengan SQL:</strong> Query intuitif, performa maksimal.</li>
     </ul>
@@ -160,16 +172,17 @@ ORM Modern yang Ringan, Type-Safe, dan Mendukung Multi-Database
 </div>
 
 <BrutalCard class="mt-3 bg-yellow-50 text-xs">
-  💡 <strong>Presentasi & Praktek Kita:</strong> Menggunakan <strong>SQLite</strong> karena <em>zero-setup</em>, 100% offline tanpa instal server database eksternal. Namun seluruh sintaks query-nya <strong>100% identik</strong> saat Antum beralih ke <strong>PostgreSQL</strong> di industri!
+  💡 <strong>Presentasi & Praktek Kita:</strong> Menggunakan <strong>SQLite</strong> karena <em>zero-setup</em>, 100% offline tanpa instal server database eksternal. API dasarnya mirip PostgreSQL, tetapi tipe, migration, driver, concurrency, dan fitur SQL harus disesuaikan.
 </BrutalCard>
 
 ---
+class: module-content
 layout: two-cols
 ---
 
 ### Definisi Schema: SQLite vs PostgreSQL
 
-Struktur Schema Serupa, Logika Query CRUD 100% Sama
+API serupa; dialek database dan perilaku driver berbeda
 
 ::left::
 
@@ -186,7 +199,7 @@ export const todos = sqliteTable("todos", {
     autoIncrement: true,
   }),
   title: text("title").notNull(),
-  done: integer("done", { mode: "boolean" }).default(false),
+  done: integer("done", { mode: "boolean" }).notNull().default(false),
 });
 ```
 
@@ -203,16 +216,18 @@ import { pgTable, text, serial, boolean } from "drizzle-orm/pg-core";
 export const todos = pgTable("todos", {
   id: serial("id").primaryKey(),
   title: text("title").notNull(),
-  done: boolean("done").default(false),
+  done: boolean("done").notNull().default(false),
 });
 ```
 
 ::bottom::
 
 <BrutalCard class="mt-2 text-xs text-gray-800">
-  🔍 <strong>Perhatikan:</strong> Cukup ganti modul core (<code>sqlite-core</code> ➔ <code>pg-core</code>) dan tipe auto-increment (<code>integer</code> ➔ <code>serial</code>). Logika CRUD setelahnya (<code>db.select()</code>, <code>db.insert()</code>) <strong>tidak berubah sama sekali</strong>!
+  🔍 <strong>Perhatikan:</strong> Saat migrasi, ganti modul core (<code>sqlite-core</code> ➔ <code>pg-core</code>) dan tipe auto-increment (<code>integer</code> ➔ <code>serial</code>). Logika CRUD setelahnya (<code>db.select()</code>, <code>db.insert()</code>) mirip, tetapi tetap uji perilaku dialek, constraint, dan transaksi.
 </BrutalCard>
 
+---
+class: module-content
 ---
 
 ### CRUD dengan Drizzle ORM
@@ -243,13 +258,19 @@ await db.delete(todos).where(eq(todos.id, 1));
 ```
 
 ---
+zoom: 0.85
+class: module-content
+---
 
 ### Gabungkan: Route Handler + Drizzle
 
 API fullstack yang nyata dalam satu project Next.js!
 
 ```tsx {1-4|6-9|11-20|all}
+// Demo lokal tanpa auth; tambahkan otorisasi pada Modul 14
 // app/api/todos/route.ts
+import * as v from "valibot";
+import { CreateTodoSchema } from "@/lib/todo-schema";
 import { db } from "@/db";
 import { todos } from "@/db/schema";
 import { NextResponse } from "next/server";
@@ -262,7 +283,14 @@ export async function GET() {
 
 // POST /api/todos — insert into database
 export async function POST(request: Request) {
-  const { title } = await request.json();
+  // Schema bersama ditambahkan pada Modul 11
+  const result = v.safeParse(
+    CreateTodoSchema,
+    await request.json().catch(() => null),
+  );
+  if (!result.success)
+    return NextResponse.json({ error: "Invalid title" }, { status: 400 });
+  const { title } = result.output;
 
   const [newTodo] = await db.insert(todos).values({ title }).returning();
 
@@ -271,36 +299,82 @@ export async function POST(request: Request) {
 ```
 
 ---
+class: module-content
+---
 
-### Awareness: Server Actions
+### Server Actions: Alternatif untuk Mutasi UI
 
-Alternatif selain Route Handler — langsung panggil fungsi server dari client!
+Pilih Route Handler untuk kontrak HTTP; Server Action untuk alur form terintegrasi
 
-```tsx {1-2|4-8|10-16|all}
-// app/actions/todo.ts
+```ts
+// src/app/actions/todo.ts — file server terpisah, demo lokal tanpa auth
 "use server";
+import * as v from "valibot";
+import { revalidatePath } from "next/cache";
+import { db } from "@/db";
+import { todos } from "@/db/schema";
+import { CreateTodoSchema } from "@/lib/todo-schema";
 
 export async function addTodo(formData: FormData) {
-  const title = formData.get("title") as string;
-  await db.insert(todos).values({ title });
+  const input = v.parse(CreateTodoSchema, { title: formData.get("title") });
+  await db.insert(todos).values(input);
   revalidatePath("/todos");
-}
-
-// Client Component:
-("use client");
-export default function AddForm() {
-  return (
-    <form action={addTodo}>
-      <input name="title" />
-      <button type="submit">Add</button>
-    </form>
-  );
 }
 ```
 
-<BrutalCard v-click class="mt-3">
-  📌 Server Actions adalah fitur baru Next.js. Untuk saat ini, kita fokus ke <strong>Route Handlers</strong> dulu karena lebih mirip dengan REST API yang umum digunakan.
-</BrutalCard>
+```tsx
+// Fragment pada komponen lain; form dasar ini bisa tetap Server Component
+import { addTodo } from "@/app/actions/todo";
+<form action={addTodo}>
+  <label>
+    Title <input name="title" required />
+  </label>
+  <button type="submit">Add</button>
+</form>;
+```
+
+<!--
+Server Action adalah endpoint yang dapat dipanggil: validasi dan auth wajib untuk data privat.
+Untuk UX produksi kembalikan expected errors sebagai state via useActionState; pending via useFormStatus.
+Jangan menaruh directive use client dan use server sebagai dua boundary dalam satu file.
+-->
+
+---
+class: module-content
+---
+
+### Dari Demo ke API yang Bisa Dipelihara
+
+- Array di memory hilang saat restart dan tidak dibagi antarreplika: gunakan database.
+- JSON dan path params adalah input tak tepercaya; validasi sebelum query.
+- Jangan `.set(body)` langsung: allowlist field agar tidak terjadi mass assignment.
+- Tambahkan constraint, index, migration, dan transaksi sesuai invariant bisnis.
+- 201 untuk create; 400 untuk input salah; 404 untuk item tak ditemukan.
+- Multi-user: query harus dibatasi `userId` dari sesi terverifikasi, bukan dari body.
+
+**Praktik:** buat migration lokal dan buktikan data tetap ada setelah server restart.
+
+<!--
+Setup koneksi, schema, dan handler konkret dilanjutkan pada Modul 11.
+-->
+
+---
+class: module-content
+---
+
+### Prediksi: Percayakah pada Input?
+
+<LearningCheck
+  question="PATCH Todo menerima body berisi title, completed, dan ownerId. Apa yang diteruskan ke database?"
+  :options='["Seluruh body agar endpoint fleksibel", "Field yang diizinkan setelah validasi; identitas dari sesi terverifikasi", "ownerId dari body selama bertipe string"]'
+  :answer="1"
+  explanation="Validasi runtime dan allowlist membatasi input. Otorisasi memeriksa pemilik data di server; TypeScript saja tidak memvalidasi request."
+/>
+
+<!--
+Fasilitasi: beri 30 detik untuk prediksi pribadi, lalu diskusi berpasangan.
+Minta peserta menjelaskan mengapa opsi lain tidak cukup. Gunakan Ulangi prediksi untuk kelompok berikutnya.
+-->
 
 ---
 layout: intro
@@ -315,3 +389,10 @@ transition: fade-out
 1. **Next.js = Fullstack**: Selain consume API, kita bisa membuat API sendiri lewat Route Handlers di `app/api/` — frontend dan backend dalam satu project!
 2. **Drizzle ORM = Simpel dan Type-Safe**: Definisi schema dengan TypeScript, query mirip SQL, dan dukungan SQLite/PostgreSQL untuk kemudahan belajar.
 3. **Route Handler + Drizzle = CRUD API**: Gabungkan keduanya untuk membuat REST API lengkap (GET, POST, PUT, DELETE) yang langsung terhubung ke database.
+
+<!--
+Checkpoint: Persistensi dan Kontrak HTTP
+Buat migration lalu simpan data; restart server dan baca ulang. Bedakan sketsa memory-only, endpoint database, serta endpoint multi-user yang perlu auth.
+Sumber primer: https://orm.drizzle.team/docs/migrations
+Audit: 25 September 2026.
+-->

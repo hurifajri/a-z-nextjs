@@ -7,8 +7,14 @@ level: 1
 
 ## 12. UI Lanjutan: Desain Sistem, shadcn/ui & Responsive
 
-Penyajian data dinamis, alur kerja Figma to Code, bahaya membuat komponen aksesibel dari nol, lanskap UI Library (shadcn/ui vs MUI), serta sejarah pergeseran dari CSS-in-JS ke Tailwind.
+Penyajian data dinamis, alur kerja Figma to Code, bahaya membuat komponen aksesibel dari nol, lanskap UI Library (shadcn/ui vs MUI), serta tradeoff styling, aksesibilitas, dan responsivitas.
 
+<!--
+Contoh bertanda fragment/sketsa memerlukan konteks komponen atau import. Hook dipanggil di dalam function component/custom hook; bukan pada module scope.
+-->
+
+---
+class: module-content
 ---
 
 ### Menampilkan Data: Table vs Card
@@ -24,9 +30,15 @@ Pilih format tampilan yang sesuai dengan jenis data
 <table className="w-full border-2 border-black">
   <thead className="bg-yellow-300">
     <tr>
-      <th className="p-2 border">Name</th>
-      <th className="p-2 border">Email</th>
-      <th className="p-2 border">Role</th>
+      <th scope="col" className="p-2 border">
+        Name
+      </th>
+      <th scope="col" className="p-2 border">
+        Email
+      </th>
+      <th scope="col" className="p-2 border">
+        Role
+      </th>
     </tr>
   </thead>
   <tbody>
@@ -50,7 +62,11 @@ Pilih format tampilan yang sesuai dengan jenis data
 <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
   {products.map((p) => (
     <div key={p.id} className="border-2 border-black rounded-lg p-4 bg-white">
-      <img src={p.image} className="w-full h-40 object-cover rounded" />
+      <img
+        src={p.image}
+        alt={p.name}
+        className="w-full h-40 object-cover rounded"
+      />
       <h3 className="font-bold mt-2">{p.name}</h3>
       <p className="text-gray-600">${p.price.toLocaleString()}</p>
     </div>
@@ -62,77 +78,37 @@ Pilih format tampilan yang sesuai dengan jenis data
 </v-switch>
 
 ---
+class: module-content
+---
 
 ### Fitur Search, Filter & Pagination
 
-Mengelola Kumpulan Data Besar dengan Nyaman bagi Pengguna
+Fragment dalam Client Component; cocok untuk dataset kecil yang sudah dimuat
 
-````md magic-move
 ```tsx
-// 1. Real-time filtering by keyword & category
-"use client";
-export default function ProductList({ products }: { products: Product[] }) {
-  const [search, setSearch] = useState("");
-  const [category, setCategory] = useState("all");
+const [search, setSearch] = useState("");
+const [page, setPage] = useState(1);
+const pageSize = 10;
+const filtered = products.filter((p) =>
+  p.name.toLowerCase().includes(search.toLowerCase()),
+);
+const pageCount = Math.max(1, Math.ceil(filtered.length / pageSize));
+const safePage = Math.min(page, pageCount);
+const visible = filtered.slice((safePage - 1) * pageSize, safePage * pageSize);
 
-  const filteredProducts = products.filter((p) => {
-    const matchesName = p.name.toLowerCase().includes(search.toLowerCase());
-    const matchesCategory = category === "all" || p.category === category;
-    return matchesName && matchesCategory;
-  });
-
-  return (
-    <div>
-      <input
-        placeholder="Search items..."
-        value={search}
-        onChange={(e) => setSearch(e.target.value)}
-      />
-      <p>{filteredProducts.length} products found</p>
-    </div>
-  );
+function changeSearch(value: string) {
+  setSearch(value);
+  setPage(1);
 }
 ```
 
-```tsx
-// 2. Slice data across pages (Pagination)
-const [currentPage, setCurrentPage] = useState(1);
-const itemsPerPage = 10;
-
-const totalPages = Math.ceil(filteredProducts.length / itemsPerPage);
-const paginatedData = filteredProducts.slice(
-  (currentPage - 1) * itemsPerPage,
-  currentPage * itemsPerPage,
-);
-
-return (
-  <div>
-    {paginatedData.map((p) => (
-      <ProductCard key={p.id} item={p} />
-    ))}
-    <div className="flex gap-2 justify-center mt-4">
-      <button
-        disabled={currentPage <= 1}
-        onClick={() => setCurrentPage(currentPage - 1)}
-      >
-        Previous
-      </button>
-      <span>
-        {currentPage} of {totalPages}
-      </span>
-      <button
-        disabled={currentPage >= totalPages}
-        onClick={() => setCurrentPage(currentPage + 1)}
-      >
-        Next
-      </button>
-    </div>
-  </div>
-);
-```
-````
+- Hubungkan input berlabel ke `changeSearch`; render `visible` dengan key ID.
+- Previous disabled pada page 1; Next disabled pada `safePage === pageCount`.
+- Tampilkan empty state ketika `filtered.length === 0`.
+- Dataset besar: filter/pagination di server, simpan parameter di URL, batalkan request usang.
 
 ---
+class: module-content
 layout: two-cols
 ---
 
@@ -164,6 +140,7 @@ Bikin kotak modal dengan CSS itu mudah, tetapi:
 </p>
 
 ---
+class: module-content
 layout: two-cols
 ---
 
@@ -176,72 +153,44 @@ Dari Komponen Monolitik Menuju Era Headless & Copy-Paste
 #### 🏢 1. Framework Klasik (MUI, Ant Design, Mantine)
 
 - **Kelebihan**: Komponen siap pakai sangat lengkap.
-- **Kekurangan**: Bundle JavaScript besar, styling kaku dengan tema bawaan, dan sulit diubah jika desainer punya aturan ketat di Figma.
+- **Tradeoff**: Pelajari theming, kebutuhan bundle, dan integrasi SSR; ukur sesuai komponen yang digunakan.
 
 #### 🪓 2. Headless UI (Radix UI, React Aria)
 
-- Hanya menyediakan **logika & aksesibilitas 100%** tanpa styling CSS apapun.
+- Hanya menyediakan **perilaku interaksi dan fondasi aksesibilitas** tanpa styling CSS apapun.
 
 ::right::
 
-#### 🌟 3. Standar Baru: `shadcn/ui`
+#### 🌟 3. Komponen dengan Source Code: `shadcn/ui`
 
-- Dibangun di atas **Radix UI** + **Tailwind CSS**.
+- Memiliki pilihan primitive **Radix UI / Base UI**; cek basis komponen dan preset yang dipilih.
 - **Bukan package npm black-box**: Kodenya di-copy langsung ke dalam folder `components/ui/` proyek Antum!
 - 🎨 **Kontrol Penuh**: Antum bebas mengedit kode komponen sesuka hati tanpa dibatasi oleh aturan library.
 - ⚡ Sangat digemari di ekosistem Next.js modern!
 
 ---
+class: module-content
+---
 
-### Kilas Balik: Era CSS-in-JS & Mengapa Kini Ditinggalkan
+### Memilih Pendekatan Styling
 
-Perjalanan Komunitas dari Styled Components Kembali ke Tailwind CSS
+| Pendekatan           | Kelebihan                                   | Perlu diperhatikan                   |
+| :------------------- | :------------------------------------------ | :----------------------------------- |
+| CSS / CSS Modules    | Scoped styling, tanpa runtime styling JS    | Konvensi token dan organisasi        |
+| Tailwind v4          | Utility, token CSS-first, output saat build | Class harus terdeteksi saat build    |
+| Runtime CSS-in-JS    | Styling berbasis props, ekosistem komponen  | Dukungan streaming/RSC per library   |
+| Build-time CSS-in-JS | Ekstraksi CSS saat build                    | Tooling dan kompatibilitas framework |
 
-````md magic-move
-```tsx
-// 📜 POPULAR ERA (2018–2022): CSS-in-JS (Styled-Components / Emotion)
-import styled from "styled-components";
+- CSS-in-JS tidak ditinggalkan seluruh industri; kebutuhan proyek berbeda.
+- Library dengan runtime client tidak otomatis bisa dijalankan di Server Component.
+- Pertahankan token warna, spacing, tipografi, focus, dan state komponen.
 
-const CustomButton = styled.button<{ $primary?: boolean }>`
-  background: ${(props) => (props.$primary ? "#FFE600" : "#FFFFFF")};
-  border: 2px solid #000;
-  padding: 8px 16px;
-  font-weight: bold;
-  &:hover {
-    background: #ffd700;
-  }
-`;
-// Previously favored because styles could dynamically adapt to JS props!
-```
-
-```tsx
-// ⚠️ WHY WAS IT ABANDONED BY THE COMMUNITY?
-// 1. Runtime Performance: The browser is overloaded calculating CSS at runtime
-// 2. Bloated JS Bundle: CSS code shipped as JavaScript
-// 3. INCOMPATIBLE WITH SERVER COMPONENTS (RSC)!
-//    CSS-in-JS requires React Context in the browser, failing on the server!
-```
-
-```tsx
-// ⚡ MODERN ERA: Tailwind CSS (Zero Runtime, Compile Time)
-export default function CustomButton({ primary }: { primary?: boolean }) {
-  return (
-    <button
-      className={`border-2 border-black px-4 py-2 font-bold transition-all ${
-        primary
-          ? "bg-yellow-400 hover:bg-yellow-500"
-          : "bg-white hover:bg-gray-100"
-      }`}
-    >
-      Click Me
-    </button>
-  );
-}
-// Zero-runtime, compiled at build time, static CSS bundle, 100% compatible with Server Components!
-```
-````
+<!--
+Sumber: https://nextjs.org/docs/app/guides/css-in-js
+-->
 
 ---
+class: module-content
 layout: two-cols
 ---
 
@@ -271,6 +220,25 @@ Alur Kerja Kolaborasi Bersama Desainer UI/UX
 | `xl:`       | 1280px    | 🖥️ Layar Monitor Lebar        |
 
 ---
+class: module-content
+---
+
+### Checkpoint UI: Data, Keyboard, dan Layar Kecil
+
+- Dataset kecil boleh difilter lokal; dataset besar memakai query, sort, dan pagination server.
+- Simpan filter/page di URL dan reset page saat filter berubah.
+- Table: caption, header dengan `scope`, dan container scroll pada layar sempit.
+- Dialog: label, fokus awal, Escape, serta kembalikan fokus ke pemicu setelah tutup.
+- Uji keyboard, zoom 200%, kontras, reduced motion, dan loading/error/empty state.
+- Primitive aksesibel membantu; komposisi dan modifikasi aplikasi tetap harus diuji.
+
+**Latihan:** gunakan hanya keyboard untuk mencari data, membuka dialog, membatalkan, dan kembali ke tombol pemicu.
+
+<!--
+Sumber: https://www.w3.org/WAI/ARIA/apg/patterns/dialog-modal/
+-->
+
+---
 layout: intro
 badge: "RANGKUMAN"
 badgeColor: "yellow"
@@ -281,5 +249,5 @@ transition: slide-up
 ## 3 Hal Penting dari Modul 12
 
 1. **Manfaatkan Accessible Primitives**: Jangan membuat modal/dropdown kompleks dari nol murni. Manfaatkan _headless UI_ seperti Radix UI atau `shadcn/ui` agar website ramah disabilitas dan sesuai standar WAI-ARIA.
-2. **Kemenangan Tailwind atas CSS-in-JS**: Komunitas beralih dari Styled-Components kembali ke Tailwind CSS karena nol runtime, ukuran file lebih kecil, dan kompatibilitas penuh dengan Server Components Next.js.
+2. **Pilih Styling sesuai Kebutuhan**: CSS Modules dan Tailwind tidak memerlukan runtime styling JS; CSS-in-JS perlu pemeriksaan kompatibilitas library.
 3. **Desain Responsif Mobile-First**: Mulai menulis style untuk layar ponsel, lalu gunakan breakpoint (`md:`, `lg:`) untuk menyesuaikan tampilan di layar komputer.

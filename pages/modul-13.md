@@ -10,10 +10,12 @@ level: 1
 Menghubungkan frontend ke API tim backend, membaca dokumentasi Swagger/OpenAPI, serta menerapkan autentikasi JWT.
 
 ---
+class: module-content
+---
 
 ### Membaca Dokumentasi API (Swagger)
 
-Swagger/OpenAPI adalah kontrak antara frontend dan backend
+OpenAPI adalah spesifikasi kontrak; Swagger UI adalah salah satu alat untuk membacanya
 
 <v-clicks>
 
@@ -29,6 +31,8 @@ Swagger/OpenAPI adalah kontrak antara frontend dan backend
   💡 Swagger UI biasanya bisa diakses di <code>https://api.example.com/docs</code> atau <code>/swagger</code>. Minta URL-nya ke tim backend!
 </BrutalCard>
 
+---
+class: module-content
 ---
 
 ### Anatomi Swagger UI
@@ -47,7 +51,7 @@ Memahami setiap bagian di halaman dokumentasi
     <p class="text-xs text-gray-600">Buat produk baru. Body: <code>{ name, price, category }</code></p>
   </BrutalCard>
   <BrutalCard class="flex flex-col gap-2 items-start" v-click>
-    <BrutalBadge color="cyan">PUT</BrutalBadge>
+    <BrutalBadge color="cyan">PATCH</BrutalBadge>
     <p class="font-bold">/api/products/{id}</p>
     <p class="text-xs text-gray-600">Update produk. Body: <code>{ name?, price? }</code></p>
   </BrutalCard>
@@ -59,49 +63,49 @@ Memahami setiap bagian di halaman dokumentasi
 </div>
 
 ---
+class: module-content
+---
 
 ### Membuat API Service Layer
 
-Pisahkan logika fetch API ke file tersendiri agar rapi
+Browser memanggil endpoint same-origin; cookie sesi dikelola server
 
-```tsx {1-6|8-16|18-24|all}
-// lib/api.ts — Centralized client for all API calls
-const BASE_URL = process.env.NEXT_PUBLIC_API_URL || "https://api.example.com";
-
-async function apiClient(endpoint: string, options?: RequestInit) {
-  const token = localStorage.getItem("token");
-
-  const res = await fetch(`${BASE_URL}${endpoint}`, {
+```ts
+// src/lib/api.ts — helper browser, endpoint internal yang ditentukan aplikasi
+export async function apiClient(
+  path: `/api/${string}`,
+  options: RequestInit = {},
+) {
+  const headers = new Headers(options.headers);
+  if (typeof options.body === "string")
+    headers.set("Content-Type", "application/json");
+  const res = await fetch(path, {
     ...options,
-    headers: {
-      "Content-Type": "application/json",
-      ...(token && { Authorization: `Bearer ${token}` }),
-      ...options?.headers,
-    },
+    headers,
+    credentials: "same-origin",
   });
-
-  if (res.status === 401) {
-    // Token expired — redirect to login
-    window.location.href = "/login";
-    throw new Error("Session expired");
-  }
-
-  if (!res.ok) throw new Error(`API Error: ${res.status}`);
-  return res.json();
+  if (!res.ok) throw new Error(`HTTP ${res.status}`);
+  if (res.status === 204) return undefined;
+  return res.json(); // Validasi schema respons sebelum dipakai UI
 }
-
-export const api = {
-  getProducts: () => apiClient("/api/products"),
-  createProduct: (data: unknown) =>
-    apiClient("/api/products", { method: "POST", body: JSON.stringify(data) }),
-};
 ```
 
+- Caller mengubah 401 menjadi UI login, 403 menjadi pesan izin ditolak.
+- BFF (Backend for Frontend) memverifikasi sesi dan meneruskan token ke backend.
+- Jangan teruskan header/cookie browser secara bebas ke URL upstream.
+- Untuk cookie-authenticated mutation, server perlu perlindungan CSRF (Modul 14).
+
+<!--
+Sumber: https://nextjs.org/docs/app/guides/backend-for-frontend
+-->
+
+---
+class: module-content
 ---
 
 ### Apa Itu JWT (JSON Web Token)?
 
-Token untuk membuktikan identitas pengguna tanpa kirim password berulang
+Format token; autentikasi memerlukan verifikasi signature dan claims, bukan sekadar decode
 
 <div class="mt-4">
 
@@ -127,108 +131,108 @@ eyJhbGciOiJIUzI1NiJ9.eyJ1c2VySWQiOjEsInJvbGUiOiJhZG1pbiJ9.SflKxwRJSMeKKF2QT4fwpM
 </div>
 
 <BrutalCard v-click class="mt-4">
-  🔐 Token dikirim di setiap request via header: <code>Authorization: Bearer eyJhbG...</code>
+  JWT bertanda tangan umumnya tidak terenkripsi: payload bisa dibaca. Verifikasi signature, algoritma yang diizinkan, issuer, audience, dan expiry; jangan taruh secret di payload.
 </BrutalCard>
 
 ---
-
-### Alur Login dengan JWT
-
-Dari form login hingga akses halaman terlindungi
-
-```text
-1. User isi form login (email + password)
-         ↓
-2. Frontend kirim POST /api/auth/login
-         ↓
-3. Backend cek kredensial → kirim JWT token
-         ↓
-4. Frontend simpan token di localStorage
-         ↓
-5. Setiap request, sertakan token di header Authorization
-         ↓
-6. Backend verifikasi token → kirim data
-```
-
+class: module-content
 ---
 
-### Implementasi Login
+### Alur Login: Browser → BFF → Backend
 
-Form login dan penyimpanan token
+```text
+Browser mengirim kredensial lewat HTTPS
+    ↓
+BFF / layanan auth memverifikasi kredensial
+    ↓
+Server menyimpan sesi / token upstream secara aman
+    ↓
+Browser menerima cookie sesi HttpOnly, Secure, SameSite
+    ↓
+Browser memanggil endpoint same-origin dengan cookie
+    ↓
+BFF memverifikasi sesi dan izin → akses backend → kirim data minimum
+```
 
-```tsx {4-13|15-17|all}
-"use client";
-export default function LoginPage() {
-  const [form, setForm] = useState({ email: "", password: "" });
-  const router = useRouter();
+JWT bukan keharusan: opaque session juga valid. Hindari menyimpan session identifier di localStorage karena bisa dibaca JavaScript saat XSS.
 
-  async function handleLogin(e: React.FormEvent) {
-    e.preventDefault();
+<!--
+Sumber: https://cheatsheetseries.owasp.org/cheatsheets/HTML5_Security_Cheat_Sheet.html
+-->
 
+---
+zoom: 0.85
+class: module-content
+---
+
+### Implementasi Login di Browser
+
+Fragment handler pada form client dengan state `pending`, `error`, dan router
+
+```tsx
+async function handleLogin(e: React.FormEvent<HTMLFormElement>) {
+  e.preventDefault();
+  if (pending) return;
+  const fields = new FormData(e.currentTarget);
+  setPending(true);
+  setError("");
+  try {
     const res = await fetch("/api/auth/login", {
       method: "POST",
       headers: { "Content-Type": "application/json" },
-      body: JSON.stringify(form),
+      body: JSON.stringify({
+        email: fields.get("email"),
+        password: fields.get("password"),
+      }),
     });
-
-    if (res.ok) {
-      const { token } = await res.json();
-      localStorage.setItem("token", token); // Save token
-      router.push("/dashboard");
-    } else {
-      alert("Invalid email or password!");
-    }
+    if (!res.ok) throw new Error("Login failed");
+    // Server menyetel cookie HttpOnly; tidak ada token yang disimpan di JS
+    router.replace("/dashboard");
+    router.refresh();
+  } catch {
+    setError("Unable to sign in. Please retry.");
+  } finally {
+    setPending(false);
   }
-
-  return (
-    <form onSubmit={handleLogin}>
-      <input
-        type="email"
-        placeholder="Email"
-        value={form.email}
-        onChange={(e) => setForm({ ...form, email: e.target.value })}
-      />
-      <input
-        type="password"
-        placeholder="Password"
-        value={form.password}
-        onChange={(e) => setForm({ ...form, password: e.target.value })}
-      />
-      <button type="submit">Login</button>
-    </form>
-  );
 }
 ```
+
+Form menyediakan label, `name="email"`, `name="password"`, autocomplete, pesan `role="alert"`, dan tombol disabled saat pending. Backend login disediakan library/layanan auth.
 
 ---
+class: module-content
+---
 
-### Menggunakan Token di Setiap Request
+### Memanggil Backend dari Server
 
-Sertakan token di header Authorization
+Kontrak adapter auth: `getVerifiedSession()` mengembalikan sesi valid atau null
 
-```tsx {3-4|6-12|14-15|all}
-// Example: Fetch data requiring authentication
-async function fetchProtectedData() {
-  const token = localStorage.getItem("token");
+```ts
+// src/lib/backend.ts — fragment integrasi; implementasikan adapter auth proyek
+import "server-only";
+import { getVerifiedSession } from "@/lib/auth";
 
-  const res = await fetch("https://api.example.com/api/profile", {
-    headers: {
-      "Content-Type": "application/json",
-      Authorization: `Bearer ${token}`, // ← Token attached here!
-    },
+export async function getProfile() {
+  const session = await getVerifiedSession();
+  if (!session) throw new Error("Unauthenticated");
+  if (!session.accessToken) throw new Error("Upstream token unavailable");
+  const res = await fetch(`${process.env.API_BASE_URL}/profile`, {
+    headers: { Authorization: `Bearer ${session.accessToken}` },
+    cache: "no-store",
   });
-
-  if (res.status === 401) {
-    // Token expired or invalid
-    localStorage.removeItem("token");
-    window.location.href = "/login";
-    return;
-  }
-
-  return res.json();
+  if (!res.ok) throw new Error(`Upstream HTTP ${res.status}`);
+  return res.json(); // Parse schema & pilih field publik di boundary BFF
 }
 ```
 
+Token upstream disimpan di server. Pisahkan 401, 403, timeout, dan kegagalan backend; jangan log token atau password.
+
+<!--
+Adapter getVerifiedSession bukan API bawaan Next.js; lihat kontrak Modul 14.
+-->
+
+---
+class: module-content
 ---
 
 ### Tips Kolaborasi dengan Tim Backend
@@ -241,9 +245,23 @@ Komunikasi efektif antara frontend dan backend
 - 🧪 **Test di Postman dulu** — Pastikan endpoint berfungsi sebelum integrasi ke frontend.
 - 🔑 **Sepakati format response** — Status code, format error, pagination format.
 - 🕐 **Tanya deadline API** — Jika API belum siap, gunakan mock data sementara.
-- 💬 **Komunikasikan error** — Screenshot error response + request yang dikirim.
+- 💬 **Komunikasikan error** — Bagikan request ID, status, dan reproduksi; redaksi token, cookie, password, serta data pribadi.
 
 </v-clicks>
+
+---
+class: module-content
+---
+
+### Checkpoint Integrasi Backend
+
+- Sepakati pagination, format error, nullability, expiry sesi, dan versi kontrak.
+- Generated TypeScript dari OpenAPI membantu coding, tetapi bukan validasi runtime.
+- CORS adalah kebijakan browser; bukan autentikasi atau pelindung API.
+- Bila akses cross-origin dengan cookie diperlukan, gunakan origin eksplisit dan konfigurasi credentials yang sesuai.
+- Buat mock dari kontrak untuk kasus sukses, 401, 403, 429, dan respons rusak.
+
+**Latihan:** simulasikan sesi kedaluwarsa dan 204; aplikasi tidak boleh menampilkan sukses palsu atau gagal parse JSON kosong.
 
 ---
 layout: intro
@@ -256,5 +274,5 @@ transition: slide-up
 ## 3 Hal Penting dari Modul 13
 
 1. **Swagger = Kontrak API**: Baca dokumentasi Swagger untuk tahu endpoint, request body, response format, dan authentication yang diperlukan.
-2. **JWT = Tiket Masuk**: Login → dapat token → simpan di localStorage → sertakan di header setiap request → backend verifikasi.
+2. **Sesi Diverifikasi di Server**: Browser memakai cookie HttpOnly; BFF dapat menyimpan JWT upstream. Decode token bukan verifikasi.
 3. **API Service Layer**: Buat satu file pusat (`lib/api.ts`) untuk semua panggilan API agar kode rapi, token otomatis terpasang, dan error handling terpusat.

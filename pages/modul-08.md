@@ -9,7 +9,12 @@ level: 1
 
 Mengambil data dari endpoint, perbandingan HTTP Client (fetch, Axios, Ky), masalah fetch manual, serta keunggulan TanStack Query (React Query).
 
+<!--
+Contoh bertanda fragment/sketsa memerlukan konteks komponen atau import. Hook dipanggil di dalam function component/custom hook; bukan pada module scope.
+-->
+
 ---
+class: module-content
 layout: two-cols
 ---
 
@@ -26,17 +31,17 @@ Berbagai Cara Mengirim HTTP Request ke Backend
 - ❌ Respon harus di-parse manual (`res.json()`)
 - ❌ Tidak otomatis throw error pada status 400/500
 
-#### 2. `axios` _(Paling Populer di Masa Lalu)_
+#### 2. `axios` _(HTTP Client dengan Interceptor)_
 
 - ✅ Otomatis parse JSON
 - ✅ Fitur **Interceptors** (sisipkan token otomatis)
-- ❌ Berbasis XMLHttpRequest lama, ukuran bundle lebih besar (~13 kB)
+- 🔌 Mendukung adapter browser/Node/fetch; periksa kebutuhan dan ukuran bundle
 
 ::right::
 
 #### 3. `ky` _(Pilihan Modern & Ringan)_
 
-- 🪶 Sangat kecil (~3 kB), dibangun di atas native `fetch()`
+- 🪶 Wrapper native `fetch()`; ukuran bergantung versi dan fitur
 - 🔄 **Auto-Retry bawaan**: Otomatis mencoba ulang jika server gagal
 - 🛑 Penanganan HTTP error bawaan yang rapi
 
@@ -53,6 +58,8 @@ import ky from "ky";
 const users = await ky.get("/api/users").json();
 ```
 
+---
+class: module-content
 ---
 
 ### Dilema Fetch Data Manual di Sisi Klien
@@ -103,46 +110,72 @@ export default function UserList() {
 ````
 
 ---
+class: module-content
+---
+
+### Setup Provider Sebelum Memakai useQuery
+
+```bash
+npm install @tanstack/react-query
+```
+
+```tsx
+// src/app/providers.tsx — contoh useQuery biasa, bukan Suspense query
+"use client";
+import { useState, type ReactNode } from "react";
+import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
+
+export default function Providers({ children }: { children: ReactNode }) {
+  const [client] = useState(() => new QueryClient());
+  return <QueryClientProvider client={client}>{children}</QueryClientProvider>;
+}
+```
+
+Di `layout.tsx`, import `Providers`, lalu bungkus `{children}` di dalam `<body>` dengan `<Providers>`.
+
+Jangan berbagi QueryClient singleton antarpengguna di server. SSR prefetch/hydration memerlukan setup terpisah.
+
+<!--
+Sumber: https://tanstack.com/query/latest/docs/framework/react/guides/ssr
+-->
+
+---
+class: module-content
 layout: two-cols
 ---
 
-### Solusi Komunitas: TanStack Query (React Query)
-
-Standar Industri untuk Pengelolaan Server State di Sisi Klien
+### TanStack Query: Query dan State UI
 
 ::left::
 
-#### Masalah yang Diselesaikan
+#### Apa yang Dikelola?
 
-<v-clicks>
+- Cache berdasarkan `queryKey`.
+- Deduplikasi request yang sedang berjalan untuk key yang sama.
+- Refetch data stale sesuai konfigurasi.
+- Pending, error, data, dan invalidasi.
 
-- ⚡ **Auto Caching**: Data tersimpan di memori, perpindahan halaman terasa instan.
-- 🔄 **Window Focus Refetch**: Saat pengguna kembali membuka tab browser, data otomatis diperbarui di latar belakang.
-- 🛑 **Request Deduplication**: Banyak komponen meminta data yang sama? Hanya 1 request yang dikirim ke server.
-- ⏳ **Built-in State**: State `isLoading`, `isError`, `data` sudah langsung tersedia.
-
-</v-clicks>
+`getUsers` pada slide validasi JSON di modul ini memeriksa HTTP dan schema respons. Provider harus terpasang terlebih dahulu.
 
 ::right::
 
-#### Contoh dengan `useQuery`
-
-```tsx {1-2|5-8|10-12|all}
+```tsx
 "use client";
 import { useQuery } from "@tanstack/react-query";
+import { getUsers } from "@/lib/users";
 
 export default function UserList() {
-  const { data, isLoading, error } = useQuery({
+  const query = useQuery({
     queryKey: ["users"],
-    queryFn: () => fetch("/api/users").then((r) => r.json()),
+    queryFn: ({ signal }) => getUsers(signal),
+    staleTime: 30_000,
   });
-
-  if (isLoading) return <p>Loading data...</p>;
-  if (error) return <p>Something went wrong!</p>;
-
+  if (query.isPending) return <p>Loading...</p>;
+  if (query.isError) return <p>Unable to load.</p>;
+  if (!query.data.length) return <p>No users.</p>;
   return (
     <ul>
-      {data.map((u) => (
+      {query.data.map((u) => (
         <li key={u.id}>{u.name}</li>
       ))}
     </ul>
@@ -150,17 +183,13 @@ export default function UserList() {
 }
 ```
 
-<BrutalCard v-click class="mt-2 bg-brutal-yellow/20">
-  <div class="flex items-center gap-2 mb-1">
-    <span class="bg-brutal-yellow text-brutal-black text-xs font-black px-2 py-0.5 border border-brutal-black rounded shadow-brutal-sm">
-      💡 WAJIB PASANG: ESLint Plugin TanStack Query
-    </span>
-  </div>
-  <p class="text-xs text-gray-800 leading-relaxed">
-    Plugin resmi <code>@tanstack/eslint-plugin-query</code> mencegah bug berbahaya: memastikan <strong>dependensi queryKey lengkap</strong> (mencegah data stale/basi), mencegah instansiasi ganda <code>QueryClient</code> di render loop, serta melarang destructuring yang merusak reactivity tracking. <strong>Aturan AST spesifik ini belum ada di Biome maupun Oxlint</strong> — inilah alasan proyek TanStack Query tetap mempertahankan ESLint!
-  </p>
-</BrutalCard>
+<!--
+Tambahkan tombol retry dengan query.refetch(). ESLint plugin TanStack Query direkomendasikan.
+getUsers diekspor dari src/lib/users.ts; contoh definisinya ada di slide TypeScript Tidak Memvalidasi JSON.
+-->
 
+---
+class: module-content
 ---
 
 ### Kapan Pakai Server Fetch vs TanStack Query?
@@ -177,6 +206,8 @@ Panduan Mengambil Keputusan di Next.js App Router
   🚀 Di Next.js, mulailah selalu dari <strong>Server Component fetch</strong>. Beralihlah ke <strong>TanStack Query</strong> hanya pada komponen interaktif yang butuh auto-polling atau sinkronisasi client intensif.
 </BrutalCard>
 
+---
+class: module-content
 ---
 
 ### Tiga State yang Wajib Ditangani
@@ -243,31 +274,53 @@ function EmptyState() {
 </v-switch>
 
 ---
+class: module-content
+---
 
-### Type-Safe API Response dengan TypeScript
+### TypeScript Tidak Memvalidasi JSON Saat Runtime
 
-Mencegah Bug Salah Ketik Properti Sejak Awal
+Tipe return memberi bantuan editor; schema memeriksa respons yang benar-benar datang
 
-```tsx {1-7|9-13|15-18|all}
-// types/user.ts
-interface User {
-  id: number;
-  name: string;
-  email: string;
-  role: "admin" | "member";
+```ts
+import * as v from "valibot";
+
+const UsersSchema = v.array(
+  v.object({
+    id: v.number(),
+    name: v.string(),
+  }),
+);
+type User = v.InferOutput<typeof UsersSchema>[number];
+
+export async function getUsers(signal?: AbortSignal): Promise<User[]> {
+  const res = await fetch("/api/users", { signal });
+  if (!res.ok) throw new Error(`HTTP ${res.status}`);
+  return v.parse(UsersSchema, await res.json());
 }
-
-// Fetch with type assertion
-async function getUsers(): Promise<User[]> {
-  const res = await fetch("https://api.example.com/users");
-  return res.json();
-}
-
-// Editor auto-completion enabled!
-const users = await getUsers();
-console.log(users[0].name); // ✅ Inferred as string
-console.log(users[0].balance); // ❌ TypeScript flags error immediately!
 ```
+
+`as User[]` tidak mengubah data atau memastikan kontrak backend benar. Detail schema dibahas di Modul 09.
+
+<!--
+Sumber: https://valibot.dev/guides/parse-data/
+-->
+
+---
+class: module-content
+---
+
+### Cache Server dan Cache Browser Berbeda
+
+- `queryKey` wajib memuat filter/page/identitas yang mengubah hasil query.
+- Default `staleTime` adalah 0; query stale dapat refetch saat mount, focus, reconnect.
+- Setelah mutasi berhasil: `invalidateQueries({ queryKey: ["todos"] })`.
+- Invalidasi TanStack Query tidak menghapus Next.js server cache; tangani keduanya bila dipakai.
+- Tangani empty state dan background refetch tanpa menghilangkan data lama.
+- Query bukan koneksi real-time otomatis; polling, SSE, atau WebSocket tetap perlu desain.
+
+<!--
+Sumber: https://tanstack.com/query/latest/docs/framework/react/guides/important-defaults
+-->
 
 ---
 layout: intro
@@ -280,5 +333,12 @@ transition: slide-up
 ## 3 Hal Penting dari Modul 08
 
 1. **Kenali Pilihan HTTP Client**: Gunakan native `fetch()` untuk solusi tanpa dependensi, `ky` untuk fetch modern ringan dengan retry otomatis, atau `axios` untuk interceptor klasik.
-2. **TanStack Query Mengatasi Keterbatasan Manual**: Gunakan TanStack Query di sisi klien untuk menyelesaikan masalah _race conditions_, ketiadaan _cache_, dan _waterfall requests_.
+2. **TanStack Query Mengatasi Keterbatasan Manual**: Gunakan TanStack Query di sisi klien untuk mengelola cache, deduplikasi, status request, dan invalidasi. Waterfall tetap perlu dihindari lewat desain query.
 3. **Selalu Siapkan 3 State**: Pastikan aplikasi Antum selalu menangani kondisi **Loading**, **Error (dengan tombol retry)**, dan **Empty State** agar ramah bagi pengguna.
+
+<!--
+Checkpoint: Query yang Tidak Menampilkan Sukses Palsu
+Mock 500, respons kosong, dan respons schema salah. Pastikan error tertangani, queryKey memuat filter, serta invalidasi berjalan setelah mutasi.
+Sumber primer: https://tanstack.com/query/latest/docs/framework/react/guides/query-functions
+Audit: 25 September 2026.
+-->

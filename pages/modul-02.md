@@ -10,6 +10,7 @@ level: 1
 Memahami Fondasi App Router, Perbedaan dengan Pages Router, Konvensi File Khusus, dan Pembuatan Rute Halaman.
 
 ---
+class: module-content
 layout: two-cols
 ---
 
@@ -32,7 +33,7 @@ pages/
       └── [slug].tsx   → /blog/:slug
 ```
 
-- Komponen otomatis berjalan di sisi client
+- Mendukung SSR/SSG; komponen kemudian di-hydrate di browser
 - Pengaturan layout bertingkat terbatas
 - Menggunakan `getServerSideProps` / `getStaticProps`
 
@@ -58,10 +59,12 @@ app/
 - Mendukung streaming dan komponen asynchronous
 
 ---
+class: module-content
+---
 
 ### Prinsip Utama: Folder Adalah Rute!
 
-Cukup Buat Folder Baru, Alamat URL Website Otomatis Tercipta
+Folder membentuk segmen; page.tsx mengekspos halaman, route.ts mengekspos endpoint
 
 Di Next.js App Router, setiap **folder** di dalam direktori `app/` mewakili satu segmen URL.
 
@@ -77,10 +80,11 @@ src/app/
 ```
 
 <BrutalCard v-click class="mt-4">
-  📌 <strong>Aturan Emas:</strong> Suatu rute hanya dapat diakses pengunjung jika di dalam folder tersebut terdapat file bernama <code>page.tsx</code>!
+  📌 <strong>Aturan Emas:</strong> Halaman UI memerlukan <code>page.tsx</code>; endpoint HTTP memakai <code>route.ts</code>. Keduanya tidak boleh berada pada segmen URL yang sama.
 </BrutalCard>
 
 ---
+class: module-content
 layout: two-cols
 ---
 
@@ -125,9 +129,11 @@ Nama-Nama File dengan Peran Otomatis Tanpa Perlu Setup Tambahan
 ::bottom::
 
 <BrutalCard v-click class="mt-3 bg-purple-50 text-xs">
-  🛡️ <strong>Next.js 16 File:</strong> File <code>proxy.ts</code> di root (pengganti <code>middleware.ts</code>) berfungsi sebagai gerbang penengah untuk auth guard & redirect sebelum request sampai ke halaman.
+  🛡️ <strong>Next.js 16 File:</strong> File <code>proxy.ts</code> sejajar <code>app/</code> (di <code>src/</code> jika memakai src; pengganti middleware.ts) berfungsi sebagai gerbang penengah untuk auth guard & redirect sebelum request sampai ke halaman.
 </BrutalCard>
 
+---
+class: module-content
 ---
 
 ### Anatomi Root Layout (`app/layout.tsx`)
@@ -158,6 +164,8 @@ export default function RootLayout({
 </BrutalCard>
 
 ---
+class: module-content
+---
 
 ### Hierarki Komponen di App Router
 
@@ -182,6 +190,7 @@ Saat pengunjung membuka sebuah alamat rute, Next.js menyusun komponen secara ber
 </BrutalCard>
 
 ---
+class: module-content
 layout: two-cols
 ---
 
@@ -214,6 +223,8 @@ src/app/
 
 </v-clicks>
 
+---
+class: module-content
 ---
 
 ### Colocation & Private Folders
@@ -248,6 +259,7 @@ src/app/
 </BrutalCard>
 
 ---
+class: module-content
 layout: two-cols
 ---
 
@@ -295,6 +307,8 @@ Menyepakati Standar Agar Satu Tim Tidak Beda Gaya
 </BrutalCard>
 
 ---
+class: module-content
+---
 
 ### Strategi Pengelompokan File
 
@@ -339,36 +353,31 @@ src/
 </v-switch>
 
 ---
+class: module-content
+---
 
-### ⚠️ Anti-Pattern: Barrel Exports
+### Barrel Exports: Gunakan dengan Sengaja
 
-Kenapa `index.ts` Re-Export Itu Sering Menjadi Masalah
-
-Barrel file adalah `index.ts` yang hanya me-re-export dari file lain:
+Barrel file me-re-export modul melalui satu pintu masuk
 
 ```ts
-// ❌ components/index.ts — "Barrel File"
+// components/index.ts
 export { Button } from "./Button";
 export { Input } from "./Input";
-export { Modal } from "./Modal";
-export { Tabs } from "./Tabs";
-// ... dozens of other exports
+
+// Direct import memudahkan penelusuran dependensi:
+import { Button } from "@/components/Button";
 ```
 
-<v-clicks>
+- Barrel besar dapat menambah pekerjaan resolve dan memperlambat dev/build.
+- Tree-shaking **tidak otomatis rusak**; hasil bergantung side effects dan bundler.
+- Hindari mencampur modul server-only dan client dalam satu barrel.
+- Barrel kecil untuk public API sebuah package tetap masuk akal.
+- Ukur build dan bundle sebelum mengubah seluruh struktur import.
 
-- 🌳 **Tree-shaking rusak** — `import { Button } from '@/components'` memaksa bundler meng-resolve SELURUH barrel, memperbesar bundle.
-- 🔄 **Circular dependency** — Barrel menjadi titik pusat yang sangat rawan memicu import melingkar antar modul.
-- 🐢 **IDE & TypeScript lambat** — Auto-import dan type-checking harus resolve semua re-export, DX jadi berat.
-- ⚡ **Hot reload berantai** — Satu perubahan file bisa trigger reload SEMUA file yang import dari barrel tersebut.
-- 🔍 **Debugging sulit** — Stack trace menunjuk ke `index.ts`, bukan file asli tempat bug berada.
-- 📖 **Next.js sendiri menyarankan menghindarinya** — Dokumentasi resmi menyebut barrel files sebagai penyebab masalah performa build.
-
-</v-clicks>
-
-<BrutalCard v-click class="mt-2 bg-green-100 text-xs">
-  ✅ <strong>Solusi:</strong> Import langsung dari file aslinya → <code>import { Button } from '@/components/Button'</code>
-</BrutalCard>
+<!--
+Sumber: https://nextjs.org/docs/app/guides/package-bundling
+-->
 
 ---
 layout: intro
@@ -385,4 +394,11 @@ transition: slide-up
 3. **Route Groups & Colocation**: Gunakan tanda kurung `(group)` untuk fleksibilitas layout tanpa mengubah URL, dan letakkan komponen pendukung langsung di samping halamannya.
 4. **Konvensi Penamaan**: File komponen boleh PascalCase atau kebab-case (nama function tetap PascalCase). Variabel `camelCase`, konstanta `CONSTANT_CASE`.
 5. **Kelompokkan File per Fitur**: Kumpulkan semua file terkait fitur dalam satu folder — lebih scalable daripada mengelompokkan per tipe.
-6. **Hindari Barrel Exports**: Jangan pakai `index.ts` re-export — merusak tree-shaking, memperlambat IDE, dan mempersulit debugging. Import langsung dari file aslinya.
+6. **Evaluasi Barrel Exports**: Pilih direct import untuk dependensi yang jelas; barrel kecil tetap berguna sebagai public API package.
+
+<!--
+Checkpoint: Routing dan Batas File
+Buat /about dan /dashboard/settings dengan nested layout. Pastikan folder helper tidak menjadi URL dan route group tidak mengubah path.
+Sumber primer: https://nextjs.org/docs/app/getting-started/project-structure
+Audit: 25 September 2026.
+-->

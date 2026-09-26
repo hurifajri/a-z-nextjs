@@ -9,6 +9,12 @@ level: 1
 
 Membuat Rute URL Fleksibel Berdasarkan ID, Mengenal Catch-All Routes, Serta Menguasai Link dan Hook Navigasi.
 
+<!--
+Contoh bertanda fragment/sketsa memerlukan konteks komponen atau import. Hook dipanggil di dalam function component/custom hook; bukan pada module scope.
+-->
+
+---
+class: module-content
 ---
 
 ### Kebutuhan Halaman Dinamis
@@ -29,6 +35,8 @@ Bayangkan Antum punya 1.000 produk di toko online:
   Tentu tidak! Di sinilah kita menggunakan fitur <strong>Dynamic Routes</strong> dengan tanda kurung siku <code>[id]</code>.
 </BrutalCard>
 
+---
+class: module-content
 ---
 
 ### Membuat Dynamic Route (`[slug]`)
@@ -60,6 +68,8 @@ export default async function ProductDetail({ params }: PageProps) {
 </BrutalCard>
 
 ---
+class: module-content
+---
 
 ### Variasi Segmen Dinamis
 
@@ -76,6 +86,7 @@ Pilihan Pola Dynamic Routes Sesuai Kebutuhan Aplikasi
 </BrutalCard>
 
 ---
+class: module-content
 layout: two-cols
 ---
 
@@ -88,7 +99,7 @@ Cara Standar dan Optimal Berpindah Halaman di Next.js
 #### Mengapa Bukan Tag `<a>` Biasa?
 
 ```tsx
-// ❌ Do not use standard anchor tag
+// Valid untuk full navigation; gunakan Link untuk navigasi internal biasa
 <a href="/about">About</a>
 ```
 
@@ -107,11 +118,12 @@ import Link from "next/link";
 <Link href="/about">About</Link>;
 ```
 
-- ⚡ Navigasi instan di sisi klien
-- 🚀 **Prefetching Otomatis**: Konten halaman tujuan di-load saat link terlihat di layar!
-- Menjaga state aplikasi tetap awet
+- ⚡ Navigasi sisi klien tanpa reload dokumen penuh
+- 🚀 **Prefetching Otomatis**: Berjalan di production; cakupan prefetch bergantung jenis rute dan konfigurasi.
+- State pada shared layout dapat bertahan; remount tetap dapat mereset state
 
 ---
+class: module-content
 layout: two-cols
 ---
 
@@ -149,6 +161,8 @@ export default function CheckoutForm() {
 }
 ```
 
+---
+class: module-content
 ---
 
 ### Tiga Hook Navigasi Esensial
@@ -189,47 +203,66 @@ const sort = searchParams.get("sort");
 ````
 
 ---
+zoom: 0.93
+class: module-content
+---
 
 ### Praktek: Active Link di Navbar
 
-Memberi Tanda Visual pada Menu Navigasi yang Sedang Aktif
+Nama rute terlihat jelas dan status aktif dapat dibaca screen reader
 
-```tsx {1-3|6|8|12-14|all}
+```tsx
 "use client";
 import Link from "next/link";
 import { usePathname } from "next/navigation";
+const links = [
+  { href: "/", label: "Home" },
+  { href: "/products", label: "Products" },
+];
 
 export default function Navbar() {
   const pathname = usePathname();
-
-  const links = [
-    { href: "/", label: "Home" },
-    { href: "/products", label: "Products" },
-    { href: "/about", label: "About Us" },
-  ];
-
   return (
-    <nav className="flex gap-4 p-4 border-2 border-black bg-white">
-      {links.map((item) => {
-        const isActive = pathname === item.href;
-        return (
-          <Link
-            key={item.href}
-            href={item.href}
-            className={`px-3 py-1 rounded font-bold border-2 transition-all ${
-              isActive
-                ? "bg-[#FFE600] border-black shadow-[2px_2px_0px_#000]"
-                : "border-transparent hover:border-black"
-            }`}
-          >
-            {item.label}
-          </Link>
-        );
-      })}
+    <nav aria-label="Main navigation">
+      {links.map(({ href, label }) => (
+        <Link
+          key={href}
+          href={href}
+          aria-current={pathname === href ? "page" : undefined}
+        >
+          {label}
+        </Link>
+      ))}
     </nav>
   );
 }
 ```
+
+Gunakan selector CSS `[aria-current="page"]` untuk gaya aktif. Contoh ini mencocokkan URL persis.
+
+---
+class: module-content
+---
+
+### URL adalah State yang Bisa Dibagikan
+
+- Simpan search, filter, sort, dan page di URL bila harus bertahan saat reload.
+- `searchParams` pada server page adalah Promise; validasi nilai sebelum query.
+- `useSearchParams()` dipakai di Client Component; rute statis perlu boundary `Suspense` yang sesuai.
+- `router.refresh()` meminta ulang RSC; tidak otomatis menghapus cache server.
+- Jangan berikan URL tak tepercaya langsung ke `router.push()` / `replace()`.
+
+```tsx
+// Fragment di dalam event handler Client Component
+const query = new URLSearchParams(searchParams.toString());
+query.set("q", keyword);
+query.delete("page"); // Reset pagination ketika filter berubah
+router.replace(`${pathname}?${query.toString()}`);
+```
+
+<!--
+Sumber: https://nextjs.org/docs/app/api-reference/functions/use-search-params
+-->
 
 ---
 layout: intro
@@ -242,5 +275,12 @@ transition: fade
 ## 3 Hal Penting dari Modul 03
 
 1. **Dynamic Segments `[id]`**: Menggunakan kurung siku untuk menangani ribuan halaman berkonten dinamis hanya dengan satu folder template.
-2. **Prioritaskan `<Link>`**: Selalu gunakan komponen `Link` dari `next/link` agar navigasi terasa instan berkat optimasi prefetching otomatis.
+2. **Prioritaskan `<Link>`**: Gunakan `Link` untuk navigasi internal; `<a>` cocok untuk URL eksternal dan download. Prefetch tidak menjamin semua data langsung siap.
 3. **Kombinasi Hook Navigasi**: Gunakan `useRouter()` untuk aksi programatik, serta `usePathname()` untuk membuat penanda rute aktif pada navbar.
+
+<!--
+Checkpoint: Navigasi yang Bisa Dibagikan
+Ubah filter di URL, reload, lalu gunakan back/forward. Rute aktif harus memiliki aria-current dan state URL tetap konsisten.
+Sumber primer: https://nextjs.org/docs/app/getting-started/linking-and-navigating
+Audit: 25 September 2026.
+-->

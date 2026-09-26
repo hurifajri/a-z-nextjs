@@ -16,66 +16,72 @@ Durasi target: 45-60 menit.
 -->
 
 ---
+class: module-content
+---
 
 ### Kenapa Next.js?
 
-Standar Industri Modern untuk Membangun Aplikasi Web React yang Cepat, Aman, dan Skalabel.
+Framework React untuk routing, rendering server, dan integrasi backend dalam satu proyek.
 Next.js bukan sekadar React dengan router bawaan. **Next.js adalah framework fullstack** yang memperluas kemampuan React ke server, menghadirkan performa tinggi dan developer experience kelas atas.
 
 <div class="grid grid-cols-3 gap-4 mt-6">
   <BrutalCard v-click="1" class="forward:delay-0">
     <div class="font-black text-base mb-1">🌐 Fullstack & Server-First</div>
-    <p class="text-xs text-gray-700">Ambil data langsung dari database di dalam komponen (RSC) tanpa repot membuat REST API terpisah dan <strong>0 KB beban JavaScript ke browser</strong>.</p>
+    <p class="text-xs text-gray-700">Ambil data langsung dari database di dalam komponen (RSC) tanpa repot membuat REST API terpisah dan <strong>tanpa mengirim implementasi Server Component ke browser</strong>.</p>
   </BrutalCard>
   <BrutalCard v-click="2" class="forward:delay-200">
     <div class="font-black text-base mb-1">⚡ Hybrid Rendering & Streaming</div>
-    <p class="text-xs text-gray-700">Gabungkan kecepatan HTML statis (CDN), SSR dinamis, dan <strong>Streaming Suspense</strong>. Konten tampil instan tanpa membuat user menunggu.</p>
+    <p class="text-xs text-gray-700">Gabungkan kecepatan HTML statis (CDN), SSR dinamis, dan <strong>Streaming Suspense</strong>. Bagian yang siap dapat tampil lebih dulu; latensi jaringan tetap ada.</p>
   </BrutalCard>
   <BrutalCard v-click="3" class="forward:delay-400">
-    <div class="font-black text-base mb-1">🛡️ Standar Industri & Aman</div>
-    <p class="text-xs text-gray-700">Kunci API & kredensial database aman di server. Dioptimalkan otomatis untuk Core Web Vitals, SEO, dan dipakai perusahaan raksasa dunia.</p>
+    <div class="font-black text-base mb-1">🛡️ Batas Server & Browser</div>
+    <p class="text-xs text-gray-700">Secret dapat disimpan di server. Keamanan, metadata, dan performa tetap perlu dirancang serta diuji.</p>
   </BrutalCard>
 </div>
 
 <!--
 Klik 3x untuk memunculkan card satu per satu.
-Card 1: Tekankan bahwa RSC = 0 KB JS, data fetching di server.
+Card 1: Implementasi RSC tidak dikirim; framework runtime dan Client Components tetap memiliki JavaScript.
 Card 2: Jelaskan Streaming Suspense secara singkat — user tidak perlu menunggu seluruh halaman selesai.
-Card 3: Sebutkan contoh perusahaan: Vercel, Netflix, TikTok, Twitch.
+Card 3: Jelaskan bahwa pemilihan framework tidak menggantikan otorisasi atau pengukuran performa.
 -->
 
 ---
+class: module-content
 layout: two-cols
 ---
 
-### React Biasa (SPA) vs Next.js
+### React SPA vs Next.js
 
-Memahami Perbedaan Cara Menampilkan Halaman ke Pengunjung
+Pilih arsitektur berdasarkan kebutuhan produk
 
 ::left::
 
-#### React Biasa (Vite / CRA)
+#### React SPA dengan Vite
 
-- 📦 **Browser Bekerja Sendirian**: Browser mengunduh file HTML kosong `<div id="root"></div>`, lalu sibuk merakit halaman sendiri.
-- ⏳ **Layar Putih Sejenak**: Pengunjung sering melihat halaman kosong atau loading spinner sebelum isi konten muncul.
-- 🔍 **Kurang Ramah SEO**: Mesin pencari dan media sosial kesulitan membaca isi teks jika halaman lambat dirakit.
-- 🛡 **Kode Rahasia Rawan Bocor**: Kunci API privat atau logika rahasia tidak aman jika ditaruh di komponen biasa (Client Component).
+- Rendering utama berjalan di browser.
+- Cocok untuk aplikasi internal dan interaksi intensif.
+- Perlu memilih router dan backend sendiri.
+- Secret tetap harus disimpan di backend.
+- CRA sudah deprecated; gunakan tooling yang dipelihara.
 
 ::right::
 
-#### Next.js (App Router)
+#### Next.js App Router
 
-- ⚡ **Tampilan Siap Baca**: Server langsung merakit dan mengirimkan halaman siap jadi, sehingga tulisan langsung tampil seketika.
-- 🧩 **Ukuran File Lebih Ringan**: Sebagian besar pekerjaan selesai di server, sehingga perangkat pengunjung tidak terbebani kode berlebih.
-- 📈 **Mudah Dibagikan ke Medsos**: Judul, gambar thumbnail, dan deskripsi otomatis terbaca rapi saat link dibagikan.
-- 🔒 **Jauh Lebih Aman**: Sambungan ke database dan password rahasia tersimpan aman di server tanpa bisa diintip pengunjung.
+- Mendukung prerender, rendering per request, dan streaming.
+- Routing, metadata, serta Route Handlers tersedia.
+- Cocok saat konten publik dan backend terintegrasi dibutuhkan.
+- Performa bergantung pada cache, query, dan JavaScript.
+- SSR bukan jaminan SEO atau keamanan otomatis.
 
 <!--
-Gunakan analogi: SPA seperti "memesan furnitur IKEA — datang dalam potongan, dirakit sendiri".
-Next.js seperti "memesan furnitur jadi — langsung pakai begitu sampai".
+Sumber: https://react.dev/blog/2025/02/14/sunsetting-create-react-app
+SPA bukan sinonim seluruh React. Pages Router juga mendukung SSR/SSG.
 -->
 
 ---
+class: module-content
 layout: two-cols
 ---
 
@@ -109,97 +115,63 @@ sequenceDiagram
     participant S as 🖥️ Server
     B->>S: GET /products
     Note over S: Render + fetch data
-    S-->>B: HTML lengkap ⚡
-    Note over B: Langsung tampil!
+    S-->>B: HTML / stream + RSC payload
+    Note over B: Tampil lalu hydrate bagian interaktif
 ```
 
 <!--
-Tekankan perbedaan jumlah round-trip: SPA = 3 kali bolak-balik, Next.js = 1 kali.
+Diagram menyederhanakan initial document request. Aset, RSC payload, hydration, dan prefetch dapat menambah request; jangan menjanjikan jumlah round-trip tetap.
 Ini dampaknya besar di koneksi lambat (3G, pedesaan).
 Tanyakan ke peserta: "Kira-kira mana yang lebih cepat di HP dengan sinyal lemah?"
 -->
 
 ---
+class: module-content
+---
 
 ### Ringkasan Perbedaan Utama
 
-Tabel Komparasi Sederhana untuk Memilih Pendekatan yang Pas
+| Aspek          | React SPA dengan Vite              | Next.js App Router                    |
+| :------------- | :--------------------------------- | :------------------------------------ |
+| Rendering awal | Umumnya di browser                 | Prerender / server / streaming        |
+| Routing        | Pilih library router               | File conventions di `app/`            |
+| Backend        | Layanan terpisah                   | Route Handlers atau layanan terpisah  |
+| JavaScript     | Optimalkan bundle & code splitting | Batasi client boundary & ukur bundle  |
+| SEO            | Rencanakan rendering dan metadata  | Metadata API; tetap perlu konfigurasi |
+| Operasional    | Static hosting + API               | Static export atau runtime server     |
 
-| Aspek                           | React Biasa (Vite / CRA)                        | Next.js (App Router)                                                                      |
-| :------------------------------ | :---------------------------------------------- | :---------------------------------------------------------------------------------------- |
-| **Cara Tampil**                 | Browser merakit halaman sendiri dari nol        | Server mengirim halaman yang sudah jadi                                                   |
-| **Kecepatan Buka Awal**         | Muncul layar kosong atau spinner sesaat         | <span v-mark.highlight.yellow="1">Konten langsung terbaca dalam hitungan milidetik</span> |
-| **Beban di Perangkat Pengguna** | Makin banyak halaman, file JS makin besar       | Ringan, hanya mengirim kode yang dipakai                                                  |
-| **Pembuatan Halaman (Routing)** | Harus install library tambahan (`react-router`) | <span v-mark.highlight.yellow="2">Cukup buat folder baru di dalam `app/`</span>           |
-| **Optimasi Gambar**             | Harus compress gambar manual satu per satu      | Otomatis dioptimalkan lewat `next/image`                                                  |
-| **SEO & Social Share**          | Butuh pengaturan rumit tambahan                 | <span v-mark.highlight.yellow="3">Bawaan otomatis lewat fitur Metadata</span>             |
+<BrutalCard class="mt-4 text-sm">
+  Ukur kebutuhan SEO, interaktivitas, biaya server, dan kemampuan tim sebelum memilih.
+</BrutalCard>
 
-<!--
-Klik 3x untuk highlight keunggulan utama Next.js satu per satu.
-Tanyakan ke peserta: "Siapa yang pernah pusing setting react-router?"
-Highlight kuning muncul dengan gaya hand-drawn (rough notation).
--->
-
-<style>
-table th, table td {
-  padding: 1rem 0.5rem;
-  font-size: 0.85rem;
-}
-</style>
-
+---
+class: module-content
 ---
 
 ### Inisialisasi Project Baru
 
-Langkah Praktis Memulai Project Next.js Menggunakan `create-next-app`
-
-Jalankan perintah ini di terminal Antum:
+Baseline kelas: Next.js 16.3, TypeScript, App Router, Tailwind CSS v4
 
 ```bash
-npx create-next-app@latest my-next-app
+node --version
+npx create-next-app@16.3.6 my-next-app --ts --eslint --tailwind --src-dir --app --use-npm --import-alias "@/*"
+cd my-next-app
+npm run dev
 ```
 
-<div class="mt-4"></div>
-
-````md magic-move
-```bash
-✔ What is your project named? … my-next-app
-```
-
-```bash
-✔ What is your project named? … my-next-app
-✔ Would you like to use TypeScript? … Yes
-```
-
-```bash
-✔ What is your project named? … my-next-app
-✔ Would you like to use TypeScript? … Yes
-✔ Would you like to use ESLint? … Yes
-✔ Would you like to use Tailwind CSS? … Yes
-```
-
-```bash
-✔ What is your project named? … my-next-app
-✔ Would you like to use TypeScript? … Yes
-✔ Would you like to use ESLint? … Yes
-✔ Would you like to use Tailwind CSS? … Yes
-✔ Would you like your code inside a `src/` directory? … Yes
-✔ Would you like to use App Router? (recommended) … Yes
-✔ Would you like to customize the import alias? … No
-```
-````
-
-<BrutalCard v-click class="mt-4">
-  ✅ Rekomendasi di kelas ini: Tekan Enter untuk memilih opsi default (pilih <strong>Yes</strong>, dan <strong>No</strong> untuk customize alias).
-</BrutalCard>
+- Gunakan Node.js LTS yang masih didukung; minimum framework **20.9**.
+- Commit `package-lock.json`; CI memakai `npm ci` agar dependensi konsisten.
+- **25 September 2026:** patch 16.3.6 sudah tersedia. Periksa advisory sebelum kelas/deploy.
+- Prompt CLI dapat berubah. Flag eksplisit di atas menyatakan pilihan kelas.
 
 <!--
-Demo langsung di terminal jika memungkinkan.
-Proses install biasanya 30-60 detik tergantung koneksi.
-Jelaskan: src/ directory memisahkan kode sumber dari config files di root.
+Sumber: https://nextjs.org/docs/app/getting-started/installation
+Patch tersedia: https://nextjs.org/blog/nextjs-security-update-september-22-2026
+16.3.7 dijadwalkan 30 September, belum dianggap telah dirilis pada tanggal audit.
 -->
 
 ---
+class: module-content
 layout: two-cols
 leftCard: false
 rightCard: false
@@ -220,7 +192,7 @@ my-next-app/
 │       └── globals.css
 ├── public/
 ├── next.config.ts
-├── tailwind.config.ts
+├── postcss.config.mjs
 ├── tsconfig.json
 ├── eslint.config.mjs
 └── package.json
@@ -242,7 +214,7 @@ my-next-app/
 
 <BrutalCard v-click="2">
   <div class="font-black">⚙️ File Konfigurasi</div>
-  <p class="text-gray-700 mt-1"><strong>next.config.ts</strong> = atur framework<br/><strong>tailwind.config.ts</strong> = atur styling<br/><strong>tsconfig.json</strong> = atur TypeScript</p>
+  <p class="text-gray-700 mt-1"><strong>next.config.ts</strong> = atur framework<br/><strong>globals.css</strong> = import Tailwind v4 & token via @theme<br/><strong>tsconfig.json</strong> = atur TypeScript</p>
 </BrutalCard>
 
 </div>
@@ -257,6 +229,8 @@ Slide ini menjadi jembatan natural ke Modul 02 (App Router & Routing).
 -->
 
 ---
+class: module-content
+---
 
 ### Tailwind CSS: Styling Cepat
 
@@ -264,7 +238,7 @@ Menulis CSS Langsung di Atribut `className` Tanpa Berpindah File
 
 ````md magic-move
 ```tsx
-// ❌ Legacy Approach: Create separate CSS file & think of class names
+// Pilihan valid: CSS biasa atau CSS Modules untuk style terpisah
 import "./button.css";
 
 export default function Button() {
@@ -305,6 +279,7 @@ Tunjukkan bahwa:
 -->
 
 ---
+class: module-content
 layout: two-cols
 ---
 
@@ -320,15 +295,11 @@ Mendeteksi **kesalahan logika dan bug** sebelum dijalankan:
 
 ```js {1-2|3-4|6-8|10|all}
 // eslint.config.mjs
-import { dirname } from "path";
-import { fileURLToPath } from "url";
-import { FlatCompat } from "@eslint/eslintrc";
+import { defineConfig } from "eslint/config";
+import nextVitals from "eslint-config-next/core-web-vitals";
+import nextTs from "eslint-config-next/typescript";
 
-const compat = new FlatCompat({
-  baseDirectory: dirname(fileURLToPath(import.meta.url)),
-});
-
-export default [...compat.extends("next/core-web-vitals")];
+export default defineConfig([...nextVitals, ...nextTs]);
 ```
 
 Jalankan audit kode via CLI ESLint:
@@ -360,8 +331,8 @@ Buat file `.prettierrc`:
 <!--
 ESLint — klik 5x untuk jelaskan bertahap:
 1. Nama file — format flat config (.mjs), bukan .json lama
-2. Import helper Node.js path — perlu karena ESM
-3. FlatCompat — jembatan agar config lama (extends) tetap bisa dipakai
+2. Import flat config native Next.js
+3. Gunakan flat config native dari eslint-config-next; FlatCompat tidak diperlukan
 4. Extends next/core-web-vitals — aturan bawaan dari tim Next.js
 5. Semua terlihat
 
@@ -370,242 +341,93 @@ Plugin tailwindcss = auto-sort class Tailwind saat format.
 -->
 
 ---
+class: module-content
+---
 
-### Ekosistem Linter: ESLint vs Oxlint vs Biome
+### Ekosistem Linter: ESLint, Oxlint & Biome
 
-Kecepatan Kompilasi Rust vs Kekuatan Plugin Spesifik Framework
+Bandingkan aturan yang diperlukan tim, bukan hanya benchmark sintetis
 
-<div class="grid grid-cols-3 gap-3 mt-2 text-xs">
-  <!-- ESLint Card -->
-  <BrutalCard v-click="1" class="flex flex-col justify-between forward:delay-0">
-    <div>
-      <div class="flex items-center justify-between mb-1.5">
-        <span class="font-black text-sm text-brutal-black">ESLint</span>
-        <span class="bg-brutal-yellow text-xs font-black px-1.5 py-0.5 border border-brutal-black rounded">Standar Industri</span>
-      </div>
-      <div class="text-xs text-gray-600 mb-2 font-mono">Engine: Node.js (JS/TS)</div>
-      <ul class="space-y-1 text-xs text-gray-800 leading-snug">
-        <li>⚡ <strong>Kecepatan:</strong> Baseline (~1x, terasa lambat di monorepo raksasa).</li>
-        <li>🔌 <strong>Ekosistem:</strong> <strong>Tak tertandingi</strong>. Ribuan plugin komunitas matang.</li>
-        <li>🎯 <strong>Cocok untuk:</strong> Proyek Next.js nyata yang butuh aturan framework khusus.</li>
-      </ul>
-    </div>
-    <div class="mt-2 pt-2 border-t border-dashed border-gray-300 font-bold text-xs text-green-700">
-      ✅ Bawaan resmi <code>create-next-app</code>
-    </div>
-  </BrutalCard>
+| Tool   | Kekuatan                                      | Hal yang perlu dicek                         |
+| :----- | :-------------------------------------------- | :------------------------------------------- |
+| ESLint | Plugin Next.js, React Hooks, TanStack Query   | Waktu lint pada repo sendiri                 |
+| Oxlint | Linter berbasis Rust; Oxfmt untuk format      | Dukungan aturan/plugin yang dipakai          |
+| Biome  | Format, lint, organize imports; plugin GritQL | Bukan pengganti langsung semua plugin ESLint |
 
-  <!-- Oxlint Card -->
-  <BrutalCard v-click="2" class="flex flex-col justify-between forward:delay-200">
-    <div>
-      <div class="flex items-center justify-between mb-1.5">
-        <span class="font-black text-sm text-brutal-black">Oxlint (Oxc)</span>
-        <span
-          v-motion
-          :initial="{ scale: 0.8, x: -10 }"
-          :enter="{ scale: 1, x: 0, transition: { type: 'spring', stiffness: 300 } }"
-          class="bg-brutal-cyan text-xs font-black px-1.5 py-0.5 border border-brutal-black rounded"
-        >⚡ 50x–100x Rust</span>
-      </div>
-      <div class="text-xs text-gray-600 mb-2 font-mono">Engine: Rust</div>
-      <ul class="space-y-1 text-xs text-gray-800 leading-snug">
-        <li>⚡ <strong>Kecepatan:</strong> <strong>50x – 100x</strong> lebih cepat dari ESLint.</li>
-        <li>🔌 <strong>Ekosistem:</strong> Fokus aturan inti (correctness); dikombinasikan dengan <code>fmtlint</code> untuk format.</li>
-        <li>🎯 <strong>Cocok untuk:</strong> Pre-commit git hook kilat & filter cepat di pipeline CI.</li>
-      </ul>
-    </div>
-    <div class="mt-2 pt-2 border-t border-dashed border-gray-300 font-bold text-xs text-cyan-800">
-      🤝 Sinergi via <code>eslint-plugin-oxlint</code> & <code>fmtlint</code>
-    </div>
-  </BrutalCard>
-
-  <!-- Biome Card -->
-  <BrutalCard v-click="3" class="flex flex-col justify-between forward:delay-400">
-    <div>
-      <div class="flex items-center justify-between mb-1.5">
-        <span class="font-black text-sm text-brutal-black">Biome (ex-Rome)</span>
-        <span
-          v-motion
-          :initial="{ scale: 0.8, x: -10 }"
-          :enter="{ scale: 1, x: 0, transition: { type: 'spring', stiffness: 300, delay: 150 } }"
-          class="bg-brutal-pink text-brutal-white text-xs font-black px-1.5 py-0.5 border border-brutal-black rounded"
-        >⚡ 25x–35x Rust</span>
-      </div>
-      <div class="text-xs text-gray-600 mb-2 font-mono">Engine: Rust</div>
-      <ul class="space-y-1 text-xs text-gray-800 leading-snug">
-        <li>⚡ <strong>Kecepatan:</strong> <strong>25x – 35x</strong> lebih cepat (Linter + Formatter Prettier).</li>
-        <li>🔌 <strong>Ekosistem:</strong> Tertutup/mandiri. <strong>Tidak mendukung</strong> instalasi plugin ESLint eksternal.</li>
-        <li>🎯 <strong>Cocok untuk:</strong> Proyek mandiri yang ingin zero-config dan super ringkas.</li>
-      </ul>
-    </div>
-    <div class="mt-2 pt-2 border-t border-dashed border-gray-300 font-bold text-xs text-red-700">
-      ⚠️ Belum mendukung plugin AST pihak ketiga
-    </div>
-  </BrutalCard>
-</div>
+- Kelas ini memakai **ESLint + Prettier** untuk konsistensi.
+- `next build` tidak menjalankan lint: tambahkan `eslint .` sebagai tahap CI.
+- Ukur kecepatan pada codebase dan konfigurasi yang sama.
 
 <!--
-Klik 3x untuk reveal card satu per satu dengan efek stagger.
-Intinya: untuk kelas ini kita pakai ESLint karena punya plugin Next.js resmi.
-Oxlint & Biome = informasi tambahan agar peserta tahu landscape.
-Jangan terlalu lama di slide ini — cukup 2-3 menit.
-Slide ini boleh di-skip jika waktu terbatas.
+Sumber: https://oxc.rs/ dan https://biomejs.dev/linter/plugins/
+Jangan mengajarkan fmtlint sebagai formatter Oxc, atau angka percepatan universal.
 -->
 
 ---
+class: module-content
 layout: two-cols
 ---
 
 ### Auto Sort & Remove Unused Imports
 
-Otomatisasi Kebersihan Import di Header File Tanpa Dikerjakan Manual
-
 ::left::
 
-#### 🔌 Ekosistem ESLint (Next.js Paling Populer)
-
-Kombinasi plugin standar industri:
-
-- **`eslint-plugin-simple-import-sort`**: Mengurutkan import secara deterministik dan teratur.
-- **`eslint-plugin-unused-imports`**: Otomatis menghapus import & variabel tak terpakai saat `--fix`.
+#### ESLint
 
 ```bash
 npm i -D eslint-plugin-simple-import-sort eslint-plugin-unused-imports
 ```
 
-<BrutalCard class="mt-2 bg-yellow-50 text-xs">
-  🎯 <strong>Keunggulan:</strong> Aturan pengelompokan regex sangat fleksibel (React/Next duluan, lalu package npm, alias <code>@/</code>, relative <code>./</code>, dan CSS).
-</BrutalCard>
+Daftarkan plugin dan rules di flat config. Instalasi saja belum mengaktifkan aturan.
+
+- `simple-import-sort/imports`: urutkan import.
+- `unused-imports/no-unused-imports`: hapus import tak terpakai.
+- Variabel tak terpakai perlu diperiksa; tidak semua aman dihapus otomatis.
 
 ::right::
 
-#### ⚡ Bawaan Biome vs Oxlint
+#### Editor & Alternatif
 
-Bagaimana Linter Generasi Rust Menanganinya?
-
-<div class="space-y-2 mt-1 text-xs">
-  <BrutalCard v-click="1" class="forward:delay-0">
-    <div class="font-bold flex items-center justify-between text-brutal-pink">
-      <span>Biome (Built-in)</span>
-      <span class="text-xs bg-green-100 text-green-800 px-1 rounded border border-brutal-black font-mono font-bold">All-in-One</span>
-    </div>
-    <p class="text-xs text-gray-700 mt-1">
-      Punya fitur bawaan <code>organizeImports</code>. Sort & remove unused imports berjalan <strong>otomatis 25x–35x lebih cepat</strong> tanpa install plugin tambahan via <code>biome check --write</code>.
-    </p>
-  </BrutalCard>
-
-  <BrutalCard v-click="2" class="forward:delay-200">
-    <div class="font-bold flex items-center justify-between text-brutal-cyan">
-      <span>Oxlint (Linter Only)</span>
-      <span class="text-xs bg-yellow-100 text-yellow-800 px-1 rounded border border-brutal-black font-mono font-bold">Fast Audit</span>
-    </div>
-    <p class="text-xs text-gray-700 mt-1">
-      Sangat cepat mendeteksi error <code>no-unused-vars</code> (50x–100x), namun fokus pada <strong>audit diagnosa</strong>; umum dikombinasikan dengan <code>fmtlint</code> untuk eksekusi formatting & auto-sort.
-    </p>
-  </BrutalCard>
-</div>
+- Jalankan `npx eslint . --fix` setelah rules aktif.
+- Aktifkan code actions saat save jika memakai VS Code.
+- Biome memiliki organize imports; Oxlint dapat dipasangkan dengan Oxfmt.
+- Periksa diff: import side-effect dan urutannya dapat memengaruhi perilaku.
 
 <!--
-Slide ini cukup di-skip cepat jika waktu terbatas.
-Intinya: ESLint plugin untuk sort/remove ada, Biome sudah built-in, Oxlint fokus linting murni (dikombinasikan dengan fmtlint untuk formatting).
+Demo berikut adalah ilustrasi hasil rule; bukan konfigurasi siap pakai.
 -->
 
+---
+class: module-content
 ---
 
 ### Demo: Auto Sort & Remove Unused Imports
 
-Satu Kali Simpan (Ctrl+S / Cmd+S), Seluruh Header File Langsung Bersih!
+Ilustrasi transformasi import; rules plugin harus sudah dikonfigurasi
 
 ````md magic-move
 ```tsx
-// ❌ 1. Before: Messy order & unused imports
-import "./button.css";
+// Sebelum: hanya Link, useState, dan Heart yang digunakan
 import { useState, useEffect } from "react";
 import Image from "next/image";
-import { formatCurrency } from "@/utils/format";
 import Link from "next/link";
 import { Trash, Heart } from "lucide-react";
-import { UserCard } from "./UserCard";
-import axios from "axios";
-
-export default function ProductCard({ title }: { title: string }) {
-  const [liked, setLiked] = useState(false);
-
-  return (
-    <div>
-      <h3>{title}</h3>
-      <Link href="/cart">Buy Now</Link>
-      <button onClick={() => setLiked(!liked)}>
-        <Heart className={liked ? "text-red-500" : ""} />
-      </button>
-    </div>
-  );
-}
 ```
 
 ```tsx
-// 🧹 2. Auto Remove: Unused imports purged automatically!
-// (useEffect, Image, formatCurrency, Trash, UserCard, axios are removed)
-import "./button.css";
-import { useState } from "react";
-import Link from "next/link";
+// Sesudah: urutan mengikuti konfigurasi grup import tim
 import { Heart } from "lucide-react";
-
-export default function ProductCard({ title }: { title: string }) {
-  const [liked, setLiked] = useState(false);
-
-  return (
-    <div>
-      <h3>{title}</h3>
-      <Link href="/cart">Buy Now</Link>
-      <button onClick={() => setLiked(!liked)}>
-        <Heart className={liked ? "text-red-500" : ""} />
-      </button>
-    </div>
-  );
-}
-```
-
-```tsx
-// ✨ 3. Auto Sort: Cleanly grouped and sorted!
-// 1. Core Framework (React & Next.js)
 import Link from "next/link";
 import { useState } from "react";
-
-// 2. Third-Party Dependencies (lucide-react)
-import { Heart } from "lucide-react";
-
-// 3. Side-Effects / Stylesheets
-import "./button.css";
-
-export default function ProductCard({ title }: { title: string }) {
-  const [liked, setLiked] = useState(false);
-
-  return (
-    <div>
-      <h3>{title}</h3>
-      <Link href="/cart">Buy Now</Link>
-      <button onClick={() => setLiked(!liked)}>
-        <Heart className={liked ? "text-red-500" : ""} />
-      </button>
-    </div>
-  );
-}
 ```
 ````
 
-<BrutalCard v-click class="mt-2 text-xs flex items-center justify-between">
-  <span>💡 <strong>Tips Produktivitas:</strong> Aktifkan <code>"editor.codeActionsOnSave": { "source.fixAll.eslint": "explicit" }</code> di VS Code Antum!</span>
-  <span class="bg-brutal-yellow px-2 py-0.5 border border-brutal-black rounded text-xs font-black">Zero Mental Overhead</span>
-</BrutalCard>
+- Jalankan `npx eslint . --fix`, lalu periksa diff.
+- Save action editor hanya bekerja jika ekstensi dan rules sudah aktif.
+- Jangan menghapus import side-effect yang diperlukan aplikasi.
 
-<!--
-Magic move akan menganimasikan transisi dari kode berantakan → bersih → tersortir.
-Step 1→2: Fokuskan perhatian ke import yang menghilang (useEffect, Image, dll) — 6 import dihapus!
-Step 2→3: Fokuskan ke urutan yang berubah (React/Next dulu, lalu third-party, lalu CSS)
-Tunjukkan bahwa ini terjadi OTOMATIS saat Ctrl+S di VS Code.
--->
-
+---
+class: module-content
 ---
 
 ### Menjalankan Development Server (Turbopack)
@@ -649,7 +471,7 @@ flowchart LR
 <!--
 Jika memungkinkan, demo langsung di terminal.
 Tunjukkan bahwa setelah edit file dan save, halaman di browser langsung berubah (Fast Refresh) tanpa reload manual.
-Jelaskan diagram: Turbopack menggantikan Webpack — jauh lebih cepat karena ditulis dalam Rust.
+Jelaskan: Turbopack adalah bundler default; Webpack masih dapat dipilih untuk kebutuhan kompatibilitas. Benchmark bergantung proyek.
 Siklus Fast Refresh: edit → save → Turbopack compile ulang hanya file yang berubah → browser update otomatis.
 -->
 
@@ -672,11 +494,18 @@ transition: slide-up
 </v-clicks>
 
 <BrutalCard v-click class="mt-8 bg-brutal-cyan/10">
-  🚀 <strong>Selanjutnya di Modul 02:</strong> Kita akan mempelajari bagaimana <strong>App Router</strong> mengubah folder menjadi halaman secara otomatis — cukup buat folder baru di <code>app/</code>, dan rute langsung tersedia!
+  🚀 <strong>Selanjutnya di Modul 02:</strong> Kita akan mempelajari bagaimana <strong>App Router</strong> mengubah folder menjadi halaman secara otomatis — buat folder dan <code>page.tsx</code> di <code>app/</code> untuk mengekspos halaman!
 </BrutalCard>
 
 <!--
 Rangkuman ini deliver dalam 1 menit.
 v-mark box muncul bersamaan dengan teks (efek hand-drawn annotation).
 Teaser Modul 02 membangun antisipasi untuk sesi berikutnya.
+-->
+
+<!--
+Checkpoint: Setup yang Reproducible
+Buat proyek dari CLI, jalankan dev dan build, lalu jelaskan perbedaan rendering server dan hydration. Simpan lockfile dan versi Node.
+Sumber primer: https://nextjs.org/docs/app/getting-started/installation
+Audit: 25 September 2026.
 -->

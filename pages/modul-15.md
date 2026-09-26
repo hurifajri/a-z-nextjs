@@ -9,6 +9,12 @@ level: 1
 
 Menjamin Kualitas Kode dengan Testing Trophy, Menguji Komponen Klien, Menulis Integration Test yang Bernilai Tinggi, serta Mocking API dengan MSW.
 
+<!--
+Contoh bertanda fragment/sketsa memerlukan konteks komponen atau import. Hook dipanggil di dalam function component/custom hook; bukan pada module scope.
+-->
+
+---
+class: module-content
 ---
 
 ### Kenapa Testing Sangat Penting?
@@ -28,14 +34,14 @@ export function calculateTotal(price: number, discountPercentage: number) {
 ```
 
 ```tsx
-// ✅ WITH AUTOMATED TESTING: Caught in milliseconds before deployment!
+// RED: test ini harus gagal pada implementasi sebelumnya
 import { describe, it, expect } from "vitest";
 import { calculateTotal } from "./transactions";
 
 describe("calculateTotal", () => {
   it("correctly calculates a 20% discount", () => {
-    const total = calculateTotal(100, 0.2);
-    // Any regression fails immediately before releasing to production!
+    const total = calculateTotal(100, 20); // Kontrak: persen 0–100
+    // RED pada implementasi di atas; GREEN setelah membagi persen dengan 100
     expect(total).toBe(80);
   });
 });
@@ -43,6 +49,7 @@ describe("calculateTotal", () => {
 ````
 
 ---
+class: module-content
 layout: two-cols
 ---
 
@@ -60,7 +67,7 @@ Pola Modern yang Direkomendasikan di Ekosistem React (Kent C. Dodds)
 ```
 
 <p class="text-xs text-gray-700 mt-2">
-  Piramida lama terlalu fokus pada Unit Test mikro. <strong>Testing Trophy</strong> menekankan <strong>Integration Test</strong> karena paling mirip dengan cara pengguna memakai aplikasi!
+  <strong>Testing Trophy</strong> menekankan integration test. Gunakan sebagai panduan; porsi unit, integration, dan E2E mengikuti risiko serta arsitektur aplikasi.
 </p>
 
 ::right::
@@ -81,13 +88,15 @@ Pola Modern yang Direkomendasikan di Ekosistem React (Kent C. Dodds)
 </div>
 
 ---
+class: module-content
+---
 
 ### Setup Tools: Vitest & React Testing Library
 
 Tools Pengujian Standar Modern yang Cepat dan Ramah
 
 ```bash
-npm install -D vitest @testing-library/react @testing-library/jest-dom @testing-library/user-event jsdom
+npm install -D vitest @vitejs/plugin-react @testing-library/react @testing-library/dom @testing-library/jest-dom @testing-library/user-event jsdom
 ```
 
 ```tsx
@@ -107,16 +116,18 @@ export default defineConfig({
 
 ```tsx
 // vitest.setup.ts
-import "@testing-library/jest-dom";
+import "@testing-library/jest-dom/vitest";
 ```
 
+---
+class: module-content
 ---
 
 ### Pola AAA: Arrange → Act → Assert
 
 Struktur Universal dalam Menulis Setiap Skenario Pengujian
 
-```tsx {1-4|6-7|9-10|12-13|all}
+```tsx {7-9|11-13|15-16|all}
 import { render, screen } from "@testing-library/react";
 import userEvent from "@testing-library/user-event";
 import Counter from "./Counter";
@@ -138,6 +149,7 @@ describe("Counter", () => {
 ```
 
 ---
+class: module-content
 layout: two-cols
 ---
 
@@ -149,13 +161,13 @@ Perbedaan Lingkup Pengujian dalam Praktik
 
 #### 🔬 Unit Test (Terisolasi)
 
-Menguji satu fungsi kecil tanpa melibatkan UI:
+Menguji satu fungsi kecil tanpa UI; kontrak contoh: nilai dalam sen USD:
 
 ```tsx
 import { formatCurrency } from "./format";
 
 test("formatCurrency formats number correctly", () => {
-  expect(formatCurrency(50000)).toBe("$50.00");
+  expect(formatCurrency(5000)).toBe("$50.00");
 });
 ```
 
@@ -183,6 +195,8 @@ test("User completes registration form and sees success message", async () => {
 });
 ```
 
+---
+class: module-content
 ---
 
 ### Mocking API Nyata dengan MSW (Mock Service Worker)
@@ -213,7 +227,7 @@ import { handlers } from "./handlers";
 export const server = setupServer(...handlers);
 
 // In vitest.setup.ts:
-beforeAll(() => server.listen());
+beforeAll(() => server.listen({ onUnhandledRequest: "error" }));
 afterEach(() => server.resetHandlers());
 afterAll(() => server.close());
 ```
@@ -228,6 +242,106 @@ test("Renders product list from backend", async () => {
 });
 ```
 ````
+
+---
+class: module-content
+---
+
+### Red → Green: Kontrak Persentase yang Sama
+
+```ts
+// transactions.ts — 20 berarti 20%, bukan 0.2
+export function calculateTotal(price: number, discountPercentage: number) {
+  if (discountPercentage < 0 || discountPercentage > 100) {
+    throw new RangeError("Discount must be 0–100");
+  }
+  return price * (1 - discountPercentage / 100);
+}
+```
+
+- Jalankan test sebelumnya: input `100, 20` harus menghasilkan `80`.
+- Tambahkan batas 0%, 100%, dan diskon di luar rentang.
+- Uang produksi perlu satuan minor, aturan pembulatan, dan batas nilai yang disepakati.
+- Jangan mengubah input test agar implementasi yang salah terlihat benar.
+
+---
+class: module-content
+---
+
+### E2E untuk Async Server Components
+
+Vitest menguji logika dan komponen client/synchronous. Alur async RSC diuji di browser.
+
+```ts
+// tests/todos.spec.ts — Playwright; baseURL & server diatur di config
+import { test, expect } from "@playwright/test";
+
+test("todo bertahan setelah reload", async ({ page }) => {
+  const title = `Learn testing ${crypto.randomUUID()}`;
+  await page.goto("/todos");
+  await page.getByLabel("Title", { exact: true }).fill(title);
+  await page.getByRole("button", { name: "Add", exact: true }).click();
+  await expect(page.getByText(title, { exact: true })).toBeVisible();
+  await page.reload();
+  await expect(page.getByText(title, { exact: true })).toBeVisible();
+  await page
+    .getByRole("button", { name: `Delete: ${title}`, exact: true })
+    .click();
+  await expect(page.getByText(title, { exact: true })).toHaveCount(0);
+});
+```
+
+Gunakan database test terisolasi dan cleanup fixture. Tambahkan uji jaringan gagal serta akses data pengguna lain; jangan memakai database produksi.
+
+<!--
+Sumber: https://nextjs.org/docs/app/guides/testing/vitest
+-->
+
+---
+class: module-content
+---
+
+### Setup Test yang Tidak Saling Mencemari
+
+- Tambahkan script `"test": "vitest"`; CI menjalankan `npx vitest run`.
+- MSW Node memakai `setupServer`; mock browser memakai `setupWorker` dan service worker.
+- `beforeAll`: listen; `afterEach`: resetHandlers; `afterAll`: close.
+- Jika komponen memakai Query: buat QueryClient baru per test, matikan retry, bungkus provider.
+- E2E: `npm init playwright@latest`, atur `webServer` dan `baseURL`, lalu `npx playwright test`.
+- Test kegagalan 500 harus membuktikan pesan error terlihat dan tombol bisa dipakai lagi.
+
+**Checkpoint:** test diskon harus gagal sebelum perbaikan; uji CRUD membuktikan perilaku yang dilihat pengguna.
+
+---
+class: module-content
+---
+
+### Lab: Buktikan Kontrak Diskon
+
+Prediksi kegagalan, tekan **Run**, lalu perbaiki rumus. Ini assertion JavaScript, bukan Vitest.
+
+```ts {monaco-run} {autorun:false, height:'210px'}
+const total = (price: number, percent: number) => price - price * percent;
+for (const [percent, expected] of [
+  [0, 100],
+  [20, 80],
+  [100, 0],
+]) {
+  const actual = total(100, percent);
+  console.log(
+    `${percent}%: ${actual === expected ? "PASS" : "FAIL"} (${actual})`,
+  );
+}
+```
+
+Kontrak: $T = P \times (1 - d/100)$, dengan $0 \leq d \leq 100$.
+
+**Awal:** PASS, FAIL, FAIL. **Target:** tiga PASS dengan rumus `price * (1 - percent / 100)`.
+
+<!--
+Durasi 3 menit. Pertahankan input dan expected. Peserta memperbaiki implementasi, bukan assertion.
+Kasus di luar rentang dan pembulatan uang dilanjutkan pada test proyek; lab ini hanya mengisolasi rumus.
+-->
 
 ---
 layout: intro

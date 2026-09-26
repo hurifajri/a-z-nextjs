@@ -7,11 +7,17 @@ level: 1
 
 ## 06. State Management Lanjutan: Context & Zustand
 
-Mengatasi Prop Drilling & Callback Hell, Mengenal Context API, Evolusi State (Redux → Context → Zustand), serta Pola Pikir Engineer: Reinventing the Wheel vs Cargo-Culting.
+Mengatasi Prop Drilling & Callback Props, Mengenal Context API, Pilihan State (Context, Redux Toolkit, Zustand), serta Pola Pikir Engineer: Reinventing the Wheel vs Cargo-Culting.
+
+<!--
+Contoh bertanda fragment/sketsa memerlukan konteks komponen atau import. Hook dipanggil di dalam function component/custom hook; bukan pada module scope.
+-->
 
 ---
+class: module-content
+---
 
-### Dua Masalah Klasik: Prop Drilling & Callback Hell
+### Dua Masalah Klasik: Prop Drilling & Callback Props
 
 Ketika Aplikasi Membesar dan Komponen Semakin Bersarang
 
@@ -28,7 +34,7 @@ Ketika Aplikasi Membesar dan Komponen Semakin Bersarang
   </BrutalCard>
 
   <BrutalCard class="text-xs" v-click>
-    <div class="font-black text-sm mb-1 text-red-600">🌪️ Callback Hell</div>
+    <div class="font-black text-sm mb-1 text-red-600">🌪️ Callback Props</div>
     <p class="text-gray-600 mb-2">Melempar fungsi update/setter dari komponen terbawah kembali ke atas melalui banyak tingkatan.</p>
     <div class="bg-gray-100 p-1.5 rounded font-mono text-xs leading-relaxed">
       &lt;Page onUpdate={...}&gt;<br/>
@@ -44,24 +50,19 @@ Ketika Aplikasi Membesar dan Komponen Semakin Bersarang
 </BrutalCard>
 
 ---
+class: module-content
+---
 
 ### Solusi Bawaan: React Context API
 
 Jalan Pintas Berbagi Data ke Seluruh Komponen Tanpa Prop Drilling
 
-<v-clicks>
-
-- **`createContext`** — Membuat "gudang data" global.
-- **`Provider`** — Komponen pembungkus yang memancarkan data ke seluruh anak di bawahnya.
-- **`useContext`** — Hook untuk mengambil data langsung dari gudang di komponen manapun!
-
-</v-clicks>
-
 ```tsx {1,3|5-11|13-14|all}
 "use client";
 import { createContext, useContext, useState } from "react";
 
-const ThemeContext = createContext<"light" | "dark">("light");
+type ThemeValue = { theme: "light" | "dark"; toggle: () => void };
+const ThemeContext = createContext<ThemeValue | null>(null);
 
 export function ThemeProvider({ children }: { children: React.ReactNode }) {
   const [theme, setTheme] = useState<"light" | "dark">("light");
@@ -75,9 +76,15 @@ export function ThemeProvider({ children }: { children: React.ReactNode }) {
 }
 
 // Developer-friendly custom hook
-export const useTheme = () => useContext(ThemeContext);
+export function useTheme() {
+  const value = useContext(ThemeContext);
+  if (!value) throw new Error("Wrap with ThemeProvider");
+  return value;
+}
 ```
 
+---
+class: module-content
 ---
 
 ### Dari Prop Drilling ke Context
@@ -125,39 +132,38 @@ function Profile() {
 ````
 
 ---
+class: module-content
 layout: two-cols
 ---
 
-### Evolusi State Management di Dunia React
-
-Bagaimana Komunitas Menemukan Cara Terbaik Mengelola State
+### Memilih State Management
 
 ::left::
 
-#### 📜 1. Era Redux (Masa Lalu)
+#### Mulai dari Pemilik Data
 
-- Pernah menjadi standar wajib di industri
-- **Masalah**: _Boilerplate_ raksasa! Untuk satu toggle boolean sederhana butuh _Action Types, Action Creators, Reducers, Dispatchers, dan Store config_.
-- Terlalu berat dan melelahkan untuk proyek modern.
-
-#### 📦 2. Era React Context (Solusi Bawaan)
-
-- Tidak perlu install library eksternal
-- **Kelemahan**: Masalah performa re-render. Jika ada 1 data di context berubah, **semua komponen konsumen ikut re-render**.
+- **useState / useReducer:** state lokal dan transisi yang saling terkait.
+- **Context:** distribusi nilai ke subtree; state tetap dikelola provider.
+- **URL:** filter/search yang perlu bookmark dan back/forward.
+- **TanStack Query:** cache data server; lihat Modul 08.
 
 ::right::
 
-#### ⚡ 3. Era Zustand (Standar Modern)
+#### Library Global State
 
-- 🪶 Super ringan (< 1 kB)
-- 🚀 **Tanpa Provider**: Tidak perlu membungkus `<App>` dengan berlapis-lapis `<Provider>`.
-- 🎯 **Selector-Based**: Hanya me-re-render komponen yang benar-benar menggunakan field tersebut!
-- 🔌 Bisa diakses di luar komponen React (di helper utility atau API interceptor).
+- **Redux Toolkit:** pendekatan Redux yang direkomendasikan; tooling dan pola tim terstruktur.
+- **Zustand:** API ringkas dengan subscription berbasis selector.
+- **Jotai:** komposisi state berbasis atom.
+- Pilih berdasarkan kompleksitas, integrasi SSR, dan kebutuhan debugging.
 
-<BrutalCard v-click class="mt-2 text-xs">
-  💡 Pilihan lain di ekosistem: <strong>Jotai / Recoil</strong> (berbasis <em>Atomic state</em>).
-</BrutalCard>
+<!--
+Sumber: https://redux.js.org/introduction/why-rtk-is-redux-today
+Context consumers diperbarui ketika value berubah; bukan semua node di tree.
+Callback props bukan callback hell async. Composition sering cukup sebelum global store.
+-->
 
+---
+class: module-content
 ---
 
 ### Berkenalan dengan Zustand
@@ -170,7 +176,7 @@ npm install zustand
 
 ````md magic-move
 ```tsx
-// 1. Create a centralized store (under 10 lines!)
+// Contoh store state UI lokal; jangan baca/tulis singleton ini dari server
 import { create } from "zustand";
 
 interface CartStore {
@@ -187,7 +193,7 @@ export const useCartStore = create<CartStore>((set) => ({
 ```
 
 ```tsx
-// 2. Use in any component — NO PROVIDER NEEDED!
+// Client UI dengan nilai awal deterministik; lihat catatan SSR di bawah
 "use client";
 import { useCartStore } from "@/stores/cart";
 
@@ -202,6 +208,7 @@ export default function BuyButton() {
 ````
 
 ---
+class: module-content
 layout: two-cols
 ---
 
@@ -230,6 +237,24 @@ _Meniru kebiasaan tanpa memahami alasan sebenarnya._
 - **Prinsip**: Mulailah dari yang paling sederhana (`useState`). Tambahkan library **hanya ketika Antum benar-benar merasakan masalahnya**.
 
 ---
+class: module-content
+---
+
+### Batas Store di Next.js
+
+- Store yang berisi data request harus dibuat **per request/provider instance**, bukan singleton server.
+- Server Component membaca database/session, bukan global store Zustand.
+- Inisialisasi SSR dan render client pertama harus sama agar hydration cocok.
+- `persist` ke localStorage memerlukan penanganan hydration; jangan simpan token sesi di sana.
+- Selector membantu subscription; ukur render sebelum menambah memoization.
+
+**Latihan:** tema memakai Context, modal memakai state lokal, filter memakai URL. Jelaskan pemilik masing-masing data.
+
+<!--
+Sumber: https://zustand.docs.pmnd.rs/learn/guides/nextjs
+-->
+
+---
 layout: intro
 badge: "RANGKUMAN"
 badgeColor: "yellow"
@@ -240,5 +265,5 @@ transition: slide-up
 ## 3 Hal Penting dari Modul 06
 
 1. **Context Mengatasi Prop Drilling**: Gunakan Context API untuk data global yang jarang berubah seperti tema, data profil user, dan bahasa.
-2. **Zustand untuk State Reaktif**: Saat aplikasi membutuhkan global state dengan pembaruan frekuensi tinggi, Zustand adalah standar modern yang ringan, cepat, dan minim boilerplate.
+2. **Zustand untuk State Reaktif**: Saat aplikasi membutuhkan global state dengan pembaruan frekuensi tinggi, Zustand dapat menjadi pilihan dengan selector; Redux Toolkit juga tetap relevan.
 3. **Pahami Masalah Sebelum Memilih Tools**: Hindari _Reinventing the Wheel_ dengan memanfaatkan karya open source, namun jauhi _Cargo-Culting_ dengan tidak memasang library tanpa alasan yang jelas.

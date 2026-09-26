@@ -105,7 +105,7 @@ transition: slide-up
 <!-- Bottom Strategy Box (Revealed on click 6) -->
 <BrutalCard v-click="6" class="flow-card mt-6 !px-4 !py-2.5">
   <div class="flex items-center gap-2 font-black text-xs text-brutal-black mb-1">
-    <BrutalBadge color="green">
+    <BrutalBadge color="orange">
       💡 REALITAS BOOTCAMP 4 BULAN
     </BrutalBadge>
     <span>Prinsip Pareto (80/20)</span>
@@ -115,12 +115,12 @@ transition: slide-up
   </p>
 </BrutalCard>
 
-<style>
-.flow-card {
-  transition: opacity 0.4s ease-out, transform 0.15s ease, box-shadow 0.15s ease !important;
-}
-.flow-card.slidev-vclick-hidden {
-  opacity: 0 !important;
-  pointer-events: none !important;
-}
-</style>
+<BrutalCard v-click="7" class="flow-card mt-6 !px-4 !py-2.5">
+  <BrutalBadge color="purple" class="mb-1">Bekal sebelum modul 01</BrutalBadge>
+  <p class="text-xs">Pastikan Antum bisa memakai array/object, async/await, props, event handler, dan tipe dasar TypeScript. Jika belum, kerjakan latihan fondasi terlebih dahulu; waktu penguasaan berbeda bagi setiap peserta.</p>
+</BrutalCard>
+
+<!--
+Diagnostik pembuka: minta peserta memetakan array menjadi daftar, menunggu Promise, dan menjelaskan props vs state.
+Jika belum lancar, gunakan materi fondasi di sandbox.hsi.id/learning sebelum melanjutkan.
+-->

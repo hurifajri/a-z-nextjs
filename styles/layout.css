@@ -14,7 +14,8 @@
 }
 
 .slidev-layout:not(.cover):not(.intro):not(.two-cols) {
-  min-height: 100dvh;
+  height: 100%;
+  min-height: 0;
 }
 
 /* Headings: h2 badge and stacked subtitle p for content slides */
@@ -245,4 +246,50 @@
 .slidev-icon-btn:active {
   transform: translate(1px, 1px) !important;
   box-shadow: 1px 1px 0px var(--brutal-black) !important;
+}
+
+/* Teaching slides use the fixed Slidev canvas, including browser export. */
+.slidev-layout.module-content {
+  --slidev-code-font-size: 12px;
+  --slidev-code-line-height: 16px;
+  --slidev-code-padding: 12px;
+  height: 100%;
+  min-height: 0;
+  font-size: 16px;
+  line-height: 1.4;
+}
+.slidev-layout.module-content h3 {
+  font-size: 25px;
+}
+.slidev-layout.module-content h3 + p {
+  margin-bottom: 14px;
+}
+.slidev-layout.module-content p {
+  margin-top: 10px;
+  margin-bottom: 10px;
+}
+.slidev-layout.module-content ul,
+.slidev-layout.module-content ol {
+  margin-top: 12px;
+  margin-bottom: 12px;
+}
+.slidev-layout.module-content li {
+  margin-bottom: 6px;
+}
+.slidev-layout.module-content pre {
+  padding: 12px !important;
+  font-size: 12px;
+  line-height: 16px;
+}
+.slidev-layout.module-content table {
+  margin: 14px 0;
+  font-size: 14px;
+}
+.slidev-layout.module-content th,
+.slidev-layout.module-content td {
+  padding: 8px 10px;
+}
+.slidev-layout.module-content .mermaid {
+  max-width: 100%;
+  overflow: hidden;
 }

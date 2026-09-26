@@ -10,6 +10,29 @@ level: 1
 Menguasai strategi rendering modern di Next.js — dari SSG, SSR, ISR (Time & On-Demand), Streaming Suspense, hingga Partial Prerendering (PPR).
 
 ---
+class: module-content
+---
+
+### Dua Model Caching: Nyatakan Konfigurasi
+
+| Mode                                  | Cara belajar di kelas                                              |
+| :------------------------------------ | :----------------------------------------------------------------- |
+| **Dasar: Cache Components nonaktif**  | `fetch` + `force-cache` / `next.revalidate`; mini project Modul 11 |
+| **Lanjutan: `cacheComponents: true`** | `use cache`, `cacheLife`, `cacheTag`, dan `Suspense`               |
+
+- Default fetch tanpa Data Cache **tidak berarti** halaman selalu dirender per request.
+- Pada model dasar, rute masih dapat di-prerender saat build; gunakan `no-store` atau `connection()` bila perlu request-time.
+- Jangan mencampur konfigurasi route lama dengan Cache Components tanpa migrasi.
+- Data per pengguna perlu batas otorisasi dan strategi cache yang sesuai.
+
+<!--
+Sumber: https://nextjs.org/docs/app/api-reference/functions/fetch
+https://nextjs.org/docs/app/api-reference/config/next-config-js/cacheComponents
+-->
+
+---
+class: module-content
+---
 
 ### Tiga Strategi Rendering
 
@@ -30,8 +53,8 @@ Bagaimana Next.js menyajikan halaman ke pengunjung?
 #### 🔄 SSR — Server-Side Rendering
 
 - Data diambil **setiap ada request** dari pengunjung
-- Halaman selalu fresh, tapi sedikit lebih lambat
-- Cocok untuk data real-time (dashboard, profil user)
+- Render terjadi saat request; kesegaran tetap bergantung sumber data/cache
+- Cocok untuk data per pengguna; live updates perlu polling/SSE/WebSocket
 
 </template>
 <template #3>
@@ -46,6 +69,8 @@ Bagaimana Next.js menyajikan halaman ke pengunjung?
 </v-switch>
 
 ---
+class: module-content
+---
 
 ### fetch() di Server Components
 
@@ -53,9 +78,12 @@ Di App Router, `fetch()` berjalan langsung di server dengan model caching fleksi
 
 ````md magic-move
 ```tsx
-// 1. Default Next.js 15/16: Uncached (Always fresh on every request!)
+// 1. Model dasar: no-store eksplisit untuk fetch per request
 export default async function DashboardPage() {
-  const res = await fetch("https://api.example.com/stats");
+  const res = await fetch("https://api.example.com/stats", {
+    cache: "no-store",
+  });
+  if (!res.ok) throw new Error("Unable to load stats");
   const stats = await res.json();
 
   return <Dashboard stats={stats} />;
@@ -63,11 +91,12 @@ export default async function DashboardPage() {
 ```
 
 ```tsx
-// 2. SSG: Explicit caching (force-cache)
+// 2. Cache data eksplisit; tidak sendirian menentukan rendering route
 export default async function BlogPage() {
   const res = await fetch("https://api.example.com/posts", {
-    cache: "force-cache", // ← Store in permanent cache
+    cache: "force-cache", // Cache persisten sampai invalidasi/eviction
   });
+  if (!res.ok) throw new Error("Unable to load posts");
   const posts = await res.json();
 
   return <PostList posts={posts} />;
@@ -75,11 +104,12 @@ export default async function BlogPage() {
 ```
 
 ```tsx
-// 3. ISR: Revalidate every 60 seconds
+// 3. Revalidasi berbasis waktu, bukan cron tepat tiap 60 detik
 export default async function ProductPage() {
   const res = await fetch("https://api.example.com/products", {
-    next: { revalidate: 60 }, // ← Periodic update every 60s
+    next: { revalidate: 60 }, // Stale setelah 60s; revalidasi dipicu request
   });
+  if (!res.ok) throw new Error("Unable to load products");
   const products = await res.json();
 
   return <ProductList products={products} />;
@@ -87,7 +117,7 @@ export default async function ProductPage() {
 ```
 
 ```tsx
-// 4. Next.js 16 Standard: Directive 'use cache' (Cache Components)
+// 4. Mode terpisah: wajib cacheComponents: true
 import { cacheLife, cacheTag } from "next/cache";
 
 export default async function ProductPage() {
@@ -96,6 +126,7 @@ export default async function ProductPage() {
   cacheTag("products");
 
   const res = await fetch("https://api.example.com/products");
+  if (!res.ok) throw new Error("Unable to load products");
   const products = await res.json();
 
   return <ProductList products={products} />;
@@ -104,6 +135,7 @@ export default async function ProductPage() {
 ````
 
 ---
+class: module-content
 layout: two-cols
 ---
 
@@ -117,7 +149,7 @@ Pilih strategi yang tepat berdasarkan kebutuhan data
 | :------- | :-------------- | :------------------ |
 | **SSG**  | ⚡⚡⚡ Tercepat | Statis (build time) |
 | **ISR**  | ⚡⚡ Cepat      | Berkala (N detik)   |
-| **SSR**  | ⚡ Normal       | Selalu fresh        |
+| **SSR**  | ⚡ Normal       | Sesuai data request |
 
 ::right::
 
@@ -127,7 +159,7 @@ Pilih strategi yang tepat berdasarkan kebutuhan data
 
 - **SSG** → Blog, dokumentasi, landing page
 - **ISR** → Katalog produk, berita, listing
-- **SSR** → Dashboard, profil user, real-time data
+- **SSR** → Dashboard dan profil user per request
 
 </v-clicks>
 
@@ -136,6 +168,7 @@ Pilih strategi yang tepat berdasarkan kebutuhan data
 </BrutalCard>
 
 ---
+class: module-content
 layout: two-cols
 ---
 
@@ -150,7 +183,7 @@ Memperbarui Halaman Statis Tanpa Build Ulang Seluruh Website
     <span class="bg-brutal-yellow px-1.5 py-0.5 border border-brutal-black rounded text-xs">TIME-BASED</span>
     <span>Interval Waktu Berkala</span>
   </div>
-  <p class="text-xs text-gray-700 mb-2">Next.js mengecek kesegaran data secara berkala sesuai interval detik yang ditentukan.</p>
+  <p class="text-xs text-gray-700 mb-2">Setelah interval habis, request berikutnya dapat menerima data lama sambil memicu revalidasi.</p>
 
 ```ts
 // Fastest revalidation every 60 seconds
@@ -168,7 +201,7 @@ fetch("https://api.com/items", {
     <span class="bg-brutal-cyan px-1.5 py-0.5 border border-brutal-black rounded text-xs">ON-DEMAND</span>
     <span>Event / Webhook Trigger</span>
   </div>
-  <p class="text-xs text-gray-700 mb-2">Update instan seketika saat ada perubahan data di CMS atau Server Action.</p>
+  <p class="text-xs text-gray-700 mb-2">Mutasi atau webhook menginvalidasi cache; kapan data baru terlihat bergantung API invalidasi.</p>
 
 ```ts
 import { revalidatePath, revalidateTag, updateTag } from "next/cache";
@@ -177,7 +210,7 @@ import { revalidatePath, revalidateTag, updateTag } from "next/cache";
 revalidatePath("/blog");
 revalidateTag("products", "max");
 
-// Inside Next.js 16 Server Action: instantaneous UI refresh
+// Hanya Server Action: expire tag untuk read-your-own-writes
 updateTag("products");
 ```
 
@@ -186,52 +219,55 @@ updateTag("products");
 ::bottom::
 
 <BrutalCard class="mt-1 bg-emerald-50 text-xs text-gray-800">
-  💡 <strong>Best Practice Next.js 16:</strong> Gunakan <code>revalidateTag(tag, profile)</code> untuk update berkala, atau <code>updateTag(tag)</code> di Server Actions agar perubahan user langsung muncul instan tanpa menunggu revalidasi latar belakang.
+  💡 <strong>Best Practice Next.js 16:</strong> <code>revalidateTag(tag, "max")</code> memakai stale-while-revalidate. <code>updateTag(tag)</code> meng-expire cache di Server Actions. Keduanya perlu tag pada data; lindungi endpoint webhook.
 </BrutalCard>
 
+---
+zoom: 0.9
+class: module-content
 ---
 
 ### generateStaticParams
 
-Men-generate halaman dinamis saat build time
+Daftarkan parameter untuk prerender; validasi respons API sesuai kontrak proyek
 
-```tsx {1-9|11-17|all}
-// app/blog/[slug]/page.tsx
+```tsx
+// app/blog/[slug]/page.tsx — model dasar tanpa Cache Components
+import { notFound } from "next/navigation";
+type Post = { slug: string; title: string };
 
-// Tell Next.js: "generate static pages for these slugs at build time!"
 export async function generateStaticParams() {
   const res = await fetch("https://api.example.com/posts");
-  const posts = await res.json();
-
-  return posts.map((post) => ({
-    slug: post.slug, // Each slug becomes a static page
-  }));
+  if (!res.ok) throw new Error("Unable to load posts");
+  const posts: Post[] = await res.json();
+  return posts.map(({ slug }) => ({ slug }));
 }
 
-// This page will be generated for each slug
 export default async function BlogPost({
   params,
 }: {
   params: Promise<{ slug: string }>;
 }) {
   const { slug } = await params;
-  const res = await fetch(`https://api.example.com/posts/${slug}`);
-  const post = await res.json();
-
-  return (
-    <article>
-      <h1>{post.title}</h1>
-      <p>{post.content}</p>
-    </article>
+  const res = await fetch(
+    `https://api.example.com/posts/${encodeURIComponent(slug)}`,
   );
+  if (res.status === 404) notFound();
+  if (!res.ok) throw new Error("Unable to load post");
+  const post: Post = await res.json();
+  return <h1>{post.title}</h1>;
 }
 ```
 
+Tipe `Post` belum memvalidasi JSON. Parameter di luar daftar mengikuti konfigurasi route; daftar ini bukan izin akses.
+
+---
+class: module-content
 ---
 
 ### loading.tsx: Tampilan Saat Memuat
 
-Next.js otomatis menampilkan komponen ini saat halaman sedang fetch data!
+loading.tsx membungkus page dan descendants dengan Suspense; pekerjaan pada layout yang sama tidak tercakup.
 
 ```tsx
 // app/dashboard/loading.tsx — Automatically rendered!
@@ -258,6 +294,8 @@ export default function Loading() {
 </div>
 
 ---
+class: module-content
+---
 
 ### error.tsx: Menangkap Error dengan Elegan
 
@@ -276,7 +314,7 @@ export default function Error({
   return (
     <div className="text-center py-12">
       <h2 className="text-2xl font-bold mb-2">Oops! Something went wrong</h2>
-      <p className="text-gray-600 mb-4">{error.message}</p>
+      <p className="text-gray-600 mb-4">Please try again later.</p>
       <button onClick={() => reset()}>Try Again</button>
     </div>
   );
@@ -284,9 +322,11 @@ export default function Error({
 ```
 
 <BrutalCard v-click class="mt-3">
-  ⚠️ <code>error.tsx</code> harus menggunakan <code>"use client"</code> karena membutuhkan <code>onClick</code> untuk tombol retry!
+  ⚠️ <code>error.tsx</code> harus menggunakan <code>"use client"</code> sesuai kontrak error boundary. Tidak menangkap event handler, atau error layout pada segmen yang sama.
 </BrutalCard>
 
+---
+class: module-content
 ---
 
 ### React Suspense: Streaming Konten
@@ -319,8 +359,10 @@ export default function DashboardPage() {
 </BrutalCard>
 
 ---
+class: module-content
+---
 
-### Masa Depan Rendering: Partial Prerendering (PPR)
+### Partial Prerendering dengan Cache Components
 
 Menggabungkan Kecepatan SSG Statis + Fleksibilitas SSR Dinamis dalam 1 Halaman
 
@@ -332,8 +374,8 @@ Menggabungkan Kecepatan SSG Statis + Fleksibilitas SSR Dinamis dalam 1 Halaman
     </div>
     <ul class="text-xs text-gray-700 space-y-1.5 mt-2">
       <li>• <strong>Navbar, Layout, Info Produk:</strong> Di-prerender saat build time.</li>
-      <li>• Loading time: <strong>0ms</strong> (secepat halaman statis biasa).</li>
-      <li>• Dikirim instan ke user tanpa menunggu server query database.</li>
+      <li>• Tetap dipengaruhi latensi jaringan, cache miss, dan waktu render.</li>
+      <li>• Dapat dikirim tanpa menunggu query dinamis selesai.</li>
     </ul>
   </BrutalCard>
 
@@ -351,8 +393,52 @@ Menggabungkan Kecepatan SSG Statis + Fleksibilitas SSR Dinamis dalam 1 Halaman
 </div>
 
 <BrutalCard class="mt-3 bg-purple-50 text-xs">
-  🚀 <strong>Next.js 16 PPR via Cache Components:</strong> Cukup aktifkan <code>cacheComponents: true</code> di <code>next.config.ts</code>. Shell statis terkirim instan (0ms), sedangkan bagian dinamis mengalir otomatis sesuai batas <code>&lt;Suspense&gt;</code>!
+  🚀 <strong>Next.js 16 PPR via Cache Components:</strong> Cukup aktifkan <code>cacheComponents: true</code> di <code>next.config.ts</code>. Susun shell statis yang berguna; tempatkan data request-time di balik batas <code>&lt;Suspense&gt;</code>!
 </BrutalCard>
+
+---
+class: module-content
+---
+
+### Next.js 16.3: Navigasi dan Prefetch
+
+```ts
+// Konfigurasi latihan lanjutan, terpisah dari mini project dasar
+import type { NextConfig } from "next";
+export default {
+  cacheComponents: true,
+  partialPrefetching: true,
+} satisfies NextConfig;
+```
+
+- Partial Prefetching memakai shell yang dapat digunakan ulang per route.
+- URL-specific data dapat menyusul; ukur sebelum menambah `prefetch={true}`.
+- Uji **reload** dan **klik Link**: keduanya dapat menampilkan shell berbeda.
+- Navigation Inspector dan `instant()` dari `@next/playwright` membantu verifikasi.
+- Detail Instant Insights masih dapat berubah; ikuti dokumentasi versi terpasang.
+
+<!--
+Sumber: https://nextjs.org/docs/app/api-reference/config/next-config-js/partialPrefetching
+https://nextjs.org/docs/app/api-reference/file-conventions/route-segment-config/instant
+-->
+
+---
+class: module-content
+---
+
+### Prediksi: Dua Cache Berbeda
+
+<LearningCheck
+  question="Mutasi berhasil di browser. Apakah invalidateQueries memperbarui cache server Next.js?"
+  :options='["Ya, semua cache otomatis sinkron", "Tidak; cache browser dan server memiliki mekanisme invalidasi sendiri", "Cukup reload tab untuk semua pengguna"]'
+  :answer="1"
+  explanation="Query invalidation menandai cache TanStack Query stale. Jika data juga dicache di server, tentukan invalidasi server sesuai konfigurasi aplikasi."
+/>
+
+<!--
+Fasilitasi: beri 30 detik untuk prediksi pribadi, lalu diskusi berpasangan.
+Minta peserta menjelaskan mengapa opsi lain tidak cukup. Gunakan Ulangi prediksi untuk kelompok berikutnya.
+-->
 
 ---
 layout: intro
@@ -368,3 +454,10 @@ transition: slide-up
 2. **Special Files Otomatis**: `loading.tsx` untuk skeleton loading, `error.tsx` untuk error boundary, `not-found.tsx` untuk halaman 404.
 3. **Suspense & Streaming (PPR)**: Mengalirkan potongan halaman secara independen sebagai fondasi Partial Prerendering modern.
 4. **Jembatan ke CSR**: Data fetching di server tuntas di sini. Untuk data interaktif di browser (_Client-Side Rendering_), kita lanjut ke **Modul 08 (TanStack Query)**!
+
+<!--
+Checkpoint: Cache dan Kegagalan Data
+Bandingkan request-time fetch dengan data cached. Mutasikan data bertag, amati stale-while-revalidate, dan buktikan fallback/error dapat tampil.
+Sumber primer: https://nextjs.org/docs/app/getting-started/revalidating
+Audit: 25 September 2026.
+-->
