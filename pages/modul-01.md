@@ -109,7 +109,7 @@ sequenceDiagram
 
 #### Next.js (App Router)
 
-```mermaid {scale: 1}
+```mermaid {scale: 0.75}
 sequenceDiagram
     participant B as 🌐 Browser
     participant S as 🖥️ Server

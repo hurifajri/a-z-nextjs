@@ -115,8 +115,8 @@ transition: slide-up
   </p>
 </BrutalCard>
 
-<BrutalCard v-click="7" class="flow-card mt-6 !px-4 !py-2.5">
-  <BrutalBadge color="purple" class="mb-1">Bekal sebelum modul 01</BrutalBadge>
+<BrutalCard v-click="9" class="flow-card mt-6 !px-4 !py-2.5">
+  <BrutalBadge color="purple" class="mb-1">🍱 Bekal sebelum modul 01</BrutalBadge>
   <p class="text-xs">Pastikan Antum bisa memakai array/object, async/await, props, event handler, dan tipe dasar TypeScript. Jika belum, kerjakan latihan fondasi terlebih dahulu; waktu penguasaan berbeda bagi setiap peserta.</p>
 </BrutalCard>
 
