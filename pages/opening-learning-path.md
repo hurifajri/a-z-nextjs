@@ -106,16 +106,16 @@ transition: slide-up
 <BrutalCard v-click="6" class="flow-card mt-6 !px-4 !py-2.5">
   <div class="flex items-center gap-2 font-black text-xs text-brutal-black mb-1">
     <BrutalBadge color="orange">
-      💡 REALITAS BOOTCAMP 4 BULAN
+      💡 STRATEGI BELAJAR
     </BrutalBadge>
-    <span>Prinsip Pareto (80/20)</span>
+    <span>Terinspirasi prinsip Pareto (80/20)</span>
   </div>
   <p class="text-xs text-gray-700 leading-snug">
-    Mempelajari seluruh tahapan di atas dari nol secara terpisah butuh waktu bertahun-tahun. Di bootcamp intensif ini, kita langsung fokus ke <b>Next.js</b> sambil menyerap <b><span v-mark.circle.orange="7">20%</span> intisari</b> HTML, CSS, JS, React, hingga TypeScript yang <b>benar-benar dipakai di <span v-mark.circle.orange="8">80%</span> proyek nyata</b>!
+    Dalam bootcamp ini, kita memprioritaskan <b>fondasi dan pola yang paling sering digunakan</b> untuk membangun aplikasi. Prinsip <b>80/20</b> menjadi panduan menentukan fokus, bukan pembagian pasti materi atau jaminan hasil. Konsep lainnya dipelajari bertahap sesuai kebutuhan proyek.
   </p>
 </BrutalCard>
 
-<BrutalCard v-click="9" class="flow-card mt-6 !px-4 !py-2.5">
+<BrutalCard v-click="7" class="flow-card mt-6 !px-4 !py-2.5">
   <BrutalBadge color="purple" class="mb-1">🍱 Bekal sebelum modul 01</BrutalBadge>
   <p class="text-xs">Pastikan Antum bisa memakai array/object, async/await, props, event handler, dan tipe dasar TypeScript. Jika belum, kerjakan latihan fondasi terlebih dahulu; waktu penguasaan berbeda bagi setiap peserta.</p>
 </BrutalCard>

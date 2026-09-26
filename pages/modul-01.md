@@ -21,29 +21,50 @@ class: module-content
 
 ### Kenapa Next.js?
 
-Framework React untuk routing, rendering server, dan integrasi backend dalam satu proyek.
-Next.js bukan sekadar React dengan router bawaan. **Next.js adalah framework fullstack** yang memperluas kemampuan React ke server, menghadirkan performa tinggi dan developer experience kelas atas.
+Bayangkan Antum ingin membuat toko online: ada daftar produk, halaman detail, dan keranjang belanja.
+**React membantu membangun tampilannya. Next.js menyediakan kerangka untuk menyatukan bagian-bagian aplikasinya.**
 
-<div class="grid grid-cols-3 gap-4 mt-6">
-  <BrutalCard v-click="1" class="forward:delay-0">
-    <div class="font-black text-base mb-1">🌐 Fullstack & Server-First</div>
-    <p class="text-xs text-gray-700">Ambil data langsung dari database di dalam komponen (RSC) tanpa repot membuat REST API terpisah dan <strong>tanpa mengirim implementasi Server Component ke browser</strong>.</p>
+<div class="grid grid-cols-3 auto-rows-fr gap-4 mt-4">
+  <BrutalCard v-click="1" class="flex flex-col forward:delay-0">
+    <div class="font-black text-base mb-1">🧭 Mengatur Banyak Halaman</div>
+    <p class="text-xs text-gray-700">Pisahkan halaman daftar produk, detail produk, dan keranjang melalui susunan folder yang jelas.</p>
+    <div class="mt-auto pt-1 text-xs font-bold text-gray-700">App Router</div>
   </BrutalCard>
-  <BrutalCard v-click="2" class="forward:delay-200">
-    <div class="font-black text-base mb-1">⚡ Hybrid Rendering & Streaming</div>
-    <p class="text-xs text-gray-700">Gabungkan kecepatan HTML statis (CDN), SSR dinamis, dan <strong>Streaming Suspense</strong>. Bagian yang siap dapat tampil lebih dulu; latensi jaringan tetap ada.</p>
+  <BrutalCard v-click="2" class="flex flex-col forward:delay-200">
+    <div class="font-black text-base mb-1">🔗 Berpindah Halaman</div>
+    <p class="text-xs text-gray-700">Pengunjung bisa membuka detail produk atau menuju keranjang tanpa memuat ulang seluruh halaman.</p>
+    <div class="mt-auto pt-1 text-xs font-bold text-gray-700">next/link</div>
   </BrutalCard>
-  <BrutalCard v-click="3" class="forward:delay-400">
-    <div class="font-black text-base mb-1">🛡️ Batas Server & Browser</div>
-    <p class="text-xs text-gray-700">Secret dapat disimpan di server. Keamanan, metadata, dan performa tetap perlu dirancang serta diuji.</p>
+  <BrutalCard v-click="3" class="flex flex-col forward:delay-400">
+    <div class="font-black text-base mb-1">🛍️ Mengambil Data Produk</div>
+    <p class="text-xs text-gray-700">Baca nama, harga, dan stok produk dari server untuk ditampilkan pada halaman toko.</p>
+    <div class="mt-auto pt-1 text-xs font-bold text-gray-700">Server Components</div>
+  </BrutalCard>
+  <BrutalCard v-click="4" class="flex flex-col forward:delay-0">
+    <div class="font-black text-base mb-1">🖼️ Menampilkan Gambar Produk</div>
+    <p class="text-xs text-gray-700">Sajikan foto produk dengan ukuran yang sesuai layar dan muat gambar saat diperlukan.</p>
+    <div class="mt-auto pt-1 text-xs font-bold text-gray-700">next/image</div>
+  </BrutalCard>
+  <BrutalCard v-click="5" class="flex flex-col forward:delay-200">
+    <div class="font-black text-base mb-1">🏷️ Memberi Identitas Setiap Produk</div>
+    <p class="text-xs text-gray-700">Atur judul, deskripsi, dan gambar pratinjau agar halaman produk mudah dikenali saat dibagikan.</p>
+    <div class="mt-auto pt-1 text-xs font-bold text-gray-700">Metadata API</div>
+  </BrutalCard>
+  <BrutalCard v-click="6" class="flex flex-col forward:delay-400">
+    <div class="font-black text-base mb-1">⏳ Memberi Kabar Saat Menunggu</div>
+    <p class="text-xs text-gray-700">Tampilkan tanda sedang memuat ketika daftar produk belum siap, serta pesan yang membantu ketika terjadi kesalahan.</p>
+    <div class="mt-auto pt-1 text-xs font-bold text-gray-700">loading.tsx · error.tsx</div>
   </BrutalCard>
 </div>
 
 <!--
-Klik 3x untuk memunculkan card satu per satu.
-Card 1: Implementasi RSC tidak dikirim; framework runtime dan Client Components tetap memiliki JavaScript.
-Card 2: Jelaskan Streaming Suspense secara singkat — user tidak perlu menunggu seluruh halaman selesai.
-Card 3: Jelaskan bahwa pemilihan framework tidak menggantikan otorisasi atau pengukuran performa.
+Mulai dengan bertanya: halaman dan data apa saja yang diperlukan sebuah toko online?
+Klik 6x untuk menghubungkan kebutuhan toko online dengan manfaat pada setiap card.
+Nama fitur pada label cukup diperkenalkan; implementasinya dibahas di modul terkait.
+Server Components adalah fitur React yang didukung App Router. Loading dan error UI tetap perlu dibuat oleh pengembang.
+Jelaskan framework sebagai kerangka kerja berisi aturan dan alat bantu, bukan aplikasi yang otomatis selesai.
+Tujuan slide: peserta memahami alasan memakai Next.js dalam pembelajaran ini. Istilah RSC, SSR, dan streaming dibahas saat masuk ke cara kerjanya; tidak perlu dijelaskan di sini.
+Next.js adalah pilihan kerangka belajar kita, bukan satu-satunya cara membangun aplikasi React.
 -->
 
 ---
