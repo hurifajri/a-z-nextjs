@@ -1,0 +1,177 @@
+openapi: 3.1.0
+info:
+  title: API Usulan Buku Toko Belajar
+  version: 1.0.0
+  description: |
+    Kontrak latihan lokal single-user Modul 11–13, diaudit 9 Oktober 2026.
+    Usulan disimpan di SQLite Toko Belajar; katalog Open Library tidak diubah.
+    Autentikasi dan pembatasan pemilik ditambahkan pada Modul 14.
+servers:
+  - url: /
+    description: Server Next.js yang menyajikan dokumentasi ini
+tags:
+  - name: Usulan buku
+    description: Membaca, menambah, mengedit, dan menghapus usulan buku
+paths:
+  /api/suggestions:
+    get:
+      tags: [Usulan buku]
+      operationId: listSuggestions
+      summary: Baca semua usulan
+      description: Urut berdasarkan ID naik. Belum ada filter atau pagination.
+      responses:
+        "200":
+          description: Daftar usulan; array kosong bila belum ada data
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: "#/components/schemas/Suggestion"
+        default:
+          $ref: "#/components/responses/UnexpectedError"
+    post:
+      tags: [Usulan buku]
+      operationId: createSuggestion
+      summary: Simpan usulan baru
+      description: |
+        Server memangkas spasi tepi title dan reason sebelum memeriksa panjang.
+        Field tambahan diabaikan; ID dibuat oleh database.
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/CreateSuggestion"
+            example:
+              title: Learning React
+              reason: Untuk melengkapi buku belajar React di toko.
+      responses:
+        "201":
+          description: Usulan berhasil disimpan
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Suggestion"
+        "400":
+          $ref: "#/components/responses/BadInput"
+        default:
+          $ref: "#/components/responses/UnexpectedError"
+  /api/suggestions/{id}:
+    parameters:
+      - name: id
+        in: path
+        required: true
+        description: |
+          ID dari respons API, ditulis sebagai angka desimal positif tanpa nol
+          di depan. Nilai terbesar yang diterima adalah 9007199254740991.
+        schema:
+          type: string
+          pattern: "^[1-9][0-9]*$"
+        example: "1"
+    patch:
+      tags: [Usulan buku]
+      operationId: updateSuggestion
+      summary: Perbarui judul dan alasan satu usulan
+      description: |
+        Kedua field wajib dikirim bersama pada kontrak ini. Server memangkas
+        spasi tepi sebelum memeriksa panjang. Field tambahan ditolak.
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/UpdateSuggestion"
+            example:
+              title: Learning React Edisi Revisi
+              reason: Edisi ini dipilih untuk latihan komponen dan hooks.
+      responses:
+        "200":
+          description: Usulan berhasil diperbarui
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Suggestion"
+        "400":
+          $ref: "#/components/responses/BadInput"
+        "404":
+          $ref: "#/components/responses/NotFound"
+        default:
+          $ref: "#/components/responses/UnexpectedError"
+    delete:
+      tags: [Usulan buku]
+      operationId: deleteSuggestion
+      summary: Hapus satu usulan
+      description: Gunakan ID usulan latihan sendiri. Respons sukses tanpa body.
+      responses:
+        "204":
+          description: Usulan telah dihapus; tidak ada body respons
+        "400":
+          $ref: "#/components/responses/BadInput"
+        "404":
+          $ref: "#/components/responses/NotFound"
+        default:
+          $ref: "#/components/responses/UnexpectedError"
+components:
+  schemas:
+    CreateSuggestion:
+      type: object
+      required: [title, reason]
+      description: Field tambahan diterima tetapi diabaikan server.
+      properties:
+        title:
+          type: string
+          description: Hasil trim harus sepanjang 3–80 unit kode UTF-16 sesuai validasi JavaScript.
+        reason:
+          type: string
+          description: Hasil trim harus sepanjang 10–500 unit kode UTF-16 sesuai validasi JavaScript.
+    UpdateSuggestion:
+      type: object
+      required: [title, reason]
+      additionalProperties: false
+      properties:
+        title:
+          $ref: "#/components/schemas/CreateSuggestion/properties/title"
+        reason:
+          $ref: "#/components/schemas/CreateSuggestion/properties/reason"
+    Suggestion:
+      type: object
+      required: [id, title, reason]
+      properties:
+        id:
+          type: integer
+          minimum: 1
+          maximum: 9007199254740991
+        title:
+          type: string
+        reason:
+          type: string
+      example:
+        id: 1
+        title: Learning React
+        reason: Untuk melengkapi buku belajar React di toko.
+    Error:
+      type: object
+      required: [error]
+      properties:
+        error:
+          type: string
+  responses:
+    BadInput:
+      description: JSON, ID, judul, atau alasan tidak valid
+      content:
+        application/json:
+          schema:
+            $ref: "#/components/schemas/Error"
+          example:
+            error: Input tidak valid.
+    NotFound:
+      description: ID valid, tetapi usulannya tidak ditemukan
+      content:
+        application/json:
+          schema:
+            $ref: "#/components/schemas/Error"
+          example:
+            error: Usulan tidak ditemukan.
+    UnexpectedError:
+      description: Kegagalan tak terduga; bentuk body belum dijamin sebagai JSON oleh latihan ini

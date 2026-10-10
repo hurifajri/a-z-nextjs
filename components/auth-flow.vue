@@ -7,7 +7,7 @@ const steps = [
   {
     title: "1. Browser",
     detail:
-      "Kirim permintaan ubah Todo. ID dari browser belum dapat dipercaya.",
+      "Kirim permintaan ubah usulan buku. ID dari browser belum dapat dipercaya.",
   },
   {
     title: "2. Sesi",
@@ -17,7 +17,7 @@ const steps = [
   {
     title: "3. Pemilik data",
     detail:
-      "Batasi query dengan ID Todo dan ID pengguna dari sesi. Bukan dari body.",
+      "Batasi query dengan ID usulan dan ID pengguna dari sesi. Bukan dari body.",
   },
   {
     title: "4. Respons",
