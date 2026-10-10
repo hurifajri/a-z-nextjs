@@ -204,6 +204,15 @@
 }
 
 /* Lists */
+/* Reserve space for number markers; custom list layouts manage their own padding. */
+.slidev-layout ol:not(.slidev-toc-list, .auth-flow) {
+  padding-inline-start: 1.75em;
+}
+
+.slidev-layout ol:not(.slidev-toc-list, .auth-flow) > li {
+  padding-inline-start: 0.25em;
+}
+
 .slidev-layout ul {
   list-style: none;
   padding-left: 0;
