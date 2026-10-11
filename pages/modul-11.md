@@ -10,12 +10,36 @@ level: 1
 Melanjutkan form usulan buku menjadi fitur tambah, baca, edit, dan hapus dengan penyimpanan SQLite.
 
 <!--
-Lanjutan Modul 10: sketsa Drizzle kini menjadi proyek yang dapat dijalankan.
+Lanjutan Modul 10: kontrak CRUD diwujudkan dengan database.
 Kerjakan di proyek Toko Belajar dari Modul 01–10, bukan di repositori slide.
 Acuan kelas: Next.js 16.3.7, React 19, Node.js 24 LTS, src/app, alias @/* ke src/*.
 Pertahankan cacheComponents: false dan partialPrefetching: false. QueryProvider dari Modul 08 tetap membungkus children pada root layout.
 Latihan lokal single-user. Auth/ownership dibahas pada Modul 14; strategi deployment pada Modul 16.
 Audit sumber: 9 Oktober 2026.
+-->
+
+---
+class: module-content
+---
+
+### Kerjakan per Tahap, Lalu Coba Hasilnya
+
+[Berkas lengkap Modul 11](/examples/checkpoints/modul-11.zip) menjadi pembanding untuk potongan kode pada slide.
+
+<v-clicks>
+
+1. **Database:** pasang paket, buat schema, jalankan migrasi. Selesai bila tabel tersedia tanpa error.
+2. **Tambah dan baca:** selesaikan GET/POST. Simpan usulan, restart server, lalu baca lagi.
+3. **Edit, hapus, dan UI:** selesaikan PATCH/DELETE, sambungkan form, lalu periksa refresh dan error.
+
+</v-clicks>
+
+<BrutalCard v-click class="mt-4 text-sm">
+  Lanjutkan setelah hasil tahap sebelumnya sesuai. Bandingkan file lengkap jika tertinggal; simpan pekerjaan Antum terlebih dahulu.
+</BrutalCard>
+
+<!--
+Sisihkan sesi praktik untuk setiap tahap. Demo hasil, prediksi request, ubah kode, jalankan, lalu jelaskan hasilnya.
 -->
 
 ---
@@ -139,6 +163,34 @@ Jika suggestions sebelumnya berada dalam route group (shop), perbarui file UI di
 class: module-content
 ---
 
+### Satu Database, Tiga Peran
+
+Latihan memakai **SQLite lokal** melalui **Drizzle**.
+
+| Bagian         | Tugas                                            |
+| -------------- | ------------------------------------------------ |
+| Schema Valibot | Memeriksa judul, alasan, dan ID pada batas input |
+| Schema Drizzle | Mendefinisikan tabel, kolom, dan tipe data       |
+| Migrasi SQL    | Mengubah struktur database nyata                 |
+
+<v-clicks>
+
+- Satu baris menyimpan satu usulan; primary key `id` membedakan baris.
+- Query membaca/menambah baris. Kondisi `where` memilih target edit/hapus.
+- Mengubah file schema saja belum mengubah tabel pada database.
+
+</v-clicks>
+
+<!--
+SQLite dipilih agar fokus pada alur data tanpa layanan tambahan. PostgreSQL memerlukan driver dan migrasi yang sesuai.
+Sumber: https://orm.drizzle.team/docs/sql-schema-declaration
+Sumber: https://orm.drizzle.team/docs/migrations
+-->
+
+---
+class: module-content
+---
+
 ### 1. Pasang Paket Database
 
 Jalankan dari **root proyek Next.js**, tempat `package.json` berada.
@@ -174,7 +226,7 @@ class: module-content
 
 ### 2. Definisikan Tabel Usulan Buku
 
-Buat `src/db/schema.ts` sesuai pengantar modul 10.
+Buat `src/db/schema.ts` untuk mendefinisikan kolom yang akan disimpan.
 
 ```ts {1|3-4|5-6|all}
 import { sqliteTable, integer, text } from "drizzle-orm/sqlite-core";
@@ -444,6 +496,27 @@ Error database tak terduga dapat menghasilkan 500; lihat log server untuk diagno
 Sumber: https://orm.drizzle.team/docs/sqlite/insert
 Sumber: https://valibot.dev/api/safeParse/
 -->
+
+---
+class: module-content
+---
+
+### Jeda Praktik: Tambah, Baca, lalu Restart
+
+Buktikan penyimpanan dengan GET dan POST sebelum menambahkan edit/hapus.
+
+<v-clicks>
+
+1. Buka `/api/suggestions` pada aplikasi Antum.
+2. Kirim POST valid dari Console seperti Modul 10, kali ini ke `/api/suggestions`.
+3. Periksa `201` dan ID baru. GET harus memuat usulan tersebut.
+4. Hentikan server, jalankan lagi, lalu GET. ID dan isinya tetap ada.
+
+</v-clicks>
+
+<BrutalCard v-click class="mt-4 text-sm">
+  Coba input tidak valid: status <strong>400</strong> dan jumlah baris tidak bertambah. Setelah sesuai, lanjutkan endpoint untuk satu ID.
+</BrutalCard>
 
 ---
 class: module-content
@@ -1011,7 +1084,7 @@ class: module-content
 
 ### 17. Perbarui Halaman Usulan yang Sudah Ada
 
-**Ganti isi** `src/app/suggestions/page.tsx` dari modul 09.
+**Ganti isi** `src/app/suggestions/page.tsx`. `connection()` menunda query sampai ada request; data ini tidak disiapkan saat build.
 
 ```tsx {1-5|7-10|11-24|all}
 import { connection } from "next/server";
@@ -1235,6 +1308,32 @@ transition: slide-up
 <!--
 Target akhir: /suggestions menjalankan CRUD lokal yang persisten dengan status pending/error yang dapat dijelaskan.
 Project belum memiliki akun atau isolasi pengguna. Sesi dan ownership dibahas pada Modul 14; deployment memerlukan strategi penyimpanan dari Modul 16.
+-->
+
+---
+class: module-content
+---
+
+### Pengayaan: Satu Form dengan Server Action
+
+Jalur CRUD tetap memakai Route Handlers. [Lab Server Action](/examples/pengayaan/server-action/README.md) membandingkan cara pengiriman form dalam Next.js.
+
+<v-clicks>
+
+- Pada salinan checkpoint 11, `/action-preview` memvalidasi judul dan alasan tanpa menyimpan data.
+- Form memakai `action` dan `useActionState`; server tetap memeriksa input dengan Valibot.
+- Coba input valid, tidak valid, dan status pending.
+- Untuk mutasi berakun, periksa sesi dan pemilik di action, lalu revalidasi data yang berubah.
+
+</v-clicks>
+
+<BrutalCard v-click class="mt-4 text-sm">
+  Route Handler cocok untuk kontrak HTTP yang dipakai client lain. Server Action cocok untuk aksi dari UI Next.js. Validasi dan izin tetap diperiksa di server.
+</BrutalCard>
+
+<!--
+Sumber: https://nextjs.org/docs/app/getting-started/mutating-data
+Sumber: https://nextjs.org/docs/app/guides/forms
 -->
 
 ---

@@ -10,10 +10,10 @@ level: 1
 Lanjutkan Toko Belajar: tampilkan judul buku dari API, jelaskan keadaan saat menunggu atau gagal, lalu tentukan kapan data dan halaman diperbarui.
 
 <!--
-Bekal: detail /products/[id] dari Modul 03, batas Server/Client Components dari Modul 04, quantity lokal dari Modul 05, serta CartProvider dari Modul 06.
-Target akhir: peserta memanggil fetch di server, menangani 404 dan kegagalan, membedakan cache data dengan hasil render, serta mengenali streaming dan dua model caching Next.js.
+Bekal: detail /products/[id] dari Modul 04, batas Server/Client Components dari Modul 03, quantity lokal dari Modul 05, serta CartProvider dari Modul 06.
+Target akhir: peserta memanggil fetch di server, menangani 404 dan kegagalan, membedakan cache data dengan hasil render, serta mengenali streaming dengan Suspense.
 Durasi target 90–120 menit: pengambilan data dan status 35–45, rendering/cache 25–35, Suspense dan verifikasi 20–25, pengayaan 10–15 menit.
-Praktik utama mengikuti Next.js 16.3 acuan Modul 01, Node.js runtime, dan Cache Components nonaktif seperti Modul 03. Jangan menganggap konfigurasi ini default semua starter baru.
+Praktik utama mengikuti Next.js 16.3 acuan Modul 01, Node.js runtime, dan Cache Components nonaktif seperti Modul 04. Jangan menganggap konfigurasi ini default semua starter baru.
 API latihan hanya menyediakan metadata buku. Harga 50000 dari Modul 05 tetap angka latihan; keranjang Modul 06 tetap menyimpan total eksemplar, bukan stok atau transaksi.
 Semua perubahan dibuat di proyek Next.js peserta. Path memakai src/ dan alias @/* → src/*. Sesuaikan products bila memakai route group.
 Pengayaan Cache Components adalah pengenalan model yang berbeda, bukan instruksi mengaktifkan flag di tengah latihan.
@@ -96,7 +96,7 @@ export default nextConfig;
 </v-clicks>
 
 <!--
-Pada dokumentasi Oktober 2026, recommended defaults create-next-app sudah mengaktifkan Cache Components dan Partial Prefetching. false di sini adalah keputusan kurikulum yang melanjutkan Modul 03 dan mini project Modul 11.
+Pada dokumentasi Oktober 2026, recommended defaults create-next-app sudah mengaktifkan Cache Components dan Partial Prefetching. false di sini adalah keputusan kurikulum yang sudah dipasang pada Modul 01 dan dipakai hingga mini project Modul 11.
 Pertahankan opsi lain milik proyek. Jangan membuat export default kedua.
 Ketika cacheComponents true, ikuti model use cache/cacheLife serta aturan Suspense; migrasi bukan sekadar menyalin contoh konfigurasi ini.
 Sumber: https://nextjs.org/docs/app/getting-started/caching
@@ -130,13 +130,40 @@ Di `src/app/products/page.tsx`, ganti dua tautan buku lama:
 </BrutalCard>
 
 <!--
-Import Link dari next/link sudah ada. Pertahankan tautan promo, SearchForm, dan QueryLabel beserta Suspense dari Modul 03.
+Import Link dari next/link sudah ada. Pertahankan tautan promo. SearchForm baru dibuat pada Modul 08.
 ID URL kini mengikuti sumber data. Alamat contoh lama /products/buku-react dan /products/buku-next tidak lagi menunjuk karya yang valid.
 Ini sampel data bibliografi, bukan rekomendasi buku untuk mempelajari API Next.js terkini.
 Layanan publik dapat mengalami gangguan atau pembatasan. Hindari reload beruntun; batas request tanpa identitas adalah 1 per detik. Untuk pemakaian rutin, ikuti aturan User-Agent/kontak dan gunakan cache.
 Jangan mengubah katalog publik untuk menguji revalidasi. Pengajar dapat menyiapkan layanan uji terkontrol bila membutuhkan data yang bisa diubah.
 Sumber: https://openlibrary.org/developers/api
 Sumber: https://openlibrary.org/works/OL20915214W/Learning_React
+-->
+
+---
+class: module-content
+---
+
+### Sebelum fetch: Ikuti Satu Request
+
+Browser atau server bertindak sebagai **client** saat meminta data ke API.
+
+```text
+Client → GET /works/OL20915214W.json → Server Open Library
+Client ← status 200 + body JSON     ← Server Open Library
+```
+
+<v-clicks>
+
+- **URL** menunjuk sumber; **metode GET** meminta pembacaan.
+- **Status** memberi hasil HTTP: `200` berhasil, `404` tidak ditemukan, `500` gangguan server.
+- **JSON** adalah format data; bentuknya tetap perlu diperiksa sebelum dipakai.
+- Respons HTTP gagal berbeda dari jaringan terputus: keduanya perlu ditangani.
+
+</v-clicks>
+
+<!--
+Tunjukkan satu respons di browser sebelum mengetik helper. Batasi istilah pada field yang dipakai.
+Sumber: https://developer.mozilla.org/en-US/docs/Web/API/Fetch_API/Using_Fetch
 -->
 
 ---
@@ -215,14 +242,14 @@ Ganti judul di dalam `main`:
 <v-clicks>
 
 - Page tetap `async` dan Server Component.
-- Pertahankan ID, `BookNotice`, `BookQuantity key={id}`, dan timer latihan.
+- Pertahankan ID, `BookNotice`, `BookQuantity key={id}`, ; timer boleh dilepas setelah percobaan Modul 05.
 - Buka detail melalui tautan baru dari katalog.
 
 </v-clicks>
 
 <!--
 Ini tiga perubahan pada file yang sudah ada, bukan tiga file baru. Baris const berada di dalam fungsi ProductPage sebelum return; jangan menggandakan const id.
-Jika memakai composition BookNotice dari Modul 04, ubah h1 di tempat yang sekarang memuat judul.
+Jika memakai composition BookNotice dari Modul 03, ubah h1 di tempat yang sekarang memuat judul.
 CartProvider di root layout tetap menaungi halaman. Data buku tidak dibaca dari useCart.
 Sumber: https://nextjs.org/docs/app/getting-started/fetching-data
 -->
@@ -391,6 +418,27 @@ Sumber: https://nextjs.org/docs/app/api-reference/file-conventions/loading
 class: module-content
 ---
 
+### Jika API Publik Tidak Tersedia
+
+Latihan dapat memakai **fixture**: data contoh tetap yang disimpan bersama proyek.
+
+<v-clicks>
+
+1. Unduh [bahan fixture dan petunjuk pemasangan](/examples/fixtures/README.md).
+2. Salin file sesuai petunjuk, lalu set `BOOKS_SOURCE=fixture` di `.env.local`.
+3. Restart server. Dua ID buku latihan tetap dapat dibuka; ID lain menghasilkan 404.
+4. Hapus variabel itu dan restart untuk kembali ke Open Library.
+
+</v-clicks>
+
+<BrutalCard v-click class="mt-4 text-sm">
+  Mode fixture dipilih secara sadar. Error dari API asli tetap ditampilkan; aplikasi tidak diam-diam menggantinya dengan data contoh. Pembuktian perubahan cache memerlukan sumber yang dapat diubah.
+</BrutalCard>
+
+---
+class: module-content
+---
+
 ### Dua Pertanyaan Sebelum Membahas Cache
 
 **Rendering** membuat hasil tampilan. **Caching** menyimpan hasil agar dapat dipakai kembali.
@@ -430,13 +478,6 @@ Di `getBook`, bandingkan pengganti baris `fetch` berikut. `url` tetap memakai ni
 // Ambil dari layanan saat render membutuhkan data ini.
 const res = await fetch(url, {
   cache: "no-store",
-});
-```
-
-```ts
-// Pakai cache; ambil dari layanan jika belum tersedia.
-const res = await fetch(url, {
-  cache: "force-cache",
 });
 ```
 
@@ -588,7 +629,7 @@ Buat `src/app/products/[id]/BookDetails.tsx`. Pindahkan pengambilan buku dan kon
 
 ```tsx {1-5|7-8|10-17|all}
 import { getBook } from "@/lib/books";
-import BookNotice from "./BookNotice";
+import BookNotice from "@/components/BookNotice";
 import BookQuantity from "./BookQuantity";
 
 type Props = { id: string };
@@ -607,7 +648,7 @@ export default async function BookDetails({ id }: Props) {
 ```
 
 <!--
-BookDetails tidak memakai use client. Ia menampilkan Client Components sebagai anak, sesuai Modul 04.
+BookDetails tidak memakai use client. Ia menampilkan Client Components sebagai anak, sesuai Modul 03.
 Kontrol buku berada bersama data agar tidak muncul lebih dahulu untuk buku yang belum diketahui ada.
 Jika memakai children pada BookNotice, pertahankan susunan yang sesuai saat memindahkannya.
 StudyTimer dari Modul 05 boleh tetap berada di page, di luar bagian yang menunggu metadata.
@@ -716,12 +757,12 @@ npm run start
 1. Periksa ringkasan build untuk dua detail dari `generateStaticParams`.
 2. Buka katalog, klik detail, lalu lakukan reload penuh pada detail.
 3. Uji ID yang tidak ada dan pastikan navigasi keranjang masih berfungsi.
-4. Bandingkan dengan mode request-time pada percobaan terpisah.
+4. Hapus kode simulasi sebelum menyimpan checkpoint.
 
 </v-clicks>
 
 <BrutalCard v-click class="mt-4 text-sm">
-  Untuk percobaan request-time: pakai <code>no-store</code>, hapus sementara ekspor <code>generateStaticParams</code>, lalu build ulang. Setelah selesai, kembalikan kedua pengaturan latihan.
+  Jalur inti memakai <code>revalidate: 60</code> dan konfigurasi yang sama. Eksperimen request-time, invalidasi, Cache Components, dan PPR tersedia pada <a href="/examples/pengayaan/cache-lanjutan.md">lampiran cache</a>.
 </BrutalCard>
 
 <!--
@@ -732,141 +773,6 @@ Untuk membuktikan perubahan A ke B setelah revalidasi, gunakan sumber data uji m
 Harga/stock transaksi dan data pribadi memerlukan aturan kesegaran serta otorisasi tersendiri; jangan menerapkan cache publik contoh ini pada semuanya.
 Sumber: https://nextjs.org/docs/app/guides/incremental-static-regeneration#verifying-correct-production-behavior
 Sumber: https://nextjs.org/docs/app/api-reference/functions/fetch#troubleshooting
--->
-
----
-class: module-content
----
-
-### Pengayaan: Perbarui Cache Setelah Data Berubah
-
-Ketika aplikasi nanti bisa mengubah data, invalidasi dapat dipicu oleh tindakan server yang berhasil.
-
-| API                             | Cakupan dan perilaku                                                             |
-| ------------------------------- | -------------------------------------------------------------------------------- |
-| `revalidatePath(path)`          | Menandai cache pada path terkait untuk diperbarui                                |
-| `revalidateTag("books", "max")` | Data bertag menjadi stale; akses berikut memicu pembaruan di belakang            |
-| `updateTag("books")`            | Mengakhiri cache tag; pembacaan berikut menunggu data baru, khusus Server Action |
-
-Tag harus lebih dahulu diberikan pada data, misalnya di `getBook`:
-
-```ts
-const res = await fetch(url, {
-  next: { revalidate: 60, tags: ["books"] },
-});
-```
-
-<!--
-Slide ini pengenalan API, bukan instruksi menjalankan invalidasi pada module scope, saat render, atau di onClick client.
-revalidatePath/revalidateTag digunakan dalam Server Action atau Route Handler. updateTag hanya dalam Server Action. Bentuk revalidateTag dengan satu argumen sudah deprecated.
-Pada Route Handler, revalidatePath bekerja ketika path dikunjungi lagi; bukan otomatis membangun semua halaman saat fungsi dipanggil.
-Implementasi mutasi, pemeriksaan izin, dan endpoint dibahas setelah Modul 08. API publik latihan tidak kita mutasikan; menambah total cart juga tidak mengubah metadata buku.
-Menambahkan tag saja tidak menyebabkan data diperbarui. Cache Next.js juga tidak mengubah cache atau data milik layanan asal.
-Sumber: https://nextjs.org/docs/app/api-reference/functions/revalidatePath
-Sumber: https://nextjs.org/docs/app/api-reference/functions/revalidateTag
-Sumber: https://nextjs.org/docs/app/api-reference/functions/updateTag
--->
-
----
-class: module-content
-layout: two-cols
----
-
-### Pengayaan: Kenali Model Cache Components
-
-Dokumentasi terkini juga memakai model berikut. Pelajari sebagai jalur lanjutan setelah praktik utama dipahami.
-
-::left::
-
-#### Konfigurasi Model Baru
-
-```ts
-import type { NextConfig } from "next";
-
-const nextConfig: NextConfig = {
-  cacheComponents: true,
-  partialPrefetching: true,
-};
-
-export default nextConfig;
-```
-
-Konfigurasi ini berbeda dari jalur latihan yang sedang dipakai.
-
-::right::
-
-#### Cara Menyatakan Kebutuhan
-
-<v-clicks>
-
-- `"use cache"` menyimpan hasil fungsi atau komponen.
-- `cacheLife` mengatur masa pakai cache.
-- `cacheTag` memberi label untuk invalidasi.
-- Data yang menunggu request ditempatkan di bawah `Suspense`.
-
-</v-clicks>
-
-::bottom::
-
-<BrutalCard v-click class="text-sm">
-  Mengaktifkannya perlu meninjau akses data, params, layout, dan batas Suspense. Ikuti panduan migrasi sebelum mengubah proyek latihan.
-</BrutalCard>
-
-<!--
-Model ini mendukung Partial Prerendering dan memerlukan Node.js runtime. Jangan memakai experimental.ppr lama.
-Opsi dynamic, revalidate, atau fetchCache pada route dari model sebelumnya tidak boleh dicampur begitu saja dengan Cache Components. Fungsi cache dan parameter runtime mempunyai aturan tersendiri.
-Cakupan use cache dapat berada pada fungsi data atau komponen. Tidak perlu memberikan implementasi kedua lengkap dalam modul pemula ini.
-partialPrefetching memerlukan cacheComponents. Dokumentasi Oktober 2026 meminta nilainya ditulis eksplisit saat Cache Components diaktifkan.
-Sumber: https://nextjs.org/docs/app/api-reference/config/next-config-js/cacheComponents
-Sumber: https://nextjs.org/docs/app/getting-started/caching
-Sumber: https://nextjs.org/docs/app/api-reference/config/next-config-js/partialPrefetching
--->
-
----
-class: module-content
-layout: two-cols
----
-
-### PPR dan Prefetch Menjawab Kebutuhan Berbeda
-
-Pada jalur Cache Components, keduanya dapat bekerja bersama.
-
-::left::
-
-#### Partial Prerendering
-
-<v-clicks>
-
-- Menyiapkan bagian halaman yang dapat dirender lebih awal.
-- Kerangka halaman dapat memuat fallback.
-- Bagian yang membutuhkan request menyusul melalui streaming.
-
-</v-clicks>
-
-::right::
-
-#### Partial Prefetching
-
-<v-clicks>
-
-- Menyiapkan bagian route yang dapat dipakai kembali sebelum navigasi.
-- Konten yang bergantung URL dapat menyusul saat berpindah.
-- Pengaturan prefetch memengaruhi apa yang diminta sebelum klik.
-
-</v-clicks>
-
-::bottom::
-
-<BrutalCard v-click class="text-sm">
-  Uji dua jalur: membuka atau me-reload URL, lalu berpindah lewat Link. Hasil prefetch dan tampilan awal dapat berbeda.
-</BrutalCard>
-
-<!--
-Jangan menjanjikan “instan dari CDN”, “selalu satu request”, atau “tidak ada waterfall”. Efek nyata bergantung struktur route, cache, jaringan, dan hosting.
-State cart lokal Modul 06 bukan otomatis contoh data request-time di server. Untuk membahas PPR, bedakan state client tersebut dari data server yang menunggu request.
-Navigation Inspector, instant(), dan optimasi prefetch per link terlalu lanjut untuk checkpoint dasar; tersedia dalam bacaan berikut.
-Sumber: https://nextjs.org/docs/app/api-reference/config/next-config-js/cacheComponents
-Sumber: https://nextjs.org/docs/app/api-reference/config/next-config-js/partialPrefetching
 -->
 
 ---

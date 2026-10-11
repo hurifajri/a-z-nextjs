@@ -5,14 +5,14 @@ badgeColor: "purple"
 level: 1
 ---
 
-## 06. State Bersama: Context & Zustand
+## 06. State Bersama dengan Context
 
 Lanjutkan Toko Belajar: masukkan jumlah pilihan ke keranjang, tampilkan total di header, lalu baca total yang sama di halaman keranjang.
 
 <!--
-Bekal: BookQuantity menyimpan quantity lokal; BookControls dan BookSummary menerima props dari Modul 05. Navbar dan Link berasal dari Modul 03.
-Target akhir: peserta menentukan cakupan state, memasang satu provider bersama, membaca serta memperbarui state lewat Context, lalu mengenali alternatif Zustand dengan selector.
-Durasi target 75–100 menit: Context dan praktik 40–55 menit, alternatif Zustand 25–30 menit, verifikasi serta diskusi 10–15 menit. Bagian Zustand dapat menjadi demonstrasi pengajar setelah latihan Context berjalan.
+Bekal: BookQuantity menyimpan quantity lokal; BookControls dan BookSummary menerima props dari Modul 05. Navbar dan Link berasal dari Modul 04.
+Target akhir: peserta menentukan cakupan state, memasang satu provider bersama, membaca serta memperbarui state lewat Context, serta menjelaskan umur state saat navigasi dan reload.
+Durasi target 55–70 menit: Context dan praktik 40–55 menit, verifikasi serta diskusi 10–15 menit. Zustand tersedia sebagai lab terpisah.
 Keranjang latihan hanya menyimpan total eksemplar. Belum ada rincian per ID, validasi stok/harga, penyimpanan permanen, atau transaksi.
 Contoh mengikuti React 19 pada Next.js 16 acuan kelas Modul 01. Zustand memakai API v5 yang didokumentasikan saat audit; perintah instalasi dijalankan di proyek Next.js peserta.
 Path memakai src/ dan alias @/* → src/*. Bila products berada dalam route group, sesuaikan lokasi BookQuantity; komponen bersama tetap di src/components/cart/.
@@ -179,7 +179,7 @@ export default function CartProvider({ children }: Props) {
 <!--
 Setiap instance CartProvider memiliki useState sendiri. Kita akan memasang satu instance yang menaungi ketiga pemakai.
 React 19 mendukung <CartContext value={...}> sebagai provider. Bentuk <CartContext.Provider> pada contoh lama juga masih didukung.
-children membawa tampilan dari pemanggil, sesuai composition Modul 04. Membungkus children dengan provider client tidak mengubah kode page server menjadi client.
+children membawa tampilan dari pemanggil, sesuai composition Modul 03. Membungkus children dengan provider client tidak mengubah kode page server menjadi client.
 Nilai awal 0 sama untuk render server dan render pertama browser.
 Sumber: https://react.dev/reference/react/createContext#somecontext-provider
 Sumber: https://react.dev/reference/react/useState
@@ -294,7 +294,7 @@ Ganti tautan keranjang lama dengan `CartLink`:
 <v-clicks>
 
 - Tetap gunakan `Link` untuk Beranda dan Katalog.
-- Pertahankan `usePathname` serta penanda menu aktif dari Modul 03.
+- Pertahankan `usePathname` serta penanda menu aktif dari Modul 04.
 - Header kini menampilkan **Keranjang (0)** dan tetap menuju `/cart`.
 
 </v-clicks>
@@ -457,8 +457,8 @@ Mulai dari reload penuh sehingga total keranjang **0**. Lalu jalankan urutan ini
 Gunakan Link di dalam aplikasi untuk menguji navigasi client. Mengetik URL lalu memuat dokumen baru berbeda dari navigasi yang mempertahankan layout.
 Satu provider tidak menyinkronkan tab browser atau perangkat yang berbeda.
 Reset lokal BookQuantity dari Modul 05 mengatur pilihan menjadi 1; Kosongkan keranjang mengatur total bersama menjadi 0. Keduanya mempunyai pemilik dan tujuan berbeda.
-Jalankan npm run build pada proyek Next.js kelas. Suspense untuk QueryLabel dari Modul 03 tetap diperlukan.
-Lanjutkan alternatif Zustand setelah checkpoint Context ini berhasil.
+Jalankan npm run build pada proyek Next.js kelas. Pencarian URL baru dipasang di Modul 08.
+Zustand tersedia sebagai lampiran terpisah, bukan kelanjutan wajib.
 Sumber: https://nextjs.org/docs/app/getting-started/layouts-and-pages#creating-a-layout
 Sumber: https://react.dev/learn/preserving-and-resetting-state
 -->
@@ -471,19 +471,19 @@ class: module-content
 
 Mulai dari siapa yang membaca data dan berapa lama data perlu bertahan.
 
-| Kebutuhan                                                  | Pilihan awal yang masuk akal |
-| ---------------------------------------------------------- | ---------------------------- |
-| Jumlah pilihan untuk satu buku                             | `useState` lokal             |
-| Tombol dan ringkasan yang berdekatan                       | State parent + props         |
-| Nilai bersama untuk banyak komponen di bawah satu provider | Context                      |
-| Pencarian yang perlu dibagikan lewat URL                   | Query URL, seperti Modul 03  |
-| Store bersama dengan langganan ke bagian state tertentu    | Pertimbangkan Zustand        |
+| Kebutuhan                                                  | Pilihan awal yang masuk akal        |
+| ---------------------------------------------------------- | ----------------------------------- |
+| Jumlah pilihan untuk satu buku                             | `useState` lokal                    |
+| Tombol dan ringkasan yang berdekatan                       | State parent + props                |
+| Nilai bersama untuk banyak komponen di bawah satu provider | Context                             |
+| Pencarian yang perlu dibagikan lewat URL                   | Query URL, dipraktikkan di Modul 08 |
+| Store bersama dengan langganan ke bagian state tertentu    | Pertimbangkan Zustand               |
 
 <v-clicks>
 
 - Gunakan pola yang sudah dipahami selama memenuhi kebutuhan.
 - Tambahkan library untuk kebutuhan yang jelas.
-- Nilai dari server, seperti harga dan stok, dibahas mulai Modul 07.
+- Nilai dari server, seperti judul buku, dibahas mulai Modul 07.
 
 </v-clicks>
 
@@ -499,257 +499,21 @@ Sumber: https://zustand.docs.pmnd.rs/learn/getting-started/introduction
 class: module-content
 ---
 
-### Alternatif: Store dengan Zustand
+### Checkpoint dan Pilihan Pengayaan
 
-Zustand menyediakan tempat state dan tindakan, lalu komponen memilih nilai yang ingin diikuti melalui **selector**.
-
-Di proyek Next.js peserta:
-
-```bash
-npm install zustand
-```
+**Jalur inti selesai dengan Context.** Gunakan versi ini untuk modul berikutnya.
 
 <v-clicks>
 
-1. Buat fungsi pembuat store.
-2. Simpan satu store untuk masing-masing instance provider.
-3. Baca bagian state yang diperlukan dari komponen client.
+1. Cocokkan [checkpoint Modul 06](/examples/checkpoints/modul-06.zip) bila hasil Antum berbeda.
+2. Pastikan satu total terlihat di Navbar dan `/cart`.
+3. Jelaskan mengapa total bertahan saat navigasi, tetapi kembali nol setelah reload.
 
 </v-clicks>
 
 <BrutalCard v-click class="mt-4 text-sm">
-  Bagian berikut <strong>mengganti versi Context sebelumnya</strong>. Nama CartProvider tetap; hook useCart berubah menjadi menerima selector. Selesaikan seluruh langkah sebelum mencoba lagi.
+  [Lab Zustand](/examples/pengayaan/zustand.md) membandingkan selector dan store per provider. Kerjakan pada salinan proyek setelah Context dipahami; jangan mencampur kedua versi hook.
 </BrutalCard>
-
-<!--
-Context pertama adalah solusi lengkap untuk counter ini; peserta tidak wajib berpindah. Zustand dipelajari sebagai alternatif dan latihan selector.
-API yang digunakan adalah Zustand v5. Catat versi yang terpasang di package lock proyek kelas; tidak ada klaim bahwa nomor patch tertentu adalah yang terbaru.
-Next.js juga merender Client Components di server. Jangan membuat satu instance store mutable di module scope yang dipakai bersama lintas request.
-Kita tetap memakai React Context untuk menyalurkan instance store. Nilai totalnya dikelola Zustand, bukan useState seperti pada implementasi pertama.
-Panduan Next.js Zustand memiliki catatan akan diperbarui; ikuti API resmi dan periksa kembali bila pola framework berubah.
-Sumber: https://zustand.docs.pmnd.rs/learn/guides/nextjs
-Sumber: https://zustand.docs.pmnd.rs/learn/getting-started/introduction
--->
-
----
-class: module-content
----
-
-### Zustand 1: Buat Fungsi Pembuat Store
-
-Buat `src/stores/cart.ts`. Fungsi ini menghasilkan store baru setiap kali dipanggil.
-
-```ts {1-7|9-15|17|all}
-import { createStore } from "zustand/vanilla";
-
-export type CartState = {
-  totalItems: number;
-  addItems: (amount: number) => void;
-  reset: () => void;
-};
-
-export function createCartStore() {
-  return createStore<CartState>()((set) => ({
-    totalItems: 0,
-    addItems: (amount) => set((s) => ({ totalItems: s.totalItems + amount })),
-    reset: () => set({ totalItems: 0 }),
-  }));
-}
-
-export type CartStore = ReturnType<typeof createCartStore>;
-```
-
-<BrutalCard v-click class="mt-3 text-sm">
-  File ini mengekspor <strong>fungsi pembuat</strong>, bukan satu instance bersama. Provider akan memanggilnya untuk membuat store miliknya.
-</BrutalCard>
-
-<!--
-createStore membuat vanilla store, yaitu store yang dapat dipakai tanpa hook React. Integrasi React menggunakan useStore pada langkah berikutnya.
-set dengan objek parsial menggabungkan perubahan satu tingkat secara default; memperbarui totalItems tidak menghapus fungsi addItems/reset.
-s adalah state saat pembaruan diproses. Hitung nilai baru tanpa memutasi s, seperti prinsip Modul 05.
-ReturnType mengambil tipe hasil fungsi createCartStore; peserta cukup mengenali bahwa CartStore adalah tipe instance yang diberikan kepada provider.
-Jangan mengganti factory dengan export const cartStore = createCartStore() pada module scope untuk pola Next.js kelas ini.
-Sumber: https://zustand.docs.pmnd.rs/reference/apis/create-store
-Sumber: https://zustand.docs.pmnd.rs/learn/guides/nextjs
--->
-
----
-class: module-content
----
-
-### Zustand 2: Baca Store melalui Selector
-
-Ganti seluruh isi `src/components/cart/cart-context.ts` dengan versi ini.
-
-```ts {2-4|6|8-12|all}
-"use client";
-import { createContext, useContext } from "react";
-import { useStore } from "zustand";
-import type { CartState, CartStore } from "@/stores/cart";
-
-export const CartContext = createContext<CartStore | null>(null);
-
-export function useCart<T>(selector: (state: CartState) => T) {
-  const store = useContext(CartContext);
-  if (store === null) throw new Error("CartProvider belum dipasang");
-  return useStore(store, selector);
-}
-```
-
-<v-clicks>
-
-- Context sekarang membawa **instance store**.
-- `useStore` membaca dan mengikuti hasil selector.
-- `T` mewakili tipe hasil pilihan, misalnya angka atau fungsi.
-
-</v-clicks>
-
-<!--
-Hook useCart sekarang memerlukan satu argumen selector. Consumer lama yang masih memanggil useCart() perlu diperbarui pada langkah 4.
-Hook tetap dipanggil di tingkat teratas fungsi komponen client. Selector adalah fungsi pemilih nilai; bukan tempat menjalankan tindakan atau mengubah store.
-Guard null adalah pola untuk melaporkan provider yang tidak tersedia, bukan kondisi yang membuat hook dipanggil berbeda antar-render normal.
-createContext yang dipakai berasal dari React. Jangan memakai API lama zustand/context yang sudah dihapus pada v5.
-Sumber: https://zustand.docs.pmnd.rs/reference/hooks/use-store
-Sumber: https://zustand.docs.pmnd.rs/learn/guides/initialize-state-with-props
--->
-
----
-class: module-content
----
-
-### Zustand 3: Simpan Store pada Provider
-
-Ganti seluruh isi `src/components/cart/CartProvider.tsx`. Posisi provider di layout tetap sama.
-
-```tsx {1-6|9|11|all}
-"use client";
-import { useState, type ReactNode } from "react";
-import { createCartStore } from "@/stores/cart";
-import { CartContext } from "./cart-context";
-
-type Props = { children: ReactNode };
-
-export default function CartProvider({ children }: Props) {
-  const [store] = useState(() => createCartStore());
-
-  return <CartContext value={store}>{children}</CartContext>;
-}
-```
-
-<v-clicks>
-
-- Inisialisasi lazy mempertahankan store selama instance provider hidup.
-- Nilai awal `totalItems: 0` sama pada server dan render awal browser.
-- Server Component menampilkan provider; komponen client yang membaca dan memperbarui store.
-
-</v-clicks>
-
-<!--
-useState di sini memegang instance store yang stabil, bukan totalItems. Pembaruan total ditangani Zustand.
-Initializer dapat dipanggil lagi oleh pemeriksaan Strict Mode development; factory ini murni dan tidak memulai subscription eksternal atau request jaringan.
-Dua instance provider membuat dua store terpisah. Jangan memanggil createCartStore langsung pada setiap render tanpa mempertahankan hasilnya.
-Jangan membaca/menulis store UI ini dari Server Component atau menjadikannya penyimpanan data bersama semua pengguna di server.
-Persist ke localStorage belum digunakan. Persistence memerlukan keputusan umur data serta penanganan hydration; tidak ditambahkan sekadar agar reload lolos.
-Sumber: https://zustand.docs.pmnd.rs/learn/guides/initialize-state-with-props
-Sumber: https://zustand.docs.pmnd.rs/reference/hooks/use-store
-Sumber: https://react.dev/reference/react/useState#avoiding-recreating-the-initial-state
--->
-
----
-class: module-content
----
-
-### Zustand 4: Pilih Nilai di Setiap Pemakai
-
-Perbarui cara membaca state pada `CartLink.tsx`.
-
-````md magic-move
-```tsx
-"use client";
-import Link from "next/link";
-import { useCart } from "./cart-context";
-
-export default function CartLink() {
-  const { totalItems } = useCart();
-  return <Link href="/cart">Keranjang ({totalItems})</Link>;
-}
-```
-
-```tsx
-"use client";
-import Link from "next/link";
-import { useCart } from "./cart-context";
-
-export default function CartLink() {
-  const totalItems = useCart((s) => s.totalItems);
-  return <Link href="/cart">Keranjang ({totalItems})</Link>;
-}
-```
-````
-
-Ganti juga baris hook **di dalam fungsi** kedua komponen berikut:
-
-| File              | Pembacaan baru                                                                                  |
-| ----------------- | ----------------------------------------------------------------------------------------------- |
-| `AddToCart.tsx`   | `const addItems = useCart((s) => s.addItems);`                                                  |
-| `CartSummary.tsx` | `const totalItems = useCart((s) => s.totalItems);`<br/>`const reset = useCart((s) => s.reset);` |
-
-<!--
-Import useCart dan JSX tombol tetap sama. Hapus baris destructuring useCart() lama, lalu ganti dengan baris selector pada tabel.
-Di CartSummary, dua hook tetap dipanggil di awal fungsi sebelum return dan tanpa kondisi.
-Semua pemakai sudah memakai API baru setelah langkah ini. Ulangi checkpoint navigasi, tambah, kosongkan, dan reload.
-Sumber: https://zustand.docs.pmnd.rs/reference/hooks/use-store
--->
-
----
-class: module-content
-layout: two-cols
----
-
-### Apa yang Berubah saat Nilai Diperbarui?
-
-Keduanya bisa memenuhi latihan. Cara berlangganan nilainya berbeda.
-
-::left::
-
-#### Versi Context
-
-<v-clicks>
-
-- `useState` provider menyimpan total.
-- `useCart()` membaca seluruh value Context.
-- Value yang berubah memperbarui komponen pembacanya.
-- Provider baru berarti state tersendiri.
-
-</v-clicks>
-
-::right::
-
-#### Versi Zustand
-
-<v-clicks>
-
-- Store menyimpan total dan tindakan.
-- Selector memilih nilai yang diikuti.
-- Perubahan hasil selector memicu pembaruan langganan.
-- Store dibuat terpisah per instance provider.
-
-</v-clicks>
-
-::bottom::
-
-<BrutalCard v-click class="text-sm">
-  Selector tidak menjamin komponen hanya pernah render karena store. Props, state lokal, atau parent juga dapat menyebabkan render. Ukur dahulu sebelum menambah optimasi.
-</BrutalCard>
-
-<!--
-Context tidak otomatis merender semua elemen di bawah provider karena perubahan context; mekanisme langganan berlaku pada consumer. Render parent juga dapat memicu render anak melalui jalur biasa.
-Versi Context mengirim objek value baru pada render provider. useMemo/useCallback dapat membantu pada kebutuhan tertentu, tetapi bukan prasyarat kebenaran contoh.
-Selector contoh mengembalikan angka atau fungsi yang stabil. Pada Zustand v5, selector yang selalu menghasilkan objek/array baru perlu penanganan kestabilan, misalnya useShallow bila sesuai; lihat referensi sebelum memperluas contoh.
-Jangan mengklaim Zustand selalu lebih cepat atau Context hanya boleh untuk data yang jarang berubah.
-Sumber: https://react.dev/reference/react/useContext#optimizing-re-renders-when-passing-objects-and-functions
-Sumber: https://zustand.docs.pmnd.rs/reference/migrations/migrating-to-v5#requiring-stable-selector-outputs
--->
 
 ---
 class: module-content
@@ -759,14 +523,13 @@ class: module-content
 
 Periksa pemilik, provider, dan versi hook yang sedang digunakan.
 
-| Gejala                                   | Periksa dan perbaiki                                               |
-| ---------------------------------------- | ------------------------------------------------------------------ |
-| `CartProvider belum dipasang`            | Provider harus menaungi komponen pembaca                           |
-| Header dan keranjang punya total berbeda | Gunakan satu instance provider bersama                             |
-| Total hilang saat berpindah lewat Link   | Periksa provider yang dipasang di page atau key yang berubah       |
-| Total kembali 0 setelah reload penuh     | Sesuai latihan; state belum disimpan permanen                      |
-| Error setelah mencoba versi Zustand      | Ganti context, provider, dan semua pemanggilan hook secara lengkap |
-| Ingin membaca `useCart` di page server   | Tampilkan komponen client seperti `CartSummary` di page itu        |
+| Gejala                                   | Periksa dan perbaiki                                         |
+| ---------------------------------------- | ------------------------------------------------------------ |
+| `CartProvider belum dipasang`            | Provider harus menaungi komponen pembaca                     |
+| Header dan keranjang punya total berbeda | Gunakan satu instance provider bersama                       |
+| Total hilang saat berpindah lewat Link   | Periksa provider yang dipasang di page atau key yang berubah |
+| Total kembali 0 setelah reload penuh     | Sesuai latihan; state belum disimpan permanen                |
+| Ingin membaca `useCart` di page server   | Tampilkan komponen client seperti `CartSummary` di page itu  |
 
 <!--
 Gunakan struktur pohon komponen, bukan hanya folder, untuk menelusuri cakupan provider.
@@ -810,12 +573,12 @@ transition: slide-up
 
 1. **Tentukan Pemilik State**: Simpan pilihan lokal di komponen; bagikan total melalui provider bersama.
 2. **Context Menyalurkan Nilai**: Provider menyediakan nilai dan komponen client membacanya lewat hook.
-3. **Zustand Menambah Pilihan Selector**: Buat store per provider dan jaga nilai awal server/browser tetap cocok.
+3. **Periksa Umur State**: Navigasi lewat Link mempertahankan provider; reload penuh mengembalikan state latihan ke nilai awal.
 
 </v-clicks>
 
 <BrutalCard v-click class="mt-4 bg-brutal-yellow/10">
-  🚀 <strong>Selanjutnya di Modul 07:</strong> Dari mana judul, harga, dan stok buku diperoleh? Kita mulai mengambil data dan mempelajari kapan halaman dirender serta datanya disimpan dalam cache.
+  🚀 <strong>Selanjutnya di Modul 07:</strong> Dari mana judul buku diperoleh? Kita mulai mengambil data dan mempelajari kapan halaman dirender serta datanya disimpan dalam cache.
 </BrutalCard>
 
 <!--

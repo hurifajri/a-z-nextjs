@@ -1,6 +1,6 @@
 # Modul 15 — Playwright untuk Toko Belajar
 
-Berkas ini dipakai pada **aplikasi Next.js latihan sampai modul 14**, setelah latihan inti Vitest selesai. Salin struktur berikut ke root aplikasi:
+Berkas ini dipakai pada **aplikasi Next.js latihan sampai modul 14**, sebagai tahap inti kedua setelah Vitest selesai. Salin struktur berikut ke root aplikasi:
 
 ```text
 playwright.config.ts

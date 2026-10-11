@@ -89,6 +89,42 @@ Setiap permintaan perubahan harus melewati pemeriksaan di server.
 
 ---
 class: module-content
+layout: two-cols
+---
+
+### Pahami Cookie dan Siklus Sesi
+
+Library mengelola cookie; aplikasi tetap menentukan tempat pemeriksaan akses.
+
+::left::
+
+#### Saat Login Berhasil
+
+- Server membuat sesi di database.
+- Browser menerima cookie sesi HttpOnly.
+- Browser mengirim cookie pada request berikutnya.
+- Server memeriksa sesi sebelum mengakses data.
+
+::right::
+
+#### Saat Sesi Berakhir
+
+- Sesi kedaluwarsa atau dicabut → akses ditolak.
+- Logout mencabut sesi dan menghapus cookie.
+- UI memberi jalan untuk login ulang.
+- Cookie cache latihan dimatikan agar pencabutan segera diperiksa ke database.
+
+<!--
+HttpOnly membatasi akses cookie oleh JavaScript; XSS masih dapat menjalankan aksi sebagai pengguna.
+Secure dipakai dengan HTTPS pada production. SameSite membantu membatasi pengiriman lintas situs; pemeriksaan Origin untuk mutasi tetap diterapkan pada endpoint kita.
+Hindari menyimpan session identifier pada localStorage.
+Sumber: https://better-auth.com/docs/concepts/session-management
+Sumber: https://better-auth.com/docs/concepts/cookies
+Sumber: https://cheatsheetseries.owasp.org/cheatsheets/HTML5_Security_Cheat_Sheet.html
+-->
+
+---
+class: module-content
 ---
 
 ### Kerjakan dalam Tiga Tahap
@@ -596,6 +632,27 @@ Checkpoint ini hanya membuktikan akun dan sesi. Pembatasan akses halaman/API dit
 class: module-content
 ---
 
+### Jeda Praktik: Akun dan Sesi
+
+Periksa alur akun pada aplikasi lokal sebelum membatasi usulan.
+
+<v-clicks>
+
+1. Daftar melalui `/login`: email baru dan password minimal 15 karakter.
+2. Buka DevTools → Application → Cookies. Cookie sesi dibuat library.
+3. Reload halaman; request berikutnya membawa cookie ke origin aplikasi.
+4. Jangan menyalin nilai cookie ke source atau log.
+
+</v-clicks>
+
+<BrutalCard v-click class="mt-4 text-sm">
+  Ini baru tahap sesi. Usulan belum aman untuk banyak akun sampai <strong>halaman dan semua endpoint</strong> memeriksa pemilik pada langkah berikut.
+</BrutalCard>
+
+---
+class: module-content
+---
+
 ### 9. Buat Pembaca Sesi yang Nyata
 
 Buat **`src/lib/session.ts`**; file ini dipakai oleh halaman server.
@@ -767,7 +824,7 @@ export async function POST(request: Request) {
 }
 ```
 
-<BrutalCard v-click class="mt-3 text-sm">Form tetap mengirim <code>title</code> dan <code>reason</code>. Server menentukan <code>userId</code> dan mengembalikan field respons yang sama seperti modul 13.</BrutalCard>
+<BrutalCard v-click class="mt-3 text-sm">Form tetap mengirim <code>title</code> dan <code>reason</code>. Server menentukan <code>userId</code> dan mengembalikan field respons yang sama seperti Modul 11.</BrutalCard>
 
 <!--
 BookSuggestionSchema berupa v.object membuang field tambahan. Menyebut title/reason/userId secara eksplisit memastikan body tidak dapat memilih pemilik.
@@ -965,7 +1022,7 @@ if (res.status === 401) throw new SessionExpiredError();
 
 - Kontrak berhasil tetap sama: POST/PATCH berisi JSON, DELETE kosong.
 - Error sesi bisa dikenali UI tanpa mengandalkan teks dari backend.
-- Simpan draf input agar peserta dapat login kembali sebelum mencoba ulang.
+- Pertahankan isi form saat sesi berakhir. Masuk kembali di tab baru, lalu coba lagi.
 
 </v-clicks>
 
@@ -1014,9 +1071,9 @@ Reset form tetap hanya dijalankan pada hasil sukses, seperti Modul 11. Jangan re
 class: module-content
 ---
 
-### 18. Perbarui Kontrak API dari Modul 13
+### 18. Perbarui Kontrak CRUD dari Modul 10–11
 
-Di `public/openapi.yaml`, tambahkan `securitySchemes` di bawah `components` dan `security` pada root dokumen.
+Unduh [kontrak CRUD](/examples/contracts/suggestions.openapi.yaml) jika belum memasangnya. Simpan sebagai `public/openapi.yaml`, lalu tambahkan `securitySchemes` di bawah `components` dan `security` pada root dokumen.
 
 ```yaml
 components:
@@ -1051,6 +1108,26 @@ Sumber: https://better-auth.com/docs/concepts/cookies
 class: module-content
 ---
 
+### Berkas Lengkap dan Urutan Pemeriksaan
+
+[Checkpoint Modul 14](/examples/checkpoints/modul-14.zip) berisi aplikasi berakun beserta migrasinya.
+
+<v-clicks>
+
+- **Tahap A:** konfigurasi auth, tabel, endpoint auth, dan form login.
+- **Tahap B:** pembaca sesi, query pemilik, dan pemeriksaan Origin pada mutasi.
+- **Tahap C:** uji dua akun pada slide berikut. Tombol tersembunyi belum membuktikan izin server.
+
+</v-clicks>
+
+<BrutalCard v-click class="mt-4 text-sm">
+  Coba checkpoint pada folder dan database terpisah. Jalankan migrasi dari database kosong; buat secret lokal sesuai README.
+</BrutalCard>
+
+---
+class: module-content
+---
+
 ### Checkpoint: Dua Akun, Dua Daftar Usulan
 
 Gunakan dua profil browser terpisah: akun Aisyah dan akun Hasan.
@@ -1069,42 +1146,6 @@ Gunakan dua profil browser terpisah: akun Aisyah dan akun Hasan.
 Untuk kasus lintas akun, catat ID Aisyah dari respons API, lalu uji request dari profil Hasan memakai Swagger UI atau console origin aplikasi.
 Coba POST dengan userId Aisyah pada body Hasan: server tetap mengisi pemilik dari sesi Hasan. PATCH dengan field tambahan userId harus 400.
 Uji sesi palsu/kedaluwarsa dan sesi dicabut ketika tab lama masih berisi draf. Form tetap berisi draf dan menampilkan pesan login ulang.
--->
-
----
-class: module-content
-layout: two-cols
----
-
-### Pahami Cookie dan Siklus Sesi
-
-Library mengelola cookie; aplikasi tetap menentukan tempat pemeriksaan akses.
-
-::left::
-
-#### Saat Login Berhasil
-
-- Server membuat sesi di database.
-- Browser menerima cookie sesi HttpOnly.
-- Browser mengirim cookie pada request berikutnya.
-- Server memeriksa sesi sebelum mengakses data.
-
-::right::
-
-#### Saat Sesi Berakhir
-
-- Sesi kedaluwarsa atau dicabut → akses ditolak.
-- Logout mencabut sesi dan menghapus cookie.
-- UI memberi jalan untuk login ulang.
-- Cookie cache latihan dimatikan agar pencabutan segera diperiksa ke database.
-
-<!--
-HttpOnly membatasi akses cookie oleh JavaScript; XSS masih dapat menjalankan aksi sebagai pengguna.
-Secure dipakai dengan HTTPS pada production. SameSite membantu membatasi pengiriman lintas situs; pemeriksaan Origin untuk mutasi tetap diterapkan pada endpoint kita.
-Hindari menyimpan session identifier pada localStorage.
-Sumber: https://better-auth.com/docs/concepts/session-management
-Sumber: https://better-auth.com/docs/concepts/cookies
-Sumber: https://cheatsheetseries.owasp.org/cheatsheets/HTML5_Security_Cheat_Sheet.html
 -->
 
 ---

@@ -5,12 +5,12 @@ badgeColor: "pink"
 level: 1
 ---
 
-## 08. Konsumsi API di Browser
+## 08. Pencarian URL & API di Browser
 
 Pencarian buku dengan `fetch` dan TanStack Query: dari kata kunci di URL sampai hasil, status request, dan cache.
 
 <!--
-Bekal: SearchForm dan parameter q dari Modul 03, Client Components dari Modul 04, props dan custom hook dari Modul 05–06, serta detail buku dari Modul 07.
+Bekal: path dan query dari Modul 04, Client Components dari Modul 03, props dan custom hook dari Modul 05–06, serta detail buku dari Modul 07.
 Target: peserta dapat memasang provider, mengambil data API publik, menyusun queryKey, dan menampilkan status awal maupun pembaruan data.
 Latihan memakai TanStack Query v5 dengan useQuery biasa. Tidak memakai SSR prefetch, hydration cache, atau useSuspenseQuery.
 Konfigurasi proyek mengikuti jalur utama Modul 07: cacheComponents: false dan partialPrefetching: false.
@@ -24,7 +24,7 @@ layout: two-cols
 
 ### Lanjutkan Pencarian di Toko Belajar
 
-Di Modul 03, form baru mengubah URL. Sekarang kata kunci itu menentukan data yang diminta.
+Modul 04 mengenalkan path dan query. Sekarang buat form yang menyimpan kata pencarian di URL, lalu ambil hasilnya.
 
 ::left::
 
@@ -45,7 +45,7 @@ Di Modul 03, form baru mengubah URL. Sekarang kata kunci itu menentukan data yan
 
 | Bagian                      | Peran                                |
 | :-------------------------- | :----------------------------------- |
-| `SearchForm` · Modul 03     | Mengirim kata kunci ke URL           |
+| `SearchForm` · Modul 08     | Mengirim kata kunci ke URL           |
 | TanStack Query · Modul 08   | Menyimpan hasil dan status pencarian |
 | `/products/[id]` · Modul 07 | Mengambil detail buku di server      |
 | `CartProvider` · Modul 06   | Menyimpan total keranjang            |
@@ -67,6 +67,171 @@ class: module-content
 layout: two-cols
 ---
 
+### Baca Kata Pencarian dari URL
+
+Buat `src/app/products/QueryLabel.tsx`; komponen ini menampilkan isi parameter `q`.
+
+::left::
+
+```tsx
+"use client";
+import { useSearchParams } from "next/navigation";
+
+export default function QueryLabel() {
+  const searchParams = useSearchParams();
+  const keyword = searchParams.get("q") ?? "";
+  return <p>Pencarian: {keyword || "semua buku"}</p>;
+}
+```
+
+::right::
+
+#### Hasil yang Diharapkan
+
+<v-clicks>
+
+- **/products?q=react** → Pencarian: react
+- **/products?q=next** → Pencarian: next
+- **/products** atau **?q=** → Pencarian: semua buku
+
+</v-clicks>
+
+`get("q")` membaca nilai; hasil hook ini tidak dapat diubah langsung.
+
+::bottom::
+
+<BrutalCard v-click class="text-sm">
+  Kita pasang komponen ini setelah membuat form, dengan pembungkus <strong>Suspense</strong> untuk menyediakan tampilan sementara saat nilai URL belum siap.
+</BrutalCard>
+
+<!--
+File QueryLabel.tsx bukan rute, sesuai materi colocation Modul 02. Komponen belum dipakai sampai langkah Gabungkan.
+get mengembalikan null jika parameter tidak ada; ?? memberi nilai pengganti. String kosong juga ditampilkan sebagai semua buku melalui || pada JSX.
+Pada query berulang, get membaca nilai pertama. Validasi dan parameter berulang dapat dibahas saat peserta sudah memahami satu nilai.
+Label mengikuti URL saat navigasi, reload, serta Back/Forward. Ini belum menyaring daftar buku.
+Sumber: https://nextjs.org/docs/app/api-reference/functions/use-search-params
+-->
+
+---
+class: module-content
+---
+
+### Navigasi Setelah Form Dikirim
+
+Buat `src/components/SearchForm.tsx`. `useRouter` membantu membuka URL yang disusun dari isian form.
+
+```tsx {1-3|5-7|8-12|14-20|all}
+"use client";
+import { useRouter } from "next/navigation";
+import type { FormEvent } from "react";
+
+export default function SearchForm() {
+  const router = useRouter();
+  function search(event: FormEvent<HTMLFormElement>) {
+    event.preventDefault();
+    const data = new FormData(event.currentTarget);
+    const query = new URLSearchParams();
+    query.set("q", String(data.get("q") ?? "").trim());
+    router.push(`/products?${query.toString()}`);
+  }
+  return (
+    <form onSubmit={search}>
+      <label htmlFor="book-query">Cari buku</label>
+      <input id="book-query" name="q" className="border mx-2" />
+      <button type="submit">Cari</button>
+    </form>
+  );
+}
+```
+
+<!--
+Jelaskan alur: submit → cegah navigasi form bawaan → baca isian bernama q → susun query → router.push.
+FormEvent adalah tipe event TypeScript; FormData membaca isian form. URLSearchParams mengodekan spasi dan karakter khusus, misalnya & tidak menjadi parameter tambahan.
+Tujuan selalu /products; isian pengguna hanya menjadi nilai q. Jangan memberikan URL tujuan mentah dari isian langsung ke router.push/replace.
+Form ini hanya mempunyai q. Jika nanti menambahkan filter lain, pertahankan parameter yang masih relevan ketika menyusun query baru.
+Untuk tautan dengan tujuan tetap, gunakan Link. Form GET atau next/form juga bisa melayani pencarian; contoh ini khusus mempraktikkan navigasi lewat event handler.
+Field input belum disinkronkan kembali dari URL ketika Back/Forward; label hasil pada langkah berikutnya menjadi acuan nilai URL. Label hasil menunjukkan kata pencarian aktif; draf input terpisah dari URL.
+Sumber: https://nextjs.org/docs/app/api-reference/functions/use-router
+Sumber pengodean query: https://developer.mozilla.org/en-US/docs/Web/API/URLSearchParams
+-->
+
+---
+class: module-content
+---
+
+### Gabungkan Form dan Label pada Katalog
+
+Perbarui `src/app/products/page.tsx`. Label mengikuti URL; daftar buku belum disaring.
+
+```tsx
+import Link from "next/link";
+import { Suspense } from "react";
+import SearchForm from "@/components/SearchForm";
+import QueryLabel from "./QueryLabel";
+
+export default function ProductsPage() {
+  return (
+    <main className="p-8">
+      <h1 className="text-3xl">Katalog Buku</h1>
+      <SearchForm />
+      <Suspense fallback={<p>Membaca URL...</p>}>
+        <QueryLabel />
+      </Suspense>
+      <div className="flex flex-col gap-2">
+        <Link href="/products/OL20915214W">Learning React</Link>
+        <Link href="/products/OL19542899W">React: panduan praktik</Link>
+        <Link href="/products/promo">Lihat promo</Link>
+      </div>
+    </main>
+  );
+}
+```
+
+<!--
+Praktik 5–8 menit: ketik react, kirim, lalu cocokkan ?q=react dengan label Pencarian: react. Daftar tetap menampilkan dua buku; fokus modul ini adalah URL, bukan algoritma pencarian data.
+Suspense membungkus QueryLabel karena di situlah useSearchParams dipanggil. fallback adalah tampilan sementara; bisa sangat singkat sehingga tidak terlihat saat mencoba.
+Pada halaman yang diprerender, penggunaan useSearchParams tanpa Suspense dapat gagal pada build production meskipun terlihat berjalan saat dev. Jalankan npm run build sebagai pemeriksaan akhir latihan.
+Tidak menambahkan use client ke page atau root layout. Dasar menggabungkan komponen seperti ini dibahas lebih jauh pada Modul 03.
+Sumber: https://nextjs.org/docs/app/api-reference/functions/use-search-params#prerendering
+Sumber Suspense: https://react.dev/reference/react/Suspense
+-->
+
+---
+class: module-content
+---
+
+### Pilih Perilaku Riwayat Browser
+
+URL menyimpan nilai yang bisa dibuka kembali; push dan replace menentukan catatan riwayatnya.
+
+| Cara berpindah              | Dampak pada riwayat      | Kapan dipakai                                      |
+| :-------------------------- | :----------------------- | :------------------------------------------------- |
+| `Link` / `router.push(url)` | Menambah entri           | Pengunjung membuka halaman atau mengirim pencarian |
+| `router.replace(url)`       | Mengganti entri saat ini | Memperbarui URL tanpa menambah langkah Back        |
+| `router.back()`             | Mundur satu entri        | Kembali melalui riwayat yang sudah ada             |
+
+<v-clicks>
+
+1. Cari **react**, lalu **next**. Dengan push, tombol **Back** mengembalikan URL dan label ke react.
+2. Muat ulang atau buka URL di tab baru. Label membaca kata pencarian yang sama.
+3. Untuk mencoba replace, ganti `router.push` pada form; bandingkan hasil tombol Back.
+
+</v-clicks>
+
+<!--
+Untuk perbandingan yang jelas, mulai tiap percobaan dari /products lalu kirim react dan next. Dengan replace, dua nilai itu menggantikan entri sekarang; Back menuju entri sebelum /products, jika ada.
+replace tidak menghapus seluruh riwayat. back juga tidak selalu menuju katalog; jika halaman dibuka langsung dari situs lain, riwayatnya berbeda. Gunakan Link ke /products jika tujuannya harus katalog.
+Link juga menerima prop replace; baris pertama tabel memakai perilaku default.
+router.refresh berbeda dari reload dokumen dan tidak otomatis membatalkan cache server. Detail cache sengaja ditunda, bukan dijadikan langkah pencarian.
+Sumber: https://nextjs.org/docs/app/api-reference/functions/use-router
+Sumber: https://nextjs.org/docs/app/api-reference/components/link#replace
+-->
+
+---
+class: module-content
+layout: two-cols
+---
+
 ### HTTP Client dan Pengelola Query
 
 Keduanya bekerja bersama saat browser mengambil data.
@@ -75,13 +240,9 @@ Keduanya bekerja bersama saat browser mengambil data.
 
 #### HTTP Client Mengirim Request
 
-| Pilihan | Hal yang Perlu Dikenali                         |
-| :------ | :---------------------------------------------- |
-| `fetch` | Bawaan platform; cek HTTP dan baca JSON sendiri |
-| Axios   | Library dengan pengolahan JSON dan interceptor  |
-| Ky      | Pembungkus `fetch` dengan HTTP error dan retry  |
+`fetch` mengirim request, lalu kode Antum memeriksa status HTTP dan membaca JSON.
 
-Latihan memakai **`fetch`** yang sudah dikenal dari Modul 07.
+Latihan melanjutkan **fetch** dari Modul 07. Axios dan Ky merupakan alternatif; keduanya tidak perlu dipasang.
 
 ::right::
 
@@ -245,7 +406,7 @@ Navbar tetap mendapat state keranjang. Halaman pencarian mendapat akses ke cache
 ::bottom::
 
 <BrutalCard v-click class="text-sm">
-  Root layout tetap Server Component. Menyalurkan <strong>children</strong> melalui provider mengikuti pola Modul 04 dan 06.
+  Root layout tetap Server Component. Menyalurkan <strong>children</strong> melalui provider mengikuti pola Modul 03 dan 06.
 </BrutalCard>
 
 <!--
@@ -595,7 +756,7 @@ layout: two-cols
 
 ### Sambungkan dengan Halaman Katalog
 
-Perbarui `src/app/products/page.tsx` yang sudah memiliki form dan tautan dari modul sebelumnya.
+Perbarui `src/app/products/page.tsx` yang sudah memiliki form dan tautan dari tahap awal modul ini.
 
 ::left::
 
@@ -639,7 +800,7 @@ Page tetap Server Component. `SearchForm` yang sudah ada mengirim parameter `q`.
 <!--
 Potongan ini diterapkan pada halaman yang ada, bukan mengganti seluruh file. Pertahankan import Link, Suspense, SearchForm dan dua ID Open Library dari Modul 07.
 useSearchParams pada halaman yang diprerender memerlukan batas Suspense dalam build production. useQuery biasa tidak menangguhkan render seperti useSuspenseQuery.
-Form dari Modul 03 menyimpan draf pada input. Back/Forward memulihkan URL dan hasil, tetapi nilai input tidak otomatis disinkronkan. Label Pencarian menunjukkan keyword aktif.
+Form pada awal modul ini menyimpan draf pada input. Back/Forward memulihkan URL dan hasil, tetapi nilai input tidak otomatis disinkronkan. Label Pencarian menunjukkan keyword aktif.
 Sumber: https://nextjs.org/docs/app/api-reference/functions/use-search-params#prerendering
 -->
 
@@ -900,30 +1061,52 @@ class: module-content
 
 ### Checkpoint: Uji Selain Keadaan Berhasil
 
-Gunakan respons tiruan di lingkungan latihan agar kegagalan dapat diulang tanpa membebani API publik.
+Pasang [helper fixture pencarian](/examples/fixtures/README.md). Di console browser, pilih skenario, lalu klik **Muat ulang** tanpa reload halaman.
 
 | Skenario                                | Hasil yang Diharapkan                            |
 | :-------------------------------------- | :----------------------------------------------- |
 | `docs: []`                              | Pesan hasil kosong                               |
-| HTTP 500                                | Pesan gagal dan tombol muat ulang                |
+| Respons HTTP 500 simulasi               | Pesan gagal dan tombol muat ulang                |
 | `docs` bukan array / judul bukan string | Error, bukan sukses palsu                        |
 | Muat ulang lambat setelah berhasil      | Hasil tersimpan tetap terlihat                   |
 | Muat ulang gagal setelah berhasil       | Pesan gagal dan hasil tersimpan terlihat bersama |
+
+```js
+sessionStorage.setItem("book-search-scenario", "error");
+// Pilihan: success, empty, error, invalid, slow
+```
 
 <BrutalCard v-click class="mt-4 text-sm">
   Saat browser offline, query dapat <strong>paused</strong> sampai koneksi kembali. Offline tidak selalu langsung menghasilkan <strong>isError</strong>.
 </BrutalCard>
 
 <!--
-Fasilitator dapat sementara mengganti isi searchBooks di salinan latihan:
-- return [] untuk hasil kosong.
-- throw new Error("Simulasi gagal") untuk error tanpa HTTP.
-Untuk menguji pemeriksaan HTTP/JSON yang sesungguhnya, gunakan mock fetch atau response override di alat pengujian.
-Background error: dapatkan data dulu, lalu buat request selanjutnya gagal dan tekan Muat ulang. Pulihkan helper setelah percobaan.
+Ikuti helper pendamping. Untuk background error: success dahulu, lalu error dan Muat ulang tanpa reload. Hapus sessionStorage dan kembalikan fetch asli setelah lab. Helper ini menghasilkan Response simulasi, bukan server HTTP sungguhan; server asli diuji pada Modul 15.
 Karena retry false pada latihan, pesan error tidak menunggu tiga percobaan ulang otomatis.
 Network mode bawaan adalah online; kondisi paused berbeda dari pending/error pada status data.
 Sumber: https://tanstack.com/query/latest/docs/framework/react/guides/network-mode
 -->
+
+---
+class: module-content
+---
+
+### Simpan Checkpoint Pencarian
+
+Sebelum lanjut ke form usulan, buktikan satu alur utuh.
+
+<v-clicks>
+
+- URL dapat dibuka ulang; hasil mengikuti `q`.
+- Hasil kosong, pending, gagal, dan muat ulang memiliki tampilan yang jelas.
+- Tautan hasil menuju detail server; total keranjang tetap bekerja.
+- `npm run build` berhasil setelah helper simulasi dikembalikan sesuai mode yang dipilih.
+
+</v-clicks>
+
+<BrutalCard v-click class="mt-4 text-sm">
+  [Checkpoint Modul 08](/examples/checkpoints/modul-08.zip) berisi file lengkap. Bandingkan dengan kode Antum; gunakan fixture hanya untuk percobaan yang dapat diulang.
+</BrutalCard>
 
 ---
 class: module-content

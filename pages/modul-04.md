@@ -1,176 +1,64 @@
 ---
 layout: intro
 badge: "MODUL 04"
-badgeColor: "yellow"
+badgeColor: "pink"
 level: 1
 ---
 
-## 04. Server Components vs Client Components
+## 04. Navigasi & Routing Dinamis
 
-Lanjutkan Toko Belajar: tentukan bagian yang bekerja di server, tambahkan tombol di browser, dan hubungkan keduanya lewat props.
+Lanjutkan Toko Belajar: buka detail buku, berpindah lewat tautan, dan bedakan path dari query.
 
 <!--
-Bekal: halaman detail [id], Navbar, SearchForm, dan QueryLabel dari Modul 03 sudah berjalan.
-Target akhir: peserta mempertahankan page detail sebagai Server Component, membuat tombol client, serta menjelaskan batas import dan props dengan contoh sendiri.
-Durasi target 45–60 menit: peran dan praktik 20 menit, cara kerja dan batas 15 menit, latihan serta diskusi 10–25 menit. Dua slide children adalah pengayaan.
-Semua path mengikuti src/app/ dari Modul 01. Jika memakai route group Modul 02, lokasi products menjadi src/app/(shop)/products; URL dan import relatif tetap sama.
-Acuan: Next.js 16 dengan konfigurasi kelas Modul 01, tanpa mengaktifkan Cache Components. Tidak perlu mengganti versi atau konfigurasi.
-Contoh hanya membaca ID dari URL dan menampilkannya dalam dialog browser. Tidak ada database atau penambahan barang ke keranjang.
-Modul ini membahas tempat menjalankan kode. Cara menyimpan dan memperbarui state, useEffect, serta berbagi state dimulai di Modul 05.
-Audit sumber daring: 8 Oktober 2026. Versi acuan kelas bukan klaim versi terbaru.
+Bekal: lima URL Modul 02 sudah berjalan, root layout memuat header/footer, dan products/layout.tsx menampilkan Area Katalog.
+Target akhir: peserta membuat satu halaman detail untuk beberapa ID, menghubungkan halaman dengan Link, menandai menu katalog aktif, serta membedakan path dari query.
+Durasi target 60–75 menit: detail dan Link 20 menit, navbar dan hook 15 menit, praktik perjalanan antarhalaman 15–25 menit. Catch-all adalah pengayaan.
+Semua path melanjutkan src/app/ dan alias @/* → src/* dari Modul 01. Jika peserta mencoba route group pada Modul 02, sesuaikan lokasi products menjadi src/app/(shop)/products; URL dan import relatif tetap sama.
+Contoh menggunakan Next.js 16 dengan konfigurasi starter kelas, tanpa mengaktifkan Cache Components. Konfigurasi cache/prerender dibahas pada modul terkait.
+Batas server/client sudah dipelajari di Modul 03. Pencarian dengan useRouter dan useSearchParams dipraktikkan pada Modul 08.
+Data buku masih teks latihan. Belum ada database, proses pembayaran, atau pencarian data sungguhan.
+Audit sumber daring: 7 Oktober 2026. Detail versi mengikuti acuan kelas Modul 01, bukan klaim versi terbaru.
 -->
 
 ---
 class: module-content
 ---
 
-### Mengapa Kode Modul 03 Berbeda?
+### Satu Halaman Detail untuk Banyak Buku
 
-Dalam satu halaman, komponen dapat memiliki tugas yang berbeda.
+Modul 02 memakai nama folder tetap. Sekarang bagian alamat perlu mengikuti ID buku.
 
-<v-switch>
-<template #1>
+```text {1-3|4-5|all}
+src/app/products/
+├── page.tsx             → /products
+├── promo/page.tsx       → /products/promo
+└── [id]/
+    └── page.tsx         → /products/buku-react atau /products/buku-next
+```
 
-#### Halaman detail menyiapkan isi
-
-- `ProductPage` membaca `await params`, lalu menampilkan ID buku.
-- Page dan layout App Router adalah **Server Components secara default**.
-- Fungsi komponen server boleh `async`; kode fungsinya tidak dijalankan di browser.
-
-</template>
-<template #2>
-
-#### Menu dan form merespons pengunjung
-
-- `Navbar` membaca path dengan `usePathname`.
-- `SearchForm` menangani submit; `QueryLabel` membaca query lewat hook.
-- Ketiganya memakai **Client Components**; JavaScript-nya juga berjalan di browser.
-
-</template>
-</v-switch>
-
-<!--
-Mulai dari pertanyaan penutup Modul 03, bukan perbandingan sejarah SPA dan Pages Router.
-Server Component dapat menghasilkan tampilan yang berubah mengikuti data atau URL. Istilah server tidak berarti isi selalu statis.
-Server Components bisa berjalan saat build atau saat request, sesuai cara route dirender. Detail cache dan waktu rendering berada di modul berikutnya.
-Komponen async tidak otomatis berarti fetch ke database. Di latihan sebelumnya, yang ditunggu hanya params.
-Sumber: https://react.dev/reference/rsc/server-components
-Sumber: https://nextjs.org/docs/app/getting-started/server-and-client-components
--->
-
----
-class: module-content
-layout: two-cols
----
-
-### Pilih Berdasarkan Kebutuhan Kode
-
-Mulai dari server, lalu tentukan bagian yang memerlukan kemampuan client.
-
-::left::
-
-#### 🖥️ Server Component
-
-<v-clicks>
-
-- Menyusun isi halaman dan layout.
-- Membaca data atau sumber khusus server.
-- Dapat memakai `async/await` saat render.
-- Tidak memakai `useState`, `useEffect`, atau handler seperti `onClick`.
-
-</v-clicks>
-
-::right::
-
-#### 💻 Client Component
-
-<v-clicks>
-
-- Menangani `onClick` dan `onChange`.
-- Memakai hook navigasi dari Modul 03.
-- Memakai state dan Effect: **Modul 05**.
-- Mengakses API browser pada waktu yang tepat, misalnya saat klik.
-
-</v-clicks>
-
-::bottom::
-
-<BrutalCard v-click class="text-sm">
-  Satu halaman boleh menggabungkan keduanya. Memasang komponen client di dalam page tidak mengharuskan seluruh page menjadi client.
+<BrutalCard v-click class="mt-4 bg-yellow-100">
+  🤔 Kalau ada 1.000 buku, apakah perlu 1.000 folder?<br/>
+  <strong>[id]</strong> menangkap satu segmen dari URL. Kita membuat satu komponen halaman untuk menampilkan ID yang berbeda.
 </BrutalCard>
 
 <!--
-Render berarti React menghitung tampilan yang perlu ditampilkan.
-Hindari aturan semua hook butuh client: ada API React yang didukung di server. Sebutkan hook yang relevan untuk kelas ini secara khusus.
-Akses database dengan kredensial privat berada di server. Client tetap dapat meminta data melalui antarmuka yang memang aman untuk browser; implementasinya belum dibahas.
-Tidak menjanjikan bahwa semua Server Component pasti lebih cepat atau otomatis aman.
-Sumber: https://nextjs.org/docs/app/getting-started/server-and-client-components#when-to-use-server-and-client-components
+Hubungkan dengan pertanyaan penutup Modul 02. ID adalah pengenal buku; pada contoh ini bentuknya teks, bukan harus angka.
+Nama dalam kurung siku menentukan nama properti params: [id] → id. Jika memakai [slug], propertinya slug; jangan berganti nama di tengah contoh.
+Folder promo yang sudah ada tetap menyediakan /products/promo. Segmen bernama tetap didahulukan daripada segmen dinamis pada posisi yang sama.
+Dynamic segment menjelaskan pola alamat, bukan otomatis strategi rendering atau sumber data.
+Sumber: https://nextjs.org/docs/app/api-reference/file-conventions/dynamic-routes
 -->
 
 ---
 class: module-content
 ---
 
-### Praktik: Dari Teks ke Tombol
+### Praktik: Baca ID dari URL
 
-Buat `src/app/products/[id]/BookNotice.tsx`. Perhatikan perubahan, lalu gunakan versi akhir.
+Buat `src/app/products/[id]/page.tsx`. Gunakan kembali tombol dari Modul 03, lalu buka dua alamat contoh di browser.
 
-````md magic-move
-```tsx
-type Props = { id: string };
-
-export default function BookNotice({ id }: Props) {
-  return <p>ID buku: {id}</p>;
-}
-```
-
-```tsx
-"use client";
-
-type Props = { id: string };
-
-export default function BookNotice({ id }: Props) {
-  function showId() {
-    window.alert("ID buku: " + id);
-  }
-
-  return (
-    <button type="button" onClick={showId}>
-      Lihat ID buku
-    </button>
-  );
-}
-```
-````
-
-<v-clicks>
-
-- `"use client"` diletakkan di awal file, sebelum import.
-- `onClick={showId}` menjalankan fungsi **saat diklik**.
-- `id` adalah props dari page; tombol menampilkannya dalam dialog.
-
-</v-clicks>
-
-<!--
-Versi pertama dapat dipakai sebagai Server Component jika diimpor oleh page server. Versi akhir menjadi batas client karena memiliki event handler.
-Beri waktu untuk menyalin versi akhir. File dibuat di sebelah page.tsx, bukan menggantikan page.tsx.
-window.alert dipakai sebagai demonstrasi event yang sederhana, bukan pola notifikasi aplikasi produksi.
-onClick menerima fungsi showId, bukan hasil showId(). Fungsi komponen menghitung JSX; fungsi handler baru dipanggil setelah klik.
-Tidak perlu useState untuk sekadar menjalankan tindakan ini. Perubahan tampilan akibat state dipelajari di Modul 05.
-Sumber: https://nextjs.org/docs/app/api-reference/directives/use-client
-Sumber: https://react.dev/learn/responding-to-events
--->
-
----
-class: module-content
----
-
-### Praktik: Pasang Tombol di Halaman Detail
-
-Perbarui `src/app/products/[id]/page.tsx` dari Modul 03.
-
-```tsx {1|3-8|14|all}
-import BookNotice from "./BookNotice";
+```tsx {1|3-5|7-8|14|all}
+import BookNotice from "@/components/BookNotice";
 
 type Props = {
   params: Promise<{ id: string }>;
@@ -189,16 +77,15 @@ export default async function ProductPage({ params }: Props) {
 }
 ```
 
-<BrutalCard v-click class="mt-3 text-sm">
-  Buka <code>/products/buku-react</code>, lalu klik <strong>Lihat ID buku</strong>. Dialog menampilkan <code>ID buku: buku-react</code>.
+<BrutalCard v-click class="mt-4 text-sm">
+  Buka <code>/products/buku-react</code>, lalu <code>/products/buku-next</code>. Teks ID berubah; header dan label Area Katalog dari Modul 02 tetap membungkus halaman.
 </BrutalCard>
 
 <!--
-Page tetap tanpa use client, sehingga pola async dan await params dari Modul 03 tetap berlaku.
-Server Component boleh mengimpor dan menampilkan Client Component. Yang dikirim ke BookNotice adalah nilai id berupa string.
-Coba juga /products/buku-next; hasil dialog harus mengikuti ID halaman yang sedang dibuka.
-ID sembarang tetap ditampilkan karena validasi keberadaan buku belum dibuat.
-Sumber: https://nextjs.org/docs/app/api-reference/directives/use-client#nesting-client-components-within-server-components
+Beri waktu 5 menit. Baca type Props → fungsi async → await params → JSX. Promise berarti nilainya dibaca melalui await pada contoh ini.
+Pada Next.js 16, params adalah Promise; hindari contoh lama yang langsung membaca params.id. Halaman async ini tidak diberi use client.
+Kode baru menampilkan pengenal dari URL, belum memeriksa apakah buku itu ada. ID sembarang juga tampil; validasi data dan notFound mengikuti materi data/error.
+Coba /products/promo untuk memastikan halaman promo Modul 02 tetap berfungsi. /products sendiri tetap memakai products/page.tsx.
 Sumber: https://nextjs.org/docs/app/api-reference/file-conventions/page#params-optional
 -->
 
@@ -206,353 +93,376 @@ Sumber: https://nextjs.org/docs/app/api-reference/file-conventions/page#params-o
 class: module-content
 ---
 
-### Saat Halaman Pertama Kali Dibuka
+### Berpindah Halaman dengan `Link`
 
-Pada kunjungan langsung atau reload, Client Component juga dapat menghasilkan HTML di server.
+Pengunjung perlu tautan yang bisa diklik. Gunakan `next/link` untuk navigasi internal biasa.
 
-<v-clicks>
-
-1. **Next.js menyiapkan tampilan awal.** HTML mencakup judul, ID, dan tombol.
-2. **Browser menampilkan HTML.** React juga menerima hasil render server dan props melalui data bernama **RSC Payload**.
-3. **React mengaktifkan logika client.** Proses **hydration** menghubungkan HTML awal dengan logika seperti handler tombol.
-
-</v-clicks>
-
-<BrutalCard v-click class="mt-5 bg-yellow-100">
-  Pada latihan, <code>window.alert</code> berada di dalam <code>showId</code> dan dipanggil saat klik. Mengakses <code>window</code> langsung saat render dapat gagal karena render awal juga berjalan di server.
-</BrutalCard>
-
-<!--
-use client tidak mematikan rendering HTML di server. Nama Client Component menunjukkan bahwa kodenya juga perlu berjalan di browser.
-Perilaku bawaan HTML dapat bekerja sebelum hydration; yang belum aktif adalah logika React seperti handler showId.
-Saat navigasi melalui Link, Next.js dapat memakai RSC Payload tanpa meminta dokumen HTML baru. Mekanisme internal payload tidak perlu dihafal.
-Hasil render awal server dan browser harus cocok. Contoh ini tidak memakai nilai acak atau pembacaan browser saat render.
-Next.js mengurus hydration; peserta tidak perlu memanggil hydrateRoot sendiri.
-Sumber: https://nextjs.org/docs/app/guides/server-and-client-boundary#rendering-environments
-Sumber: https://react.dev/reference/react-dom/client/hydrateRoot#hydrating-server-rendered-html
--->
-
----
-class: module-content
----
-
-### Batas Client Mengikuti Import
-
-`"use client"` menandai awal kumpulan kode yang perlu tersedia di browser.
-
-```text {1|2|3|all}
-page.tsx                                  Server Component
-└── import BookNotice.tsx                 Batas: "use client"
-    └── komponen/helper yang diimpornya   Ikut masuk sisi client
-```
-
-<v-clicks>
-
-- Batas berlaku ke **import dan import turunannya**.
-- File dalam rantai import client tidak wajib mengulang directive.
-- Page yang mengimpor `BookNotice` tetap server.
-- Nama folder atau ketiadaan directive saja belum cukup untuk menentukan peran komponen.
-
-</v-clicks>
-
-<BrutalCard v-click class="mt-4 text-sm">
-  Pilih batas yang dekat dengan kebutuhan interaksi. Memberi <code>"use client"</code> pada komponen besar dapat ikut membawa lebih banyak kode ke browser.
-</BrutalCard>
-
-<!--
-Diagram menjelaskan hubungan import, bukan struktur folder atau semua hubungan parent/child dalam JSX.
-Baris helper adalah ilustrasi jika BookNotice nanti mengimpor modul lain; tidak ada file helper tambahan yang perlu dibuat.
-Modul yang kompatibel dengan kedua lingkungan dapat digunakan dari server maupun client dan dikompilasi untuk masing-masing lingkungan.
-Import type hanya untuk TypeScript dan dihapus saat kompilasi; aturan ini membahas import kode saat aplikasi berjalan.
-Komponen server yang dikirim melalui props/children berbeda dari modul yang diimpor langsung; contoh menyusul.
-Jangan memindahkan kode khusus server ke rantai import client.
-Sumber: https://react.dev/reference/rsc/use-client#how-use-client-marks-client-code
-Sumber: https://nextjs.org/docs/app/api-reference/directives/use-client
--->
-
----
-class: module-content
----
-
-### Props: Kirim Data yang Dibutuhkan Tombol
-
-Data dari server ke client harus bisa **dikemas dan dibaca kembali oleh React**: disebut serializable.
-
+````md magic-move
 ```tsx
-<BookNotice id={id} />
-```
-
-| Nilai yang ingin dikirim                  | Cara menyikapinya                               |
-| ----------------------------------------- | ----------------------------------------------- |
-| ID seperti `"buku-react"`                 | Bisa; tombol menerima string                    |
-| Angka, boolean, array, objek sederhana    | Bisa jika nilai di dalamnya juga didukung React |
-| Fungsi event biasa yang dibuat di page    | Buat fungsi itu di komponen client              |
-| Kunci API privat atau kata sandi database | Tetap di server; jangan jadikan props           |
-
-<BrutalCard v-click class="mt-4 text-sm">
-  Alurnya: <strong>page membaca ID → props membawa ID → tombol memakai ID saat klik</strong>.
-</BrutalCard>
-
-<!--
-Fokuskan serialisasi pada contoh string yang sudah dipahami. React mendukung lebih banyak tipe daripada JSON, termasuk Date, Map, Set, JSX, dan tipe lain yang didokumentasikan.
-Jangan menyederhanakan aturan menjadi hanya JSON atau semua fungsi dilarang. Server Functions memiliki mekanisme referensi tersendiri dan dibahas pada modul terkait.
-Fungsi event biasa tetap dapat dikirim antarkomponen yang sama-sama berada di sisi client. Pembatasan slide ini untuk perpindahan dari server ke client.
-Secret dapat berupa string yang serializable tetapi tetap tidak boleh dikirim. Dukungan tipe dan izin membagikan data adalah dua pertimbangan berbeda.
-Sumber: https://react.dev/reference/rsc/use-client#serializable-types-returned-by-server-components
-Sumber: https://nextjs.org/docs/app/guides/data-security
--->
-
----
-class: module-content
----
-
-### Pilih Data yang Boleh Sampai ke Browser
-
-Kode Server Component tetap di server. Hasil yang ditampilkan dan props client dapat dibaca pengunjung.
-
-| Bagian                                                     | Sampai ke browser?              |
-| ---------------------------------------------------------- | ------------------------------- |
-| Implementasi fungsi `ProductPage` sebagai Server Component | Kode komponen ini tidak dikirim |
-| Teks `ID buku: buku-react` yang ditampilkan                | Ya, sebagai hasil render        |
-| Props `id` untuk `BookNotice`                              | Ya, dibutuhkan kode client      |
-
-<v-clicks>
-
-- Kirim hanya data yang diperlukan dan boleh dilihat pengunjung.
-- Gunakan rahasia seperti kunci API privat di kode server.
-- Awalan `NEXT_PUBLIC_` membuat variabel tersedia bagi kode browser.
-
-</v-clicks>
-
-<!--
-Tidak perlu menyiapkan environment variable atau database pada latihan ini. Contoh ID adalah data publik yang sudah ada di URL.
-Server Component bukan pengganti pemeriksaan izin akses. HTML, RSC Payload, dan props bukan tempat menyembunyikan rahasia.
-Pengayaan pengajar: import "server-only" pada modul khusus server memberi error build jika modul tersebut masuk import client. Guard ini tidak memeriksa apakah data yang sengaja dikirim lewat props aman.
-Jangan menambahkan NEXT_PUBLIC_ ke secret untuk mengatasi nilai yang tidak tersedia di browser.
-Sumber: https://nextjs.org/docs/app/guides/data-security
-Sumber: https://nextjs.org/docs/app/getting-started/server-and-client-components#preventing-environment-poisoning
-Sumber: https://nextjs.org/docs/app/guides/environment-variables#bundling-environment-variables-for-the-browser
--->
-
----
-class: module-content
----
-
-### Pengayaan: Sediakan Tempat untuk Isi
-
-Perbarui `BookNotice.tsx` agar menerima `children`, seperti layout pada Modul 02.
-
-```tsx {3-4|12-14|all}
-"use client";
-
-import type { ReactNode } from "react";
-type Props = { id: string; children?: ReactNode };
-
-export default function BookNotice({ id, children }: Props) {
-  function showId() {
-    window.alert("ID buku: " + id);
-  }
-
-  return (
-    <section className="space-y-3">
-      {children}
-      <button type="button" onClick={showId}>
-        Lihat ID buku
-      </button>
-    </section>
-  );
+export default function CatalogLink() {
+  return <a href="/products">Lihat katalog</a>;
 }
 ```
 
+```tsx
+import Link from "next/link";
+
+export default function CatalogLink() {
+  return <Link href="/products">Lihat katalog</Link>;
+}
+```
+````
+
+<v-clicks>
+
+- **href** adalah alamat tujuan; teks tautan menjelaskan tujuannya.
+- Link mendukung perpindahan sisi klien tanpa memuat ulang seluruh dokumen.
+- Prefetch menyiapkan rute lebih awal; otomatis aktif di production, dengan cakupan sesuai jenis rute dan konfigurasi.
+
+</v-clicks>
+
 <!--
-Dua slide pengayaan ini boleh menjadi demonstrasi pengajar. Latihan utama tetap berjalan bila peserta melewatinya.
-BookNotice tetap client karena memiliki event handler. children hanya menyediakan tempat untuk konten yang diberikan pemanggil.
-Tanda tanya membuat children opsional, sehingga pemakaian sebelumnya yang hanya mengirim id tetap valid.
-Tidak ada import komponen server di BookNotice; isi akan disusun oleh page pada slide berikutnya.
-Sumber: https://nextjs.org/docs/app/getting-started/server-and-client-components#interleaving-server-and-client-components
+Contoh kecil untuk memahami perubahan; penerapannya pada katalog ada di slide berikutnya. Klik 1 mengubah a menjadi Link, lalu lanjutkan penjelasan bertahap.
+Tautan a ke halaman lain secara normal meminta dokumen baru. Tetap gunakan a sesuai kebutuhan, misalnya situs luar, email, atau unduhan; tidak perlu mengajarkan bahwa a selalu lambat atau salah.
+Navigasi pertama/reload berbeda dari navigasi melalui Link. Layout bersama dapat dipertahankan pada navigasi sisi klien; ini bukan jaminan semua state selalu bertahan.
+Prefetch bukan janji data sudah lengkap ketika tautan diklik. Perilaku dipengaruhi rute, loading UI, cache, dan jaringan. Tidak perlu mengubah prefetch pada latihan.
+Link dapat dipakai pada page/layout tanpa menambahkan use client ke file tersebut hanya karena ada Link.
+Sumber: https://nextjs.org/docs/app/api-reference/components/link
+Sumber: https://nextjs.org/docs/app/getting-started/linking-and-navigating
 -->
 
 ---
 class: module-content
 ---
 
-### Pengayaan: Susun Isinya dari Page Server
+### Praktik: Hubungkan Katalog ke Detail Buku
 
-Di `src/app/products/[id]/page.tsx`, tempatkan isi di antara tag `BookNotice`.
+Perbarui `src/app/products/page.tsx` dengan dua tautan buku dan tautan promo.
 
-```tsx {1|11-14|all}
-import BookNotice from "./BookNotice";
+```tsx
+import Link from "next/link";
 
-type Props = {
-  params: Promise<{ id: string }>;
-};
-
-export default async function ProductPage({ params }: Props) {
-  const { id } = await params;
+export default function ProductsPage() {
   return (
     <main className="p-8">
-      <BookNotice id={id}>
-        <h1 className="text-3xl">Detail Buku</h1>
-        <p>ID buku: {id}</p>
-      </BookNotice>
+      <h1 className="text-3xl">Katalog Buku</h1>
+      <p>Buku pilihan untuk belajar.</p>
+      <div className="flex flex-col gap-2">
+        <Link href="/products/buku-react">Buku React</Link>
+        <Link href="/products/buku-next">Buku Next</Link>
+        <Link href="/products/promo">Lihat promo</Link>
+      </div>
     </main>
   );
 }
 ```
 
-<BrutalCard v-click class="mt-3 text-sm">
-  Isi disusun oleh page server, lalu diterima sebagai <code>children</code>. Membungkusnya dengan komponen client tidak memindahkan kode page ke browser.
+<BrutalCard v-click class="mt-4 text-sm">
+  Klik tiap judul buku dan periksa ID-nya. Gunakan tombol <strong>Back</strong> browser untuk kembali ke katalog, lalu coba tautan promo.
 </BrutalCard>
 
 <!--
-Bandingkan dua jalur: import membawa kode ke lingkungan client, sedangkan props/children membawa data atau hasil render yang didukung React.
-Pada contoh ini children berisi elemen h1 dan p yang dibuat page. Jika page merender komponen server lain di posisi ini, implementasi komponen itu juga tetap di server.
-children bukan selalu Server Component; asal kontennya bergantung pada komponen yang menyusunnya. Hindari klaim bahwa semua children otomatis server.
-BookNotice menerima hasil tersebut sebagai props; ia tidak menjalankan fungsi ProductPage di browser.
-Sumber: https://nextjs.org/docs/app/guides/server-and-client-boundary#crossing-the-boundary
+Beri waktu 3–5 menit. href berisi alamat nyata seperti /products/buku-react, bukan nama folder literal /products/[id].
+Link tidak menciptakan halaman tujuan; file page.tsx pada langkah sebelumnya tetap diperlukan.
+Peserta bisa membuka tautan di tab baru melalui perilaku tautan browser yang biasa. Jangan menggantikan semua tautan dengan tombol onClick.
+Berhasil bila tautan detail dan promo menuju isi yang tepat tanpa mengetik alamat satu per satu.
+Sumber: https://nextjs.org/docs/app/api-reference/components/link#href-required
 -->
 
 ---
 class: module-content
+layout: two-cols
 ---
 
-### Interaksi Bawaan HTML Juga Bisa Dipakai
+### Pasang Menu Bersama di Header
 
-Elemen `details` dapat dibuka dan ditutup oleh browser, tanpa handler React.
+Buat `src/components/Navbar.tsx`, lalu gunakan di root layout dari Modul 02.
+
+::left::
+
+#### Isi `Navbar.tsx`
 
 ```tsx
-export default function BookTips() {
+import Link from "next/link";
+
+export default function Navbar() {
   return (
-    <details>
-      <summary>Cara membaca ID buku</summary>
-      <p>ID ada pada bagian terakhir URL detail.</p>
-    </details>
+    <nav className="flex gap-4">
+      <Link href="/">Beranda</Link>
+      <Link href="/products">Katalog</Link>
+      <Link href="/cart">Keranjang</Link>
+    </nav>
   );
 }
 ```
 
-<BrutalCard class="mt-4">
-  <details>
-    <summary class="cursor-pointer font-bold">Coba buka: Cara membaca ID buku</summary>
-    <p>ID ada pada bagian terakhir URL detail.</p>
-  </details>
+::right::
+
+#### Edit `src/app/layout.tsx`
+
+Tambahkan import di awal file:
+
+```tsx
+import Navbar from "@/components/Navbar";
+```
+
+Ganti bagian header dengan potongan JSX ini:
+
+```tsx
+<header className="border-b p-4">
+  <p>Toko Belajar</p>
+  <Navbar />
+</header>
+```
+
+::bottom::
+
+<BrutalCard v-click class="text-sm">
+  Menu sekarang muncul juga pada halaman detail. Klik <strong>Katalog</strong> untuk kembali ke daftar buku.
 </BrutalCard>
 
-<p v-click class="mt-4">
-  Gunakan kebutuhan <strong>kode</strong> sebagai patokan. Hover CSS dan interaksi HTML bawaan tidak otomatis memerlukan <code>"use client"</code>.
-</p>
-
 <!--
-Klik demo pada slide. BookTips adalah contoh terpisah untuk dibaca, bukan file wajib pada latihan.
-Jika BookTips diimpor page server, ia dapat menjadi Server Component. Tidak ada useState atau handler React dalam contoh.
-Link juga bisa dipakai dari page server sebagaimana Modul 03: menggunakan komponen client dari pustaka tidak membuat pemanggilnya harus diberi directive.
-Form yang memakai handler React pada Modul 03 memang membutuhkan sisi client; form HTML memiliki kemampuan bawaan yang berbeda.
-Sumber: https://nextjs.org/docs/app/guides/server-and-client-boundary#state-and-interactivity
-Sumber: https://developer.mozilla.org/en-US/docs/Web/HTML/Reference/Elements/details
+Contoh kanan adalah dua perubahan dalam file layout yang sudah ada, bukan pengganti seluruh layout. Pertahankan html, body, children, footer, import CSS, font, serta metadata.
+Komponen Navbar belum membaca URL atau memakai event handler; belum perlu use client.
+src/components tidak berada di dalam route group; alias import di atas tetap sama bila products dipindah ke (shop).
+Sumber: https://nextjs.org/docs/app/getting-started/layouts-and-pages#linking-between-pages
 -->
 
 ---
 class: module-content
 ---
 
-### Latihan: Jelaskan Batas dengan Kode Sendiri
+### Baca Path untuk Menandai Menu Aktif
 
-Lanjutkan halaman detail Toko Belajar. Waktu: **10–15 menit**.
+`usePathname()` membaca path di browser. Hook App Router diimpor dari `next/navigation`.
 
 <v-clicks>
 
-1. Buat `BookNotice.tsx` versi tombol; page mengirim `id` melalui props.
-2. Buka `/products/buku-react` dan `/products/buku-next`. Cocokkan isi dialog dengan ID di halaman.
-3. Reload salah satu halaman, lalu coba tombol lagi setelah halaman siap.
-4. Tunjukkan kepada teman: letak directive, asal `id`, dan waktu `showId` dijalankan.
+- `/products` → pathname `"/products"`.
+- `/products/buku-react` → pathname `"/products/buku-react"`.
+- `/products?q=react` → pathname tetap `"/products"`.
 
 </v-clicks>
 
-<BrutalCard v-click class="mt-5 bg-yellow-100">
-  <strong>Selesai bila:</strong> kedua ID tampil benar, tombol bekerja, dan page tetap memakai <code>async</code> tanpa <code>"use client"</code>. Periksa terminal serta console browser.
+<BrutalCard v-click class="mt-4">
+  Panggil hook di tingkat teratas <strong>di dalam komponen client</strong>, sebelum return. Jangan memanggilnya di dalam kondisi atau event handler.
 </BrutalCard>
 
 <!--
-Latihan utama hanya mengubah page detail dan menambahkan BookNotice. Root layout, Navbar, SearchForm, QueryLabel, serta Suspense dari Modul 03 tetap digunakan.
-Peserta yang mengerjakan pengayaan dapat memakai versi children; hasil dialog sama.
-Pertanyaan diskusi: apakah memindahkan file ke src/components otomatis menjadikannya client? Tidak, peran ditentukan oleh batas dan hubungan import.
-Bila waktu cukup, jalankan npm run build dari proyek Next.js kelas. Keberhasilan dev saja belum menjamin build, termasuk aturan Suspense pada QueryLabel Modul 03.
-Tombol tidak memperbarui tampilan halaman. Kebutuhan itu menjadi pertanyaan pembuka Modul 05.
+Hubungkan directive dengan batas server/client Modul 03. useSearchParams dan useRouter dikenalkan saat pencarian pada Modul 08.
+Sumber: https://nextjs.org/docs/app/api-reference/functions/use-pathname
+Sumber: https://react.dev/reference/rules/rules-of-hooks
 -->
 
 ---
+zoom: 0.93
 class: module-content
 ---
 
-### Jika Hasilnya Belum Sesuai
+### Praktik: Tandai Menu Katalog yang Aktif
 
-Mulai dari pesan error dan file yang disebutkan.
+Perbarui `src/components/Navbar.tsx`; bandingkan path saat ini dengan `/products`.
 
-| Gejala                                         | Periksa dan perbaiki                                            |
-| ---------------------------------------------- | --------------------------------------------------------------- |
-| Handler `onClick` ditolak pada komponen server | Letakkan handler di `BookNotice`, dengan directive di awal file |
-| `window is not defined`                        | Panggil API browser dalam handler; jangan panggil saat render   |
-| Dialog muncul tanpa klik                       | Gunakan `onClick={showId}`, bukan `onClick={showId()}`          |
-| Komponen client `async` ditolak                | Page tetap server; pisahkan tombol client                       |
-| Fungsi biasa tidak bisa dikirim sebagai props  | Kirim `id`; buat `showId` di komponen client                    |
-| Modul khusus server ikut terimpor client       | Periksa rantai import; pertahankan kode itu di server           |
+```tsx {1-3|5-7|12-17|all}
+"use client";
+import Link from "next/link";
+import { usePathname } from "next/navigation";
+
+export default function Navbar() {
+  const pathname = usePathname();
+  const isCatalog = pathname === "/products";
+  return (
+    <nav aria-label="Navigasi utama" className="flex gap-4">
+      <Link href="/">Beranda</Link>
+      <Link
+        href="/products"
+        aria-current={isCatalog ? "page" : undefined}
+        className="aria-[current=page]:font-bold"
+      >
+        Katalog
+      </Link>
+      <Link href="/cart">Keranjang</Link>
+    </nav>
+  );
+}
+```
+
+Teks **Katalog** menebal di `/products`. `aria-current` juga menyampaikan statusnya kepada pembaca layar.
 
 <!--
-Ini gejala dan arah pemeriksaan, bukan kutipan pasti pesan error. Wording error bisa berubah antarversi.
-Jika hydration mismatch terjadi, bandingkan hasil render awal server dan browser; jangan langsung menyembunyikan peringatannya.
-Directive bukan perbaikan untuk semua error. Jangan memberi use client pada page async demi memperbaiki satu tombol.
-API browser yang harus menyinkronkan tampilan setelah render dapat melibatkan Effect; tunggu Modul 05 untuk pola itu.
-Sumber: https://nextjs.org/docs/messages/no-async-client-component
-Sumber: https://react.dev/learn/responding-to-events
-Sumber: https://react.dev/reference/react-dom/client/hydrateRoot
+Praktik ini menandai satu menu dahulu. Menu Beranda dan Keranjang tetap berfungsi sebagai tautan biasa.
+Kecocokan sengaja persis: di /products/buku-react, Katalog tidak ditandai sebagai halaman aktif. Penandaan seluruh bagian beserta halaman anak adalah pilihan desain lain, bukan bagian latihan ini.
+Di /products?q=react, pathname tetap /products sehingga Katalog aktif. Parameter setelah ? dijelaskan berikutnya.
+Kelas Tailwind menggunakan selector atribut aria-current. Tanpa className tersebut, atribut tetap punya makna aksesibilitas, tetapi belum tentu terlihat berbeda.
+Catatan konfigurasi: bila Cache Components diaktifkan pada proyek lain, usePathname pada rute dengan parameter dinamis yang belum diketahui dapat memerlukan Suspense. Starter kelas belum mengaktifkannya.
+Sumber: https://nextjs.org/docs/app/api-reference/functions/use-pathname
+Sumber atribut: https://developer.mozilla.org/en-US/docs/Web/Accessibility/ARIA/Reference/Attributes/aria-current
+Sumber gaya: https://tailwindcss.com/docs/hover-focus-and-other-states#aria-states
 -->
 
 ---
 class: module-content
 ---
 
-### Prediksi: Di Mana Batas Client?
+### Path dan Query: Dua Bagian URL
+
+Path menunjuk halaman; query membawa nilai tambahan setelah tanda `?`.
+
+```text
+/products?q=react
+└─ path ─┘ └ query ┘
+```
+
+| Alamat                 | Yang dibaca              | Hasil          |
+| :--------------------- | :----------------------- | :------------- |
+| `/products/buku-react` | `id` dari `await params` | `"buku-react"` |
+| `/products?q=react`    | `usePathname()`          | `"/products"`  |
+| `/products?q=react`    | Pembaca query (Modul 08) | `"react"`      |
+
+<BrutalCard v-click class="mt-4 text-sm">
+  <code>q</code> adalah nama yang kita pilih untuk kata pencarian. URL ini bisa disalin; aplikasi harus membaca nilainya agar tampilan mengikuti URL.
+</BrutalCard>
+
+<!--
+Notasi pemanggilan pada tabel menunjukkan hasil, bukan kode untuk ditempel di luar komponen.
+Jangan membuat folder bernama products?q=react. Query tidak mengubah struktur folder halaman.
+Tunjukkan bahwa q, sort, dan page hanyalah nama parameter yang dipilih aplikasi, bukan parameter bawaan Next.js. Latihan cukup memakai q.
+searchParams sebagai prop pada server page juga tersedia dalam bentuk Promise; berbeda dari hook useSearchParams yang menghasilkan pembaca URLSearchParams. Jangan mencampur dua bentuk API ini.
+Sumber: https://nextjs.org/docs/app/api-reference/file-conventions/page#searchparams-optional
+Sumber: https://nextjs.org/docs/app/api-reference/functions/use-search-params
+-->
+
+---
+class: module-content
+---
+
+### Pengayaan: Jika Segmennya Lebih dari Satu
+
+Catch-all dipakai ketika kedalaman alamat bervariasi, misalnya halaman panduan toko.
+
+| Folder di dalam `src/app/`  | Alamat yang cocok      | Nilai setelah `await params`   |
+| :-------------------------- | :--------------------- | :----------------------------- |
+| `products/[id]/page.tsx`    | `/products/buku-react` | `{ id: "buku-react" }`         |
+| `help/[...slug]/page.tsx`   | `/help/order/track`    | `{ slug: ["order", "track"] }` |
+| `help/[[...slug]]/page.tsx` | `/help`                | `{ slug: undefined }`          |
+
+<BrutalCard v-click class="mt-4 text-sm">
+  <code>[id]</code>: tepat satu segmen.<br/>
+  <code>[...slug]</code>: satu atau lebih segmen.<br/>
+  <code>[[...slug]]</code>: nol atau lebih segmen.
+</BrutalCard>
+
+<!--
+Ini referensi pola alternatif, bukan instruksi membuat ketiganya dalam latihan. Terutama dua varian help adalah pilihan, bukan dipasang bersama.
+help/[...slug] tidak mencakup /help; optional catch-all mencakup /help serta /help/order/track.
+Nilai satu segmen bertipe string, catch-all bertipe string[], optional catch-all dapat undefined. Seluruh objek params tetap Promise sebelum await.
+Rute katalog latihan cukup [id]. Jangan menambah catch-all hanya untuk membuat banyak ID buku.
+Sumber: https://nextjs.org/docs/app/api-reference/file-conventions/dynamic-routes#catch-all-segments
+-->
+
+---
+class: module-content
+---
+
+### Latihan Mandiri: Ikuti Perjalanan Pengunjung
+
+Cocokkan tautan, URL, dan ID yang tampil. Waktu: **10 menit**.
+
+<v-clicks>
+
+1. Klik **Katalog → Buku React**. Halaman dan dialog menampilkan `buku-react`.
+2. Kembali ke katalog lewat menu; klik **Buku Next**. ID menjadi `buku-next`.
+3. Gunakan **Back** dan **Forward** browser. Isi halaman mengikuti alamat.
+4. Buka `/products?q=react`. Path tetap `/products`; pencarian belum dibuat.
+
+</v-clicks>
+
+<BrutalCard v-click class="mt-4 text-sm">
+  Tambahkan tautan <strong>Buku TypeScript</strong> ke <code>/products/buku-typescript</code>. Selesai bila satu file <code>[id]/page.tsx</code> melayani ketiga ID dan menu aktif bekerja.
+</BrutalCard>
+
+<!--
+Jalankan npx eslint . dan npm run build. ID sembarang masih diterima; pengecekan keberadaan buku baru di Modul 07.
+Pencarian URL dan hasil API disatukan di Modul 08.
+-->
+
+---
+class: module-content
+layout: two-cols
+---
+
+### Kalau Navigasi Belum Sesuai
+
+Periksa satu hubungan pada satu waktu: URL, file, hook, atau komponen pemakainya.
+
+::left::
+
+#### Alamat atau Isi Keliru
+
+- Nama folder **[id]** harus cocok dengan properti **id**.
+- Baca **params** dengan **await** sebelum mengambil id.
+- Isi **href** dengan alamat nyata, misalnya **/products/buku-react**.
+- **?q=react** dibaca melalui query, bukan **params.id**.
+
+::right::
+
+#### Hook atau Build Bermasalah
+
+- Import hook App Router dari **next/navigation**.
+- Letakkan **use client** di awal file komponen yang memakai hook.
+- Panggil hook di dalam fungsi komponen, sebelum return.
+- Pertahankan page detail sebagai Server Component; handler berada di **BookNotice**.
+
+<!--
+Latihan belum memakai useSearchParams.
+Jika Navbar atau BookNotice tidak muncul, cek file sudah diimpor dan digunakan dalam JSX; file pendukung tidak otomatis tampil karena dibuat.
+Jangan mengubah page detail yang async menjadi Client Component untuk mengatasi error Navbar. Baca nama file dalam pesan error.
+-->
+
+---
+class: module-content
+---
+
+### Cek Pemahaman: ID atau Query?
+
+Pisahkan bagian path dari nilai setelah tanda tanya.
 
 <LearningCheck
-  question="ProductPage memakai await params. BookNotice perlu onClick untuk menampilkan ID. File mana yang diberi use client?"
-  :options='["page.tsx saja agar semua anaknya ikut client", "BookNotice.tsx; page tetap server dan mengirim id", "Keduanya, karena berada di folder yang sama"]'
+  question="Pada /products/buku-react?q=next, apa nilai id dari await params di products/[id]/page.tsx?"
+  :options="[
+    'next',
+    'buku-react',
+    '/products/buku-react?q=next',
+  ]"
   :answer="1"
-  explanation="BookNotice memerlukan handler di browser. Page tetap async di server dan mengirim id berupa string. Lokasi folder tidak menentukan batas client."
+  explanation="[id] menangkap buku-react dari path. q=next adalah query yang dibaca terpisah; mengganti q tidak mengubah nilai id."
 />
 
 <!--
-Beri 30 detik untuk prediksi pribadi sebelum memilih jawaban.
-Minta peserta menjelaskan alur id dan alasan page tidak perlu diubah menjadi client.
-Gunakan Ulangi prediksi untuk kelompok berikutnya.
-Pertanyaan lanjut lisan: apakah komponen client tidak pernah dirender di server? Ia juga dapat menghasilkan HTML awal di server.
+Beri peserta waktu menjelaskan alasan sebelum memilih. Ulangi prediksi untuk kelompok berikutnya.
+Tanya lanjutan: apa yang dikembalikan usePathname? /products/buku-react. Bagaimana kembali ke katalog jika tujuannya harus pasti? Link dengan href=/products.
+Checkpoint mencakup pemilihan sumber nilai, bukan sekadar menghafal nama hook.
 -->
 
 ---
-layout: intro
-badge: "RANGKUMAN"
-badgeColor: "yellow"
+class: module-content
 hideInToc: true
-transition: slide-up
+transition: fade
 ---
 
-## 3 Hal Penting dari Modul 04
+### 3 Hal Penting dari Modul 04
 
 <v-clicks>
 
-1. **Mulai dari Server**: Page menyusun isi; komponen client menangani kebutuhan seperti event dan hook navigasi.
-2. **Batas Mengikuti Import**: Directive menandai awal kode client. Page tetap server saat menampilkan tombol client.
-3. **Pilih Props dengan Sengaja**: Kirim data yang didukung React dan boleh diterima browser. API browser dipanggil pada waktu yang sesuai.
+1. **Satu pola untuk banyak ID:** `[id]/page.tsx` membaca ID melalui `await params`.
+2. **Hubungkan halaman dengan Link:** href mengarah ke URL nyata yang punya page.
+3. **Baca URL sesuai bagian:** `usePathname` membaca path; query menyimpan nilai tambahan.
 
 </v-clicks>
 
-<BrutalCard v-click class="mt-4 bg-brutal-yellow/10">
-  🚀 <strong>Selanjutnya di Modul 05:</strong> Bagaimana jumlah atau status di halaman ikut berubah setelah tombol diklik? Kita mulai menyimpan dan memperbarui nilai dengan state.
+<BrutalCard v-click class="mt-4 bg-brutal-pink/10">
+  🚀 <strong>Selanjutnya di Modul 05:</strong> Tombol sudah merespons klik. Sekarang buat jumlah buku dan totalnya ikut berubah dengan state.
 </BrutalCard>
-
-<!--
-Peserta siap lanjut bila dapat menjelaskan dua file latihan dan mengapa window hanya dipanggil setelah klik.
-Berhenti pada kebutuhan memperbarui tampilan. Anatomi useState, pembaruan objek/array, useEffect, dan berbagi state dimulai di Modul 05.
--->
 
 ---
 class: module-content
@@ -562,28 +472,29 @@ hideInToc: true
 
 ### Sumber dan Bacaan Lanjutan
 
-Dokumentasi resmi yang diperiksa pada **8 Oktober 2026**; contoh mengikuti acuan Next.js 16 kelas.
+Dokumentasi resmi yang diperiksa pada 7 Oktober 2026; gunakan untuk mengecek contoh dan batas perilakunya.
 
 ::left::
 
-#### Server, Client, dan Props
+#### Rute dan Navigasi
 
-- [Next.js: Server dan Client Components](https://nextjs.org/docs/app/getting-started/server-and-client-components)
-- [Next.js: batas server dan client](https://nextjs.org/docs/app/guides/server-and-client-boundary)
-- [Next.js: directive use client](https://nextjs.org/docs/app/api-reference/directives/use-client)
-- [React: Server Components dan async](https://react.dev/reference/rsc/server-components)
-- [React: use client dan tipe props](https://react.dev/reference/rsc/use-client)
+- [Dynamic segments dan catch-all](https://nextjs.org/docs/app/api-reference/file-conventions/dynamic-routes)
+- [Props params dan searchParams pada page](https://nextjs.org/docs/app/api-reference/file-conventions/page)
+- [Link dan pilihan navigasinya](https://nextjs.org/docs/app/api-reference/components/link)
+- [Navigasi dan prefetch](https://nextjs.org/docs/app/getting-started/linking-and-navigating)
+- [useRouter dan riwayat browser](https://nextjs.org/docs/app/api-reference/functions/use-router)
 
 ::right::
 
-#### Event, HTML, dan Data
+#### Hook dan Tampilan URL
 
-- [React: menjalankan event handler](https://react.dev/learn/responding-to-events)
-- [React: hydration dan kecocokan HTML](https://react.dev/reference/react-dom/client/hydrateRoot)
-- [Next.js: keamanan data](https://nextjs.org/docs/app/guides/data-security)
-- [MDN: perilaku elemen details](https://developer.mozilla.org/en-US/docs/Web/HTML/Reference/Elements/details)
+- [usePathname](https://nextjs.org/docs/app/api-reference/functions/use-pathname)
+- [useSearchParams dan Suspense](https://nextjs.org/docs/app/api-reference/functions/use-search-params)
+- [React: aturan pemanggilan hook](https://react.dev/reference/rules/rules-of-hooks)
+- [React: Suspense dan fallback](https://react.dev/reference/react/Suspense)
+- [MDN: menyusun query dengan URLSearchParams](https://developer.mozilla.org/en-US/docs/Web/API/URLSearchParams)
 
 <!--
-Slide referensi, bukan tambahan materi wajib. Dokumentasi daring dapat berubah setelah tanggal audit.
-Rujukan tambahan untuk error async, environment variable, dan params ada di catatan slide yang bersangkutan.
+Slide referensi, bukan tambahan materi wajib. Dokumentasi daring bisa berubah setelah tanggal audit.
+Catatan slide terkait menyimpan sumber tambahan tentang aria-current dan kelas Tailwind.
 -->

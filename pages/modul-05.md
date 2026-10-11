@@ -10,7 +10,7 @@ level: 1
 Lanjutkan Toko Belajar: ubah jumlah buku di layar, bagikan nilainya ke dua komponen, dan kelola timer dengan cleanup.
 
 <!--
-Bekal: page detail server dan BookNotice client dari Modul 04 sudah berjalan. Peserta mengenal props, event handler, dan batas use client.
+Bekal: page detail dari Modul 04 dan BookNotice client dari Modul 03 sudah berjalan. Peserta mengenal props, event handler, dan batas use client.
 Target akhir: peserta memakai useState untuk jumlah buku, menghitung total dari jumlah, membagikan state melalui props, serta menjelaskan kapan Effect diperlukan.
 Durasi target 60–90 menit: state dan updater 20 menit, nilai turunan serta berbagi state 15–20 menit, objek/array 10–15 menit, Effect dan latihan 15–35 menit.
 Semua path mengikuti src/app/products/[id]/. Jika memakai route group Modul 02, sesuaikan lokasi products; URL dan import relatif tetap sama.
@@ -73,7 +73,7 @@ export default function BookQuantity() {
 </BrutalCard>
 
 <!--
-Sambungkan dengan BookNotice: handler di Modul 04 sudah bisa berjalan, tetapi dialog tidak mengubah data yang ditampilkan komponen.
+Sambungkan dengan BookNotice: handler di Modul 03 sudah bisa berjalan, tetapi dialog tidak mengubah data yang ditampilkan komponen.
 Pada versi awal, klik mengubah variabel lokal tanpa menjadwalkan render. Saat komponen dirender ulang, deklarasi let juga diulang.
 Versi akhir menyimpan jumlah di React. Render berarti React menjalankan komponen untuk menghitung tampilan berikutnya, bukan memuat ulang halaman.
 q adalah parameter fungsi updater yang menerima nilai sebelumnya dalam antrean pembaruan. Penjelasan lebih rinci menyusul.
@@ -125,7 +125,7 @@ class: module-content
 Perbarui `src/app/products/[id]/page.tsx`. Page tetap Server Component.
 
 ```tsx {1-2|15|all}
-import BookNotice from "./BookNotice";
+import BookNotice from "@/components/BookNotice";
 import BookQuantity from "./BookQuantity";
 
 type Props = {
@@ -150,8 +150,8 @@ export default async function ProductPage({ params }: Props) {
 </BrutalCard>
 
 <!--
-BookNotice tetap menampilkan dialog dari Modul 04; BookQuantity menambahkan contoh perubahan tampilan.
-Peserta yang mencoba children pada Modul 04 boleh mempertahankan judul/ID di dalam BookNotice dan menambahkan BookQuantity setelahnya.
+BookNotice tetap menampilkan dialog dari Modul 03; BookQuantity menambahkan contoh perubahan tampilan.
+Peserta yang mencoba children pada Modul 03 boleh mempertahankan judul/ID di dalam BookNotice dan menambahkan BookQuantity setelahnya.
 key={id} memberi identitas sesuai buku. Ketika React mengganti instance dengan key berbeda, state instance baru dimulai dari nilai awal.
 key bukan props biasa dan tidak dibaca di dalam BookQuantity. Ini bukan mekanisme penyimpanan jumlah per buku.
 Jangan menjanjikan semua navigasi selalu mereset state; React mempertahankan state sesuai posisi, tipe, dan key, sementara framework dapat mempertahankan subtree.
@@ -332,7 +332,7 @@ export default function BookQuantity() {
 
 <!--
 BookControls dan BookSummary mengikuti import client dari BookQuantity, sehingga tidak perlu menambahkan directive pada kedua file itu.
-onAdd berisi fungsi yang diteruskan di sisi client. Ini berbeda dari mengirim fungsi event biasa dari Server Component ke Client Component pada Modul 04.
+onAdd berisi fungsi yang diteruskan di sisi client. Ini berbeda dari mengirim fungsi event biasa dari Server Component ke Client Component pada Modul 03.
 BookControls tidak menyalin props.quantity ke state baru. Nilainya sepenuhnya mengikuti parent.
 Klik tombol sekali: jumlah menjadi 2 dan total menjadi 100000 rupiah. Tombol tidak mengubah total secara terpisah.
 Contoh tetap memakai +1 sebagai dasar. Handler +3 dari slide snapshot adalah eksperimen terpisah dan dipakai lagi saat latihan.
@@ -497,7 +497,7 @@ Pilih tempat kode berdasarkan apa yang membuatnya perlu dijalankan.
 </v-clicks>
 
 <!--
-Hubungkan kembali SearchForm Modul 03: submit form diproses sebagai event, bukan lewat Effect yang menunggu perubahan state.
+Hubungkan kembali BookNotice Modul 03: klik tombol diproses sebagai event, bukan lewat Effect yang menunggu perubahan state.
 Effect bukan tempat umum untuk memindahkan semua kode yang dianggap efek samping. Tindakan akibat satu klik biasanya berada pada handler klik itu.
 Pengambilan data Next.js memiliki pola server/client tersendiri dan dibahas pada modul data; jangan mengajarkan fetch di Effect sebagai pilihan bawaan.
 Sumber: https://react.dev/learn/you-might-not-need-an-effect
@@ -508,9 +508,9 @@ Sumber: https://react.dev/learn/synchronizing-with-effects
 class: module-content
 ---
 
-### Praktik: Timer dengan Cleanup
+### Lab Terpisah: Timer dengan Cleanup
 
-Buat `src/app/products/[id]/StudyTimer.tsx`. Interval hidup selama komponen dipasang.
+Buat `src/app/products/[id]/StudyTimer.tsx` untuk mengamati cleanup. Lepas timer dari page setelah percobaan; katalog tidak memerlukan timer permanen. Interval hidup selama komponen dipasang.
 
 ```tsx {5|7-10|12-13|all}
 "use client";
@@ -624,7 +624,7 @@ export default function BookSummary(props: Props) {
 Versi pertama sengaja menunjukkan pola yang perlu diperbaiki. Jangan mengganti file latihan dengan versi awal.
 Pada versi pertama render awal memakai total 0; Effect kemudian meminta pembaruan. Saat quantity berubah, nilai total tersimpan juga perlu diselaraskan lagi.
 Ini perhitungan murah, tidak perlu memoization. State tetap dipakai untuk pilihan pengguna yang memang perlu disimpan.
-Menghapus directive pada BookSummary tidak menjadikannya Server Component ketika ia masih diimpor oleh BookQuantity client; hubungan import Modul 04 tetap berlaku.
+Menghapus directive pada BookSummary tidak menjadikannya Server Component ketika ia masih diimpor oleh BookQuantity client; hubungan import Modul 03 tetap berlaku.
 Sumber: https://react.dev/learn/you-might-not-need-an-effect#updating-state-based-on-props-or-state
 -->
 
@@ -632,7 +632,7 @@ Sumber: https://react.dev/learn/you-might-not-need-an-effect#updating-state-base
 class: module-content
 ---
 
-### Latihan: Jumlah, Total, dan Timer
+### Latihan: Jumlah, Total, dan Percobaan Timer
 
 Waktu **10–15 menit**. Lanjutkan komponen yang sudah dibuat.
 
@@ -656,7 +656,7 @@ Tombol Reset juga bertipe button. Setelah Reset, BookControls dan BookSummary me
 Pengayaan cleanup: buat state boolean untuk menampilkan/menyembunyikan StudyTimer di komponen client. Pasang secara kondisional, bukan hanya disembunyikan dengan CSS.
 Tambahkan log sementara di setup dan cleanup untuk melihat urutannya. Saat dilepas, interval lama dibersihkan; saat dipasang lagi, timer instance baru mulai dari 0.
 Jika memakai Strict Mode, setup → cleanup → setup tambahan saat mount adalah perilaku development yang diharapkan.
-Jalankan npm run build dari proyek Next.js kelas. Aturan Suspense untuk QueryLabel dari Modul 03 tetap berlaku.
+Jalankan npm run build dari proyek Next.js kelas. Aturan QueryLabel dan pencarian baru dipasang pada Modul 08.
 -->
 
 ---
@@ -723,7 +723,7 @@ transition: slide-up
 </v-clicks>
 
 <BrutalCard v-click class="mt-4 bg-brutal-yellow/10">
-  🚀 <strong>Selanjutnya di Modul 06:</strong> Bagaimana jika jumlah buku dibutuhkan navbar dan halaman keranjang? Kita pelajari Context dan Zustand untuk kebutuhan berbagi state yang lebih luas.
+  🚀 <strong>Selanjutnya di Modul 06:</strong> Bagaimana jika jumlah buku dibutuhkan navbar dan halaman keranjang? Kita bagikan state melalui Context; Zustand tersedia sebagai pengayaan.
 </BrutalCard>
 
 <!--

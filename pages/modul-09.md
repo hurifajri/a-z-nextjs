@@ -10,10 +10,10 @@ level: 1
 Menambahkan form usulan buku ke Toko Belajar dengan React Hook Form, Valibot, dan TanStack Query.
 
 <!--
-Bekal: form pencarian Modul 03, props dan custom hook Modul 05–06, fetch/status HTTP serta QueryProvider dari Modul 08.
+Bekal: form pencarian Modul 08, props dan custom hook Modul 05–06, fetch/status HTTP serta QueryProvider dari Modul 08.
 Target: peserta dapat memvalidasi input, menampilkan pesan per field, mengirim POST, serta menangani pending, gagal, dan berhasil.
 Praktik utama: form usulan buku di /suggestions, memakai API simulasi JSONPlaceholder. Respons sukses tidak berarti data tersimpan permanen.
-Route Handlers, database/Drizzle, dan Server Actions dimulai di Modul 10.
+Route Handlers dimulai di Modul 10; database di Modul 11. Server Actions tersedia sebagai lab setelah CRUD.
 Acuan paket yang diperiksa pada 8 Oktober 2026: React Hook Form 7.89.0, Valibot 1.5.0, @hookform/resolvers 5.9.1, dan TanStack Query v5 dari Modul 08.
 -->
 
@@ -56,7 +56,7 @@ Katalog Toko Belajar sudah memakai Open Library. Kini pengguna dapat mengusulkan
 
 <!--
 Mutasi berarti operasi yang meminta perubahan data, berbeda dari query yang membaca data.
-SearchForm sederhana dari Modul 03 tetap sesuai kebutuhannya; tidak perlu mengganti setiap form menjadi React Hook Form.
+SearchForm sederhana dari Modul 08 tetap sesuai kebutuhannya; tidak perlu mengganti setiap form menjadi React Hook Form.
 QueryProvider harus tetap membungkus children pada root layout; useMutation juga memerlukannya.
 Sumber: https://tanstack.com/query/latest/docs/framework/react/guides/mutations
 -->
@@ -108,7 +108,7 @@ export default function TitleInput() {
 }
 ```
 
-Nilai dapat dibaca saat submit dengan `FormData`, seperti Modul 03, atau didaftarkan ke library form.
+Nilai dapat dibaca saat submit dengan `FormData`, seperti Modul 08, atau didaftarkan ke library form.
 
 ::bottom::
 

@@ -105,7 +105,7 @@ class: module-content
 Jalankan dari root **aplikasi Next.js latihan**. Gunakan Node 24 LTS yang sudah dipakai.
 
 ```bash
-npm install -D vitest@5 @vitejs/plugin-react jsdom msw@3
+npm install -D vitest@5 @vitejs/plugin-react@5.2.0 jsdom msw@3
 npm install -D @testing-library/react @testing-library/dom
 npm install -D @testing-library/jest-dom @testing-library/user-event
 ```
@@ -360,7 +360,7 @@ Form tetap memakai hook dan helper aplikasi yang sudah ada.
 
 <v-clicks>
 
-1. Peserta mengisi **Judul buku** dan **Alasan usulan**.
+1. Test mengisi **Judul buku** dan **Alasan usulan**.
 2. Form memanggil `sendSuggestion` → `fetch("/api/suggestions")`.
 3. MSW mencegat request dalam proses test dan memberikan respons yang kita tentukan.
 4. Test memeriksa hasil yang terlihat di form.
@@ -683,7 +683,7 @@ class: module-content
 - Vitest di latihan ini menguji schema, helper, dan Client Component.
 - Gunakan **Playwright** untuk alur halaman server di browser asli.
 - Uji akses lintas akun dengan request API ke server yang sama.
-- Bagian berikut adalah latihan lanjutan setelah 12 test inti lulus.
+- Bagian berikut adalah tahap inti kedua: 2 test Playwright setelah 12 test Vitest lulus.
 
 </v-clicks>
 
@@ -869,7 +869,7 @@ npx playwright test
 
 <v-clicks>
 
-- Latihan inti: **12 test Vitest**. Berkas pendamping: **2 test Playwright**.
+- Target inti: **12 test Vitest + 2 test Playwright**. Keduanya dipakai sebelum rilis pada Modul 16.
 - Build, migrasi, atau login gagal → periksa log tahap itu dahulu.
 - Selesai menjalankan Playwright: server otomatis berhenti; folder `.e2e/` boleh dibuang.
 - Pengayaan: API menolak origin lain, sesi dicabut, edit usulan sendiri, atau form mengalami kegagalan jaringan.

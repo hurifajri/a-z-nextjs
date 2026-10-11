@@ -7,13 +7,13 @@ level: 1
 
 ## 10. Membuat API untuk Usulan Buku
 
-Melanjutkan fitur usulan buku Toko Belajar: menerima request, memvalidasi input, dan mengenal Drizzle ORM.
+Melanjutkan fitur usulan buku Toko Belajar: menerima request, memvalidasi input, dan membaca kontrak HTTP.
 
 <!--
 Prasyarat: form usulan buku, BookSuggestionSchema, dan mutasi dari Modul 09.
 Acuan kelas tetap Next.js 16.3.7, React 19, src/app, serta alias @/* ke src/*.
 Cache Components dan Partial Prefetching tetap nonaktif seperti Modul 07.
-Latihan endpoint dapat dijalankan di proyek Toko Belajar. Bagian Drizzle adalah pengantar menuju setup dan CRUD lengkap Modul 11.
+Latihan endpoint dapat dijalankan di proyek Toko Belajar. Kontrak CRUD menjadi target implementasi SQLite/Drizzle pada Modul 11.
 Audit sumber: 9 Oktober 2026.
 -->
 
@@ -401,342 +401,74 @@ Sumber: https://www.sqlite.org/whentouse.html
 class: module-content
 ---
 
-### Di Mana Drizzle Berada?
+### Kontrak Menjawab Lima Pertanyaan
 
-Drizzle membantu kode TypeScript membentuk query ke database.
+Cocokkan request yang dikirim dengan respons yang dijanjikan.
 
-<div class="grid grid-cols-3 gap-4 mt-5 text-sm">
-  <BrutalCard v-click>
-    <strong>1. Kode Server</strong><br/>
-    Route Handler memeriksa input dan menentukan operasi.
-  </BrutalCard>
-  <BrutalCard v-click>
-    <strong>2. Drizzle + Driver</strong><br/>
-    Drizzle membentuk query; driver menjalankannya ke database.
-  </BrutalCard>
-  <BrutalCard v-click>
-    <strong>3. Database</strong><br/>
-    Menyimpan tabel, menjalankan query, dan mengembalikan hasil.
-  </BrutalCard>
-</div>
+| Pertanyaan        | Preview yang sudah berjalan                      |
+| ----------------- | ------------------------------------------------ |
+| URL dan metode?   | `POST /api/suggestions/preview`                  |
+| Body request?     | JSON `{ title, reason }`                         |
+| Syarat input?     | Judul 3–80; alasan 10–500 karakter, setelah trim |
+| Respons berhasil? | `200`, judul dan alasan yang dirapikan; tanpa ID |
+| Respons gagal?    | `400`, JSON `{ error }`                          |
 
-<v-clicks>
-
-- **ORM** membantu memetakan tabel dan operasi database ke kode aplikasi.
-- **Driver** adalah penghubung untuk database yang dipilih.
-- Koneksi database ditempatkan di server; client berkomunikasi lewat endpoint.
-
-</v-clicks>
-
-<BrutalCard v-click class="mt-3 text-sm">
-  Server Component juga dapat membaca database langsung. Ia tidak perlu memanggil Route Handler milik aplikasi sendiri.
+<BrutalCard v-click class="mt-4 text-sm">
+  Prediksi: jika frontend mengharapkan ID, apakah respons preview sudah cukup? Cocokkan kontraknya sebelum mengganti helper form Modul 09.
 </BrutalCard>
 
-<!--
-Drizzle menyediakan API berorientasi SQL dan tipe yang diturunkan dari schema. SQL adalah bahasa untuk membaca serta mengubah data dalam database relasional.
-Drizzle ORM bukan server database dan tidak menggantikan validasi request, otorisasi, atau pemilihan penyimpanan.
-Pada Modul 11, koneksi memakai import server-only. Kredensial database tidak ditempatkan di modul client atau variabel NEXT_PUBLIC_.
-Sumber: https://orm.drizzle.team/docs/overview
-Sumber: https://nextjs.org/docs/app/guides/backend-for-frontend
-Sumber: https://nextjs.org/docs/app/getting-started/server-and-client-components
--->
-
----
-class: module-content
-layout: two-cols
----
-
-### Pilihan Database untuk Latihan
-
-Mulai dari kebutuhan penyimpanan dan lingkungan tempat aplikasi berjalan.
-
-::left::
-
-#### SQLite Lokal
-
-- Menyimpan database dalam file, misalnya `local.db`.
-- Tidak memerlukan proses server database terpisah.
-- Modul 11 memakai driver `better-sqlite3` pada **Node.js**.
-- Paket driver dan migrasi tetap perlu disiapkan.
-
-::right::
-
-#### PostgreSQL
-
-- Aplikasi terhubung ke server atau layanan database.
-- Cocok saat banyak instance aplikasi perlu mengakses data bersama.
-- Memerlukan koneksi, kredensial, dan driver yang sesuai.
-- Tipe kolom serta fitur SQL berbeda dari SQLite.
-
-::bottom::
-
-<BrutalCard v-click class="text-sm">
-  Memindahkan aplikasi ke serverless perlu strategi penyimpanan. Jangan menganggap file SQLite lokal otomatis persisten pada semua hosting.
-</BrutalCard>
-
-<!--
-SQLite juga memiliki penggunaan produksi; pilihan lokal di kelas bukan berarti SQLite hanya untuk demo.
-better-sqlite3 adalah addon native Node.js, bukan driver untuk Edge Runtime. Dukungan SQLite melalui driver lain dapat berbeda.
-Pindah ke PostgreSQL membutuhkan peninjauan schema, migration, query, dan perilaku database; mengganti import saja tidak cukup.
-Sumber: https://www.sqlite.org/whentouse.html
-Sumber: https://orm.drizzle.team/docs/get-started/sqlite-new
-Sumber: https://github.com/WiseLibs/better-sqlite3
--->
-
 ---
 class: module-content
 ---
 
-### Kenali Tabel Sebelum Menulis Query
+### OpenAPI Menulis Kontrak; Swagger UI Membacanya
 
-Modul 11 menyimpan **usulan buku dari form yang sama** di Toko Belajar.
+**OpenAPI** menyimpan deskripsi API. **Swagger UI** menampilkannya dan dapat mengirim request percobaan.
 
-| id  | title               | reason                            |
-| --- | ------------------- | --------------------------------- |
-| 1   | Learning React      | Untuk latihan komponen React.     |
-| 2   | Eloquent JavaScript | Untuk mendalami dasar JavaScript. |
-
-<v-clicks>
-
-- **Tabel**: kumpulan usulan. **Baris**: satu usulan. **Kolom**: satu jenis informasi.
-- `id` adalah **primary key**, penanda unik untuk memilih satu baris.
-- `title` dan `reason` berasal dari form modul 09.
-- Menutup halaman tidak menghapus baris yang sudah tersimpan.
-
-</v-clicks>
-
-<!--
-Nama tabel pada database nanti adalah book_suggestions; variabel Drizzle-nya suggestions.
-Ini data usulan untuk toko, terpisah dari hasil pencarian Open Library. Menyimpan usulan tidak mengubah data Open Library.
-Sumber: https://www.sqlite.org/lang_createtable.html
--->
-
----
-class: module-content
----
-
-### Membaca Schema Drizzle
-
-Pengantar `src/db/schema.ts` untuk modul 11; **belum perlu membuat file ini**.
-
-```ts {1|3-4|5-6|all}
-import { sqliteTable, integer, text } from "drizzle-orm/sqlite-core";
-
-export const suggestions = sqliteTable("book_suggestions", {
-  id: integer("id").primaryKey({ autoIncrement: true }),
-  title: text("title").notNull(),
-  reason: text("reason").notNull(),
-});
+```yaml
+paths:
+  /api/suggestions/preview:
+    post:
+      summary: Validasi usulan tanpa menyimpannya
+      responses:
+        "200":
+          description: Judul dan alasan valid, setelah trim
+        "400":
+          description: JSON atau input tidak valid
 ```
 
 <v-clicks>
 
-- Database mengisi `id` untuk setiap usulan baru.
-- `title` dan `reason` menyimpan judul serta alasan.
-- `notNull` mewajibkan nilai selain `null`; validasi panjang tetap diperlukan.
+- [Dokumen preview lengkap](/examples/contracts/preview.openapi.yaml) juga menjelaskan body dan schema.
+- Dokumentasi tidak menjalankan validasi. Handler tetap memeriksa request.
 
 </v-clicks>
 
 <!--
-notNull tidak menolak string kosong atau melakukan trim. Aturan 3–80 dan 10–500 karakter tetap berasal dari BookSuggestionSchema.
-Deklarasi sqliteTable belum membuat tabel; migrasi akan menerapkan struktur ini pada database.
-Contoh memakai API stabil drizzle-orm 0.45.4 saat audit. Dokumentasi daring juga memuat 1.0 RC.
-Sumber: https://orm.drizzle.team/docs/sqlite/column-types
-Sumber: https://orm.drizzle.team/docs/sql-schema-declaration
--->
-
----
-class: module-content
-layout: two-cols
----
-
-### Dua Schema, Dua Tanggung Jawab
-
-Keduanya membahas **usulan buku yang sama**, pada tahap yang berbeda.
-
-::left::
-
-#### Valibot: Periksa Input
-
-`BookSuggestionSchema` dari modul 09:
-
-```text
-title: trim, 3–80 karakter
-reason: trim, 10–500 karakter
-```
-
-Dijalankan saat menerima data. Hasilnya input valid atau daftar masalah.
-
-::right::
-
-#### Drizzle: Definisikan Tabel
-
-Tabel `book_suggestions` untuk modul 11:
-
-```text
-id: integer, primary key
-title: text, not null
-reason: text, not null
-```
-
-Menjelaskan kolom dan aturan database. Menjadi acuan query serta migrasi.
-
-::bottom::
-
-<BrutalCard v-click class="text-sm">
-  <code>notNull()</code> masih mengizinkan string kosong. Aturan input pada schema Valibot tetap dijalankan sebelum query.
-</BrutalCard>
-
-<!--
-Satu fitur dapat memiliki schema input dan schema penyimpanan. Nilai lolos TypeScript belum menjamin request valid saat runtime.
-Sumber: https://valibot.dev/guides/schemas/
-Sumber: https://orm.drizzle.team/docs/sqlite/column-types
+Sumber: https://spec.openapis.org/oas/v3.1.0.html
+Sumber: https://swagger.io/docs/open-source-tools/swagger-ui/usage/installation/
 -->
 
 ---
 class: module-content
 ---
 
-### Dari Schema ke Tabel Nyata
+### Praktik: Cocokkan Dokumen dengan Respons
 
-**Migrasi** adalah perubahan struktur database yang dicatat agar dapat diterapkan ulang.
+Pasang [pembaca Swagger UI](/examples/contracts/README.md) dan dokumen preview pada aplikasi Next.js Antum.
 
 <v-clicks>
 
-1. Tulis atau ubah definisi tabel di `src/db/schema.ts`.
-2. **Generate**: Drizzle Kit membuat file SQL migrasi dari perubahan schema.
-3. Baca file SQL agar perubahan yang akan dijalankan dipahami.
-4. **Migrate**: terapkan migrasi yang belum dijalankan pada database tujuan.
+1. Buka `/api-docs.html`; pilih **POST preview → Try it out**.
+2. Kirim judul dan alasan valid. Periksa status `200` dan hasil trim.
+3. Kirim judul kosong. Bandingkan respons `400` dengan kontraknya.
+4. Simpulkan: preview belum menambahkan baris ke database.
 
 </v-clicks>
 
-<BrutalCard v-click class="mt-5 bg-yellow-50 text-sm">
-  Mengedit schema TypeScript belum mengubah database. File migrasi mencatat perubahan struktur; file database menyimpan data aplikasi.
+<BrutalCard v-click class="mt-4 text-sm">
+  Kontrak CRUD berikut adalah target Modul 11. [Workshop OpenAPI lengkap](/examples/pengayaan/swagger.md) menjadi pengayaan setelah CRUD tersedia.
 </BrutalCard>
-
-<!--
-Drizzle ORM digunakan aplikasi untuk query. Drizzle Kit adalah alat CLI untuk mengelola schema/migrasi.
-generate dan migrate adalah alur yang dipakai Modul 11; konfigurasi koneksi dan perintah lengkap ditempatkan di modul tersebut.
-Ada alur lain seperti push, tetapi satu alur cukup untuk latihan pemula. Simpan file migrasi di Git; abaikan file database lokal dan sidecar-nya.
-Sumber: https://orm.drizzle.team/docs/migrations
-Sumber: https://orm.drizzle.team/docs/drizzle-kit-generate
-Sumber: https://orm.drizzle.team/docs/drizzle-kit-migrate
--->
-
----
-class: module-content
----
-
-### Membaca dan Menambah Data
-
-**Sketsa query untuk modul 11:** `db` dan tabel `suggestions` memerlukan setup database terlebih dahulu.
-
-````md magic-move
-```ts
-import { db } from "@/db";
-import { suggestions } from "@/db/schema";
-
-// READ: baca baris dari tabel.
-const list = await db.select().from(suggestions);
-```
-
-```ts
-import { db } from "@/db";
-import { suggestions } from "@/db/schema";
-
-// CREATE: tambahkan satu usulan buku.
-const [created] = await db
-  .insert(suggestions)
-  .values({
-    title: "Learning React",
-    reason: "Untuk latihan komponen React.",
-  })
-  .returning();
-```
-
-```ts
-import { db } from "@/db";
-import { suggestions } from "@/db/schema";
-
-// CREATE: tambahkan satu usulan buku.
-const [created] = await db
-  .insert(suggestions)
-  .values({
-    title: "Learning React",
-    reason: "Untuk latihan komponen React.",
-  })
-  .returning();
-
-// READ: hasilnya berupa array baris.
-const list = await db.select().from(suggestions);
-```
-````
-
-<BrutalCard class="mt-4 text-sm">
-  <code>.returning()</code> mengambil baris hasil insert, termasuk ID dari database. <code>[created]</code> mengambil elemen pertama dari array hasil query.
-</BrutalCard>
-
-<!--
-Setiap langkah magic-move menjelaskan perubahan contoh; bukan tiga blok yang harus ditempel berurutan.
-Sketsa berjalan di konteks server dengan koneksi dan migrasi dari Modul 11. Judul konstan dipakai untuk mempelajari query; input request tetap harus divalidasi lebih dahulu.
-RETURNING tersedia pada SQLite dan PostgreSQL; jangan mengasumsikan semua dialek mempunyai API/fitur identik.
-select tanpa orderBy tidak menjamin urutan hasil. Modul 11 memakai orderBy untuk tampilan yang teratur.
-Sumber: https://orm.drizzle.team/docs/sqlite/select
-Sumber: https://orm.drizzle.team/docs/sqlite/insert
--->
-
----
-class: module-content
-layout: two-cols
----
-
-### Ubah atau Hapus Baris yang Tepat
-
-Sketsa lanjutan; `db` dan `suggestions` memakai import dari contoh sebelumnya.
-
-::left::
-
-#### UPDATE: Perbaiki Alasan
-
-```ts
-import { eq } from "drizzle-orm";
-
-await db
-  .update(suggestions)
-  .set({
-    reason: "Untuk belajar React.",
-  })
-  .where(eq(suggestions.id, 1));
-```
-
-`set` menentukan field yang diubah. `where` memilih baris dengan ID 1.
-
-::right::
-
-#### DELETE: Hapus Usulan
-
-```ts
-import { eq } from "drizzle-orm";
-
-const target = eq(suggestions.id, 1);
-await db.delete(suggestions).where(target);
-```
-
-`eq` berarti “sama dengan”. Baris lain tetap ada.
-
-::bottom::
-
-<BrutalCard v-click class="text-sm">
-  Tanpa <code>where</code>, UPDATE atau DELETE dapat mengenai semua baris. Pilih field secara eksplisit; hindari meneruskan seluruh body request ke <code>set</code>.
-</BrutalCard>
-
-<!--
-Kedua blok adalah contoh operasi terpisah. ID 1 dipakai sebagai ilustrasi; endpoint nyata mengambil ID dari params yang sudah divalidasi.
-Predikat id memilih baris, tetapi belum membuktikan hak akses. Aplikasi multi-user juga harus memeriksa identitas dan kepemilikan di server.
-Dalam Modul 11, returning membantu membedakan baris yang ditemukan dari hasil kosong untuk respons 404.
-Sumber: https://orm.drizzle.team/docs/sqlite/update
-Sumber: https://orm.drizzle.team/docs/sqlite/delete
--->
 
 ---
 class: module-content
@@ -786,7 +518,7 @@ Next.js juga menyediakan fungsi server untuk menangani mutasi dari UI.
 | Input dan izin akses | Diperiksa di server                         | Tetap diperiksa di server                       |
 
 <BrutalCard v-click class="mt-4 text-sm">
-  Praktik kita memakai Route Handler agar alur HTTP dari modul 09 tetap terlihat. Server Action menjadi pilihan ketika membutuhkan alur mutasi yang terintegrasi dengan UI Next.js.
+  Praktik inti memakai Route Handler. Setelah CRUD Modul 11, [lab Server Action](/examples/pengayaan/server-action/README.md) memberi contoh form terpisah dengan validasi server, pending, dan hasil aksi. Server Action menjadi pilihan ketika membutuhkan alur mutasi yang terintegrasi dengan UI Next.js.
 </BrutalCard>
 
 <!--
@@ -833,7 +565,7 @@ transition: fade-out
 
 1. **Buat Endpoint**: route.ts menghubungkan URL dan metode HTTP ke fungsi server.
 2. **Validasi di Server**: jalankan schema pada request dan gunakan hasil validasinya.
-3. **Kenali Penyimpanan**: Drizzle membantu query; database menyimpan data; migrasi mengubah strukturnya.
+3. **Baca Kontrak**: cocokkan metode, URL, input, status, dan bentuk respons.
 4. **Batasi Perubahan**: pilih field dan baris yang sesuai dengan kontrak API.
 
 </v-clicks>
@@ -844,7 +576,7 @@ transition: fade-out
 
 <!--
 Checkpoint: GET health merespons 200; POST preview memberi 200 untuk input valid dan 400 untuk input salah; peserta dapat menjelaskan mengapa belum ada data tersimpan.
-Pastikan peserta dapat membedakan schema validasi, schema tabel, dan migrasi serta menunjukkan fungsi where pada query.
+Pastikan peserta bisa membedakan validasi preview dengan penyimpanan. Schema tabel, migrasi, dan query diperkenalkan di Modul 11.
 Instalasi driver, konfigurasi Drizzle, koneksi, migrasi nyata, dan komponen UI CRUD dilanjutkan pada Modul 11.
 -->
 

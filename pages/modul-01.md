@@ -15,8 +15,34 @@ Jika bekal tersebut belum ada, arahkan ke latihan fondasi pada slide tangga bela
 Target akhir: peserta dapat menjelaskan hubungan React dan Next.js, menjalankan proyek, mengubah src/app/page.tsx, dan membedakan dev, build, serta start.
 Durasi target 45–60 menit: pengenalan 10 menit, setup dan praktik 25–35 menit, pemeriksaan dan diskusi 10–15 menit.
 Contoh berlanjut sebagai toko sederhana. Belum perlu database, autentikasi, atau keranjang yang berfungsi.
-Detail routing ada di Modul 02–03; Server dan Client Components di Modul 04.
+Detail routing ada di Modul 02 dan 04; Server dan Client Components di Modul 03.
 Audit sumber: 4 Oktober 2026. Versi di modul adalah acuan kelas pada tanggal tersebut, bukan janji selalu menjadi versi terbaru.
+-->
+
+---
+class: module-content
+---
+
+### Bekal dan Cara Mengikuti Latihan
+
+Gunakan **satu proyek Toko Belajar** dari Modul 01 sampai 16.
+
+<v-clicks>
+
+- Bekal: array/objek, `async/await`, komponen React, props, event, dan tipe TypeScript dasar.
+- **Inti** membangun hasil yang dipakai modul berikutnya. **Pengayaan** boleh dilewati.
+- Setiap tahap: lihat tujuan → prediksi hasil → ubah kode → jalankan → jelaskan hasilnya.
+- Sebelum lanjut, cocokkan checkpoint. Simpan kemajuan dengan Git; simpan juga `package-lock.json`.
+
+</v-clicks>
+
+<BrutalCard v-click class="mt-4 text-sm">
+  [Panduan dan checkpoint lengkap](/examples/README.md) membantu Antum melanjutkan jika tertinggal. Gunakan folder checkpoint terpisah agar pekerjaan sendiri tetap tersimpan.
+</BrutalCard>
+
+<!--
+Jika prasyarat belum dikuasai, arahkan ke React Foundations pada slide pembuka. Ini kelas pemula Next.js, bukan pengenalan pemrograman pertama.
+Beri jeda pada checkpoint; jangan mengejar penyalinan seluruh kode sambil menjelaskan konsep baru.
 -->
 
 ---
@@ -230,6 +256,39 @@ Sumber rilis: https://github.com/vercel/next.js/releases/tag/v16.3.7
 Sumber CLI: https://nextjs.org/docs/app/api-reference/cli/create-next-app
 Sumber pembaruan keamanan: https://nextjs.org/blog/nextjs-security-update-september-22-2026
 Sebelum kelas berikutnya, cek rilis dan advisory kembali, lalu uji starter yang akan dibagikan.
+-->
+
+---
+class: module-content
+---
+
+### Samakan Acuan Proyek Kelas
+
+Dari root proyek, kunci versi utama lalu simpan `package-lock.json`.
+
+```bash
+npm install --save-exact next@16.3.7 react@19.3.0 react-dom@19.3.0
+npm install -D --save-exact eslint-config-next@16.3.7
+```
+
+Isi `next.config.ts` dengan konfigurasi kelas berikut:
+
+```ts
+import type { NextConfig } from "next";
+const nextConfig: NextConfig = {
+  cacheComponents: false,
+  partialPrefetching: false,
+};
+export default nextConfig;
+```
+
+<BrutalCard v-click class="mt-3 text-sm">
+  Satu konfigurasi ini dipakai sepanjang jalur inti. Makna cache dipelajari pada Modul 07; Antum belum perlu mengubah opsinya.
+</BrutalCard>
+
+<!--
+Pin CLI tidak selalu cukup untuk mengunci seluruh dependency yang dihasilkan. Jalankan npm ls next react react-dom dan simpan lockfile. Ini baseline kelas; pembaruan dilakukan setelah contoh diuji bersama.
+Sumber: https://nextjs.org/docs/app/api-reference/config/next-config-js
 -->
 
 ---

@@ -14,7 +14,7 @@ Lanjutan Modul 11: /suggestions sudah menjalankan CRUD usulan buku di SQLite.
 Kerjakan di proyek Next.js Toko Belajar yang sama. Acuan: Next.js 16.3.7, React 19, Node.js 24 LTS, Tailwind CSS v4, src/app, alias @/* ke src/*.
 BookSuggestionSchema, API, database, serta hook mutasi Modul 11 menjadi fondasi latihan UI ini.
 Cache Components dan Partial Prefetching tetap nonaktif. Pertahankan QueryProvider, CartProvider, dan Navbar pada root layout.
-Audit sumber: 9 Oktober 2026. Modul 13 melanjutkan dokumentasi dan kontrak API usulan buku dengan OpenAPI.
+Audit sumber: 9 Oktober 2026. Modul 13 melengkapi metadata, gambar, dan font katalog.
 -->
 
 ---
@@ -127,7 +127,7 @@ Figma membantu melihat ukuran dan susunan; perilaku UI juga perlu ditentukan.
 
 </v-clicks>
 
-Di Figma, periksa properti dan variabel melalui panel inspeksi yang tersedia pada akses file Anda.
+Di Figma, periksa properti dan variabel melalui panel inspeksi yang tersedia pada akses file Antum.
 
 ::right::
 
@@ -156,31 +156,21 @@ Sumber: https://help.figma.com/hc/en-us/articles/22012921621015-Guide-to-inspect
 class: module-content
 ---
 
-### Gunakan Pendekatan Styling yang Sudah Dikenal
+### Gunakan Styling yang Sudah Dikenal
 
-Proyek Toko Belajar sudah memakai **Tailwind CSS v4**.
-
-| Pendekatan  | Kegunaan                               | Hal yang diperiksa               |
-| ----------- | -------------------------------------- | -------------------------------- |
-| CSS biasa   | Aturan global dan kontrol CSS langsung | Penamaan dan efek antarhalaman   |
-| CSS Modules | Class dengan cakupan lokal             | Nilai dan komponen bersama       |
-| Tailwind    | Menyusun tampilan lewat utility        | Class utuh yang terdeteksi build |
-| CSS-in-JS   | Styling melalui API library            | Dukungan SSR, streaming, dan RSC |
+Proyek Antum sudah memakai **Tailwind CSS v4**. Lanjutkan pola yang sama.
 
 <v-clicks>
 
-- Praktik ini melanjutkan Tailwind dan komponen React yang sudah ada.
-- Pilih pola warna, jarak, dan ukuran agar tampilan konsisten.
-- Komponen yang memakai state browser tetap memerlukan batas client.
+- Gunakan jarak dan ukuran konsisten untuk judul, field, dan tombol.
+- Tulis class utuh, seperti `grid-cols-1 md:grid-cols-2`, agar terdeteksi build.
+- Letakkan nilai bersama pada token; beri setiap warna peran yang jelas.
+- Pelajari alternatif styling ketika ada kebutuhan yang belum terpenuhi.
 
 </v-clicks>
 
 <!--
-CSS Modules memberikan scoped class names; CSS biasa tidak otomatis memiliki cakupan lokal.
-CSS-in-JS mencakup runtime dan ekstraksi saat build. Periksa dukungan framework pada library yang dipilih.
-Class Tailwind harus utuh dan dapat ditemukan scanner; jangan merakit nama class dari potongan string dinamis.
 Sumber: https://nextjs.org/docs/app/getting-started/css
-Sumber: https://nextjs.org/docs/app/guides/css-in-js
 Sumber: https://tailwindcss.com/docs/detecting-classes-in-source-files
 -->
 
@@ -239,30 +229,26 @@ Sumber: https://tailwindcss.com/docs/responsive-design
 class: module-content
 ---
 
-### Memahami Pilihan Komponen UI
+### Komponen UI yang Akan Dipakai
 
-Tiga pendekatan yang dapat dipakai sesuai kebutuhan proyek:
+Latihan memakai **shadcn/ui berbasis Radix**. Source komponen disalin ke proyek dan dapat Antum baca serta ubah.
 
-| Pendekatan                    | Yang diperoleh                  | Tanggung jawab tim                    |
-| ----------------------------- | ------------------------------- | ------------------------------------- |
-| MUI dan library sejenis       | Komponen dengan tampilan bawaan | Tema dan integrasi framework          |
-| Radix UI, Base UI, React Aria | Fondasi perilaku interaktif     | Tampilan dan komposisi                |
-| shadcn/ui                     | Source komponen di dalam proyek | Kode, dependency, dan perubahan lokal |
+| Komponen | Dipakai untuk                                   |
+| -------- | ----------------------------------------------- |
+| Button   | Aksi simpan, edit, hapus dengan status disabled |
+| Card     | Mengelompokkan satu usulan dan tindakannya      |
+| Dialog   | Panduan singkat tanpa kehilangan posisi halaman |
 
 <v-clicks>
 
-- Latihan memakai **shadcn/ui dengan basis Radix**.
-- Basis lain memiliki API komposisi yang berbeda.
-- Source dapat diedit, tetapi perubahan tetap perlu diperiksa.
+- Gunakan API basis Radix pada contoh ini, termasuk `asChild`.
+- Periksa perubahan source dan dependensinya.
+- Uji keyboard dan fokus setelah menyusun komponen.
 
 </v-clicks>
 
 <!--
-shadcn/ui tetap memiliki dependency yang dipasang CLI. Memiliki source juga berarti memelihara modifikasi dan pembaruan.
-Ini satu jalur praktik, bukan peringkat kualitas library. Contoh asChild berikut khusus basis Radix.
 Sumber: https://ui.shadcn.com/docs
-Sumber: https://ui.shadcn.com/docs/cli
-Sumber: https://mui.com/material-ui/getting-started/
 -->
 
 ---
@@ -885,12 +871,12 @@ transition: slide-up
 </v-clicks>
 
 <BrutalCard v-click class="mt-4 bg-brutal-cyan/10">
-  🚀 <strong>Selanjutnya di Modul 13:</strong> Membaca kontrak OpenAPI/Swagger dan mencocokkannya dengan API usulan buku Toko Belajar.
+  🚀 <strong>Selanjutnya di Modul 13:</strong> Lengkapi katalog dengan metadata, gambar, dan font bawaan Next.js.
 </BrutalCard>
 
 <!--
 Hasil inti: /suggestions dengan Button, Card, Dialog panduan, dan susunan responsif.
-Kontrak API dipelajari pada Modul 13; login, sesi, dan hak akses dilanjutkan pada Modul 14.
+Kontrak API telah dikenalkan pada Modul 10; login, sesi, dan hak akses dilanjutkan pada Modul 14.
 -->
 
 ---

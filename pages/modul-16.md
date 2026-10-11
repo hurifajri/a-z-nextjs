@@ -73,6 +73,31 @@ Sumber: https://nextjs.org/docs/app/api-reference/cli/next
 class: module-content
 ---
 
+### Tugas Mandiri: Tambahkan Kategori Usulan
+
+Pada salinan aplikasi lokal, tambahkan kategori **React**, **Next.js**, atau **Lainnya** untuk setiap usulan.
+
+<v-clicks>
+
+1. Rancang validasi, kolom database, dan migrasi; tentukan nilai bagi baris lama.
+2. Hubungkan field tambah/edit dan tampilkan kategori pada kartu.
+3. Perbarui kontrak serta test untuk kategori valid/tidak valid.
+4. Buktikan kategori bertahan setelah restart dan akses tetap terbatas pada pemilik.
+
+</v-clicks>
+
+<BrutalCard v-click class="mt-4 text-sm">
+  <strong>Selesai bila:</strong> migrasi data lama berhasil, CRUD konsisten, error dijelaskan, izin tetap terjaga, dan Antum dapat menjelaskan alur form → server → database → UI.
+</BrutalCard>
+
+<!--
+Tugas transfer setelah modul 15. Demo deployment boleh memakai baseline; versi tugas yang diubah harus menjalani test tambahan sebelum rilis. Sediakan sesi khusus membahas hasil.
+-->
+
+---
+class: module-content
+---
+
 ### 1. Pilih Hosting yang Cocok dengan Database Kita
 
 Toko Belajar menyimpan usulan **dan data auth** di file SQLite yang sama.
@@ -169,7 +194,7 @@ npx playwright test
 </v-clicks>
 
 <!--
-Jika bagian lanjutan Playwright Modul 15 belum dikerjakan, selesaikan setup-nya terlebih dahulu untuk mengikuti jalur rilis ini.
+Jika tahap inti Playwright Modul 15 belum dikerjakan, selesaikan setup-nya terlebih dahulu untuk mengikuti jalur rilis ini.
 next build bukan pengganti pemeriksaan lint atau seluruh test. Next.js 16 tidak lagi menjalankan lint otomatis saat build.
 CI dapat mengotomasi rangkaian ini. Pengaturan Git hosting tetap perlu memastikan hanya versi yang sudah diperiksa yang dipromosikan.
 Sumber: https://nextjs.org/docs/app/guides/upgrading/version-16

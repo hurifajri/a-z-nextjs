@@ -3,7 +3,7 @@ info:
   title: API Usulan Buku Toko Belajar
   version: 1.0.0
   description: |
-    Kontrak latihan lokal single-user Modul 11–13, diaudit 9 Oktober 2026.
+    Kontrak latihan lokal single-user Modul 11–12, diaudit 9 Oktober 2026.
     Usulan disimpan di SQLite Toko Belajar; katalog Open Library tidak diubah.
     Autentikasi dan pembatasan pemilik ditambahkan pada Modul 14.
 servers:

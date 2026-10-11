@@ -14,7 +14,7 @@ Bekal: proyek Modul 01 berjalan, peserta dapat mengedit src/app/page.tsx dan men
 Target akhir: peserta dapat menerjemahkan folder ke URL, membuat halaman dan nested layout, serta membedakan file halaman dari file pendukung.
 Durasi target 60 menit: folder dan halaman 20 menit, layout 20 menit, organisasi file dan checkpoint 20 menit. Route groups dapat menjadi bacaan tambahan bila waktu praktik terbatas.
 Jalankan npm run dev dari my-next-app. Gunakan port Local yang dicetak terminal. Semua contoh melanjutkan TypeScript dan src/app/ dari Modul 01.
-Batas materi: nama segmen tetap, page.tsx, layout.tsx, dan organisasi file. Dynamic segments, params, Link, dan hook navigasi dimulai di Modul 03; Server/Client Components di Modul 04.
+Batas materi: nama segmen tetap, page.tsx, layout.tsx, dan organisasi file. Dynamic segments, params, Link, dan hook navigasi dimulai di Modul 04; Server/Client Components di Modul 03.
 Perbandingan dua router dan optimasi barrel exports dikeluarkan dari materi inti agar peserta berlatih satu pola dahulu. Jika ditanya: Pages Router masih didukung, tetapi latihan ini menggunakan App Router.
 Audit sumber daring: 7 Oktober 2026. Mengikuti acuan Next.js 16 pada Modul 01; tidak memerlukan upgrade atau fitur eksperimental.
 Sumber status Pages Router: https://nextjs.org/docs/pages
@@ -261,7 +261,7 @@ RootLayout                         ← src/app/layout.tsx
 ```
 
 <BrutalCard v-click class="mt-4 bg-yellow-100">
-  💡 Pada navigasi sisi klien antarhalaman dengan layout yang sama, layout bersama dipertahankan. Memuat ulang browser membuat dokumen baru. Navigasi sisi klien kita coba di Modul 03.
+  💡 Pada navigasi sisi klien antarhalaman dengan layout yang sama, layout bersama dipertahankan. Memuat ulang browser membuat dokumen baru. Navigasi sisi klien kita coba di Modul 04.
 </BrutalCard>
 
 <!--
@@ -382,7 +382,7 @@ class: module-content
 layout: two-cols
 ---
 
-### Route Groups: Folder yang Tidak Masuk URL
+### Pengayaan: Route Groups: Folder yang Tidak Masuk URL
 
 Tambahan: gunakan `(nama)` ketika beberapa rute perlu dikelompokkan.
 
@@ -545,7 +545,7 @@ Gunakan pola page yang sudah dicoba. Tambahkan `/about` dan `/cart`, lalu periks
 
 <!--
 Beri waktu 5–8 menit. Peserta membuat src/app/about/page.tsx dan src/app/cart/page.tsx, masing-masing dengan export default komponen React, main, judul, dan teks sederhana.
-Gunakan bilah alamat; Link dan tombol navigasi menyusul di Modul 03. Keranjang masih berupa tampilan, belum ada state atau transaksi.
+Gunakan bilah alamat; Link dan tombol navigasi menyusul di Modul 04. Keranjang masih berupa tampilan, belum ada state atau transaksi.
 Minta peserta menjelaskan letak dua page baru sebelum mengetik. Jika mencoba route group, cukup products yang dipindah; URL pemeriksaan tetap sama.
 Pertanyaan lanjutan: apakah src/app/products/ProductCard.tsx dapat dibuka sebagai /products/ProductCard? Tidak, file pendukung tidak otomatis menjadi halaman.
 Hasil latihan lima URL menjadi titik awal Modul 03. Tidak perlu menambahkan database atau folder untuk tiap buku.
@@ -588,19 +588,15 @@ Bedakan URL tidak ditemukan dengan error kompilasi. Baca pesan error sebelum men
 class: module-content
 ---
 
-### Cek Pemahaman: Tebak URL
+### Cek Pemahaman: Page atau Layout?
 
 Baca setiap nama folder sebelum memilih jawaban.
 
 <LearningCheck
-  question="Apa URL untuk halaman src/app/(shop)/products/promo/page.tsx?"
-  :options="[
-    '/shop/products/promo',
-    '/products/promo',
-    '/products/promo/page',
-  ]"
-  :answer="1"
-  explanation="(shop) adalah route group, sehingga tidak menjadi segmen URL. products dan promo menjadi segmen; page.tsx menyediakan halamannya."
+  question="Antum ingin /products dan /products/promo berbagi label Area Katalog. File mana yang tepat untuk label itu?"
+  :options='["src/app/products/layout.tsx dengan children", "src/app/products/promo/page.tsx saja", "src/app/products/label.tsx tanpa mengimpornya"]'
+  :answer="0"
+  explanation="Layout pada products membungkus page katalog dan route anaknya. children menampilkan halaman yang sedang dibuka. File pendukung tidak otomatis tampil."
 />
 
 <!--
@@ -629,13 +625,13 @@ transition: slide-up
 </v-clicks>
 
 <BrutalCard v-click class="mt-4 bg-brutal-cyan/10">
-  🚀 <strong>Selanjutnya di Modul 03:</strong> Buat alamat detail untuk banyak produk dan berpindah halaman melalui Link serta hook navigasi.
+  🚀 <strong>Selanjutnya di Modul 03:</strong> Tambahkan tombol interaktif sambil memahami batas Server dan Client Components.
 </BrutalCard>
 
 <!--
 Checkpoint akhir: peserta mampu menunjukkan lima URL latihan dan menjelaskan perbedaan page dengan layout.
-Jembatan ke pertanyaan pembuka Modul 03: jika katalog berisi 1.000 produk, bagaimana menyediakan halaman detail tanpa membuat 1.000 folder?
-Berhenti pada kebutuhan tersebut; contoh [id], params, catch-all, Link, dan useRouter tetap di Modul 03.
+Jembatan ke Modul 03: bagian katalog mana yang memerlukan kode untuk menanggapi klik?
+Berhenti pada kebutuhan tersebut; contoh [id], params, catch-all, Link, dan useRouter tetap di Modul 04.
 -->
 
 ---

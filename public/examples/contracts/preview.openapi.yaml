@@ -1,0 +1,63 @@
+openapi: 3.1.0
+info:
+  title: Preview Usulan Buku Toko Belajar
+  version: 1.0.0
+  description: Kontrak Modul 10. Validasi tanpa penyimpanan; tidak mengembalikan ID.
+servers:
+  - url: /
+paths:
+  /api/health:
+    get:
+      summary: Periksa respons aplikasi
+      responses:
+        "200":
+          description: Aplikasi merespons
+          content:
+            application/json:
+              schema:
+                type: object
+                required: [ok, service]
+                properties:
+                  ok: { type: boolean, const: true }
+                  service: { type: string, const: Toko Belajar }
+  /api/suggestions/preview:
+    post:
+      summary: Validasi judul dan alasan tanpa menyimpan
+      description: Field tambahan diabaikan; spasi tepi title dan reason dipangkas.
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/SuggestionInput"
+            example:
+              title: "  Learning React  "
+              reason: "  Untuk latihan komponen React.  "
+      responses:
+        "200":
+          description: Input valid dan sudah di-trim, tanpa ID
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/SuggestionInput"
+        "400":
+          description: JSON atau input tidak valid
+          content:
+            application/json:
+              schema:
+                type: object
+                required: [error]
+                properties:
+                  error: { type: string }
+components:
+  schemas:
+    SuggestionInput:
+      type: object
+      required: [title, reason]
+      properties:
+        title:
+          type: string
+          description: Setelah trim, panjang 3–80 unit kode UTF-16.
+        reason:
+          type: string
+          description: Setelah trim, panjang 10–500 unit kode UTF-16.
