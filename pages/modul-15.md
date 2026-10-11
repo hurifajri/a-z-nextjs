@@ -454,7 +454,7 @@ class: module-content
 
 ### 8. Siapkan Form beserta Provider-nya
 
-Buat **`src/app/suggestions/SuggestionForm.test.tsx`** dengan import dan helper berikut.
+Buat **`src/app/suggestions/suggestion-form.test.tsx`** dengan import dan helper berikut.
 
 ```tsx
 import { expect, test, vi } from "vitest";
@@ -463,7 +463,7 @@ import userEvent from "@testing-library/user-event";
 import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
 import { http, HttpResponse } from "msw/http";
 import { server } from "@/test/server";
-import SuggestionForm from "./SuggestionForm";
+import SuggestionForm from "./suggestion-form";
 
 vi.mock("next/navigation", () => ({
   useRouter: () => ({ refresh: vi.fn() }),
@@ -637,7 +637,7 @@ npm run test:run
 | Berkas                           | Skenario                            | Jumlah |
 | -------------------------------- | ----------------------------------- | ------ |
 | `book-suggestion-schema.test.ts` | Normalisasi, penolakan, batas valid | 8      |
-| `SuggestionForm.test.tsx`        | Simpan berhasil, 500, 401           | 3      |
+| `suggestion-form.test.tsx`       | Simpan berhasil, 500, 401           | 3      |
 | `suggestions.test.ts`            | DELETE 204 tanpa body               | 1      |
 
 <v-clicks>

@@ -1,7 +1,7 @@
 import type { ReactNode } from "react";
 import "./globals.css";
-import Navbar from "@/components/Navbar";
-import CartProvider from "@/components/cart/CartProvider";
+import Navbar from "@/components/nav-bar";
+import CartProvider from "@/components/cart/cart-provider";
 export default function RootLayout({ children }: { children: ReactNode }) {
   return (
     <html lang="id">

@@ -12,7 +12,7 @@ import {
   CardFooter,
 } from "@/components/ui/card";
 
-import SuggestionForm from "./SuggestionForm";
+import SuggestionForm from "./suggestion-form";
 
 export default function SuggestionItem({
   suggestion,

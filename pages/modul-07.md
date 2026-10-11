@@ -625,12 +625,12 @@ class: module-content
 
 ### Praktik: Pisahkan Bagian yang Menunggu Data
 
-Buat `src/app/products/[id]/BookDetails.tsx`. Pindahkan pengambilan buku dan kontrolnya ke komponen server ini.
+Buat `src/app/products/[id]/book-details.tsx`. Pindahkan pengambilan buku dan kontrolnya ke komponen server ini.
 
 ```tsx {1-5|7-8|10-17|all}
 import { getBook } from "@/lib/books";
-import BookNotice from "@/components/BookNotice";
-import BookQuantity from "./BookQuantity";
+import BookNotice from "@/components/book-notice";
+import BookQuantity from "./book-quantity";
 
 type Props = { id: string };
 
@@ -665,7 +665,7 @@ Di `src/app/products/[id]/page.tsx`, gunakan komponen page berikut beserta impor
 
 ```tsx {1-4|6-7|12-14|all}
 import { Suspense } from "react";
-import BookDetails from "./BookDetails";
+import BookDetails from "./book-details";
 
 type Props = { params: Promise<{ id: string }> };
 

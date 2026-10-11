@@ -1,4 +1,4 @@
-import BookHits from "./BookHits";
+import BookHits from "./book-hits";
 import type { BookHit } from "@/lib/book-search";
 type Props = {
   books?: BookHit[];

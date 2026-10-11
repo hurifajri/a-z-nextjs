@@ -5,8 +5,8 @@ export const metadata: Metadata = {
 };
 import Link from "next/link";
 import { Suspense } from "react";
-import SearchForm from "@/components/SearchForm";
-import BookSearch from "./BookSearch";
+import SearchForm from "@/components/search-form";
+import BookSearch from "./book-search";
 
 export default function ProductsPage() {
   return (

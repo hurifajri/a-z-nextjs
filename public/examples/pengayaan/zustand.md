@@ -69,7 +69,7 @@ export function useCart<T>(selector: (state: CartState) => T) {
 
 ### Zustand 3: Simpan Store pada Provider
 
-Ganti seluruh isi `src/components/cart/CartProvider.tsx`. Posisi provider di layout tetap sama.
+Ganti seluruh isi `src/components/cart/cart-provider.tsx`. Posisi provider di layout tetap sama.
 
 ```tsx
 "use client";
@@ -92,7 +92,7 @@ export default function CartProvider({ children }: Props) {
 
 ### Zustand 4: Pilih Nilai di Setiap Pemakai
 
-Perbarui cara membaca state pada `CartLink.tsx`.
+Perbarui cara membaca state pada `cart-link.tsx`.
 
 Sebelumnya, hook membaca seluruh value Context:
 
@@ -122,10 +122,10 @@ export default function CartLink() {
 
 Ganti juga baris hook **di dalam fungsi** kedua komponen berikut:
 
-| File              | Pembacaan baru                                                                                  |
-| ----------------- | ----------------------------------------------------------------------------------------------- |
-| `AddToCart.tsx`   | `const addItems = useCart((s) => s.addItems);`                                                  |
-| `CartSummary.tsx` | `const totalItems = useCart((s) => s.totalItems);`<br/>`const reset = useCart((s) => s.reset);` |
+| File               | Pembacaan baru                                                                                  |
+| ------------------ | ----------------------------------------------------------------------------------------------- |
+| `add-to-cart.tsx`  | `const addItems = useCart((s) => s.addItems);`                                                  |
+| `cart-summary.tsx` | `const totalItems = useCart((s) => s.totalItems);`<br/>`const reset = useCart((s) => s.reset);` |
 
 ### Apa yang Berubah saat Nilai Diperbarui?
 

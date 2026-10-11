@@ -1,8 +1,9 @@
 "use client";
 import type { BookSuggestion } from "@/lib/book-suggestion-schema";
 import { useSuggestionForm } from "@/hooks/use-suggestion-form";
-import TitleField from "./TitleField";
-import ReasonField from "./ReasonField";
+import { Button } from "@/components/ui/button";
+import TitleField from "./title-field";
+import ReasonField from "./reason-field";
 
 type Props = { suggestion?: BookSuggestion; onClose?: () => void };
 
@@ -14,13 +15,13 @@ export default function SuggestionForm({ suggestion, onClose }: Props) {
         <legend>{suggestion ? "Edit usulan buku" : "Usulkan buku"}</legend>
         <TitleField form={form} />
         <ReasonField form={form} />
-        <button type="submit">
+        <Button type="submit">
           {pending ? "Menyimpan…" : "Simpan usulan"}
-        </button>
+        </Button>
         {onClose && (
-          <button type="button" onClick={onClose}>
+          <Button type="button" onClick={onClose}>
             Tutup editor
-          </button>
+          </Button>
         )}
       </fieldset>
       <p role="alert">{form.formState.errors.root?.server?.message}</p>

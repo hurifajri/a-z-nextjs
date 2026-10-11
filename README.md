@@ -20,6 +20,7 @@ Di presentasi, bahan tersedia pada `/examples/README.md`. Pada GitHub, gunakan t
 ## Menjaga kesinambungan
 
 - Bahasa terlihat berbicara langsung kepada peserta. Arahan presenter berada dalam komentar HTML.
+- File/folder buatan sendiri memakai kebab-case, termasuk komponen (`book-notice.tsx`). Nama komponen/type/class tetap PascalCase; fungsi dan variabel biasa camelCase. Nama khusus framework/tool mengikuti kontraknya. Acuan dan contoh ada pada Modul 02.
 - Inti: Context, fetch, Route Handlers, SQLite/Drizzle, dan sesi cookie. Alternatif ditempatkan pada pengayaan.
 - Modul 03 membahas Server/Client sebelum navigasi Modul 04; pencarian URL berada di Modul 08.
 - Modul 10 mengenalkan kontrak/Swagger ringkas; Modul 13 berfokus pada metadata, gambar, dan font.

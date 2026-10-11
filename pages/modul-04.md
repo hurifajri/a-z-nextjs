@@ -58,7 +58,7 @@ class: module-content
 Buat `src/app/products/[id]/page.tsx`. Gunakan kembali tombol dari Modul 03, lalu buka dua alamat contoh di browser.
 
 ```tsx {1|3-5|7-8|14|all}
-import BookNotice from "@/components/BookNotice";
+import BookNotice from "@/components/book-notice";
 
 type Props = {
   params: Promise<{ id: string }>;
@@ -176,11 +176,11 @@ layout: two-cols
 
 ### Pasang Menu Bersama di Header
 
-Buat `src/components/Navbar.tsx`, lalu gunakan di root layout dari Modul 02.
+Buat `src/components/nav-bar.tsx`, lalu gunakan di root layout dari Modul 02.
 
 ::left::
 
-#### Isi `Navbar.tsx`
+#### Isi `nav-bar.tsx`
 
 ```tsx
 import Link from "next/link";
@@ -203,7 +203,7 @@ export default function Navbar() {
 Tambahkan import di awal file:
 
 ```tsx
-import Navbar from "@/components/Navbar";
+import Navbar from "@/components/nav-bar";
 ```
 
 Ganti bagian header dengan potongan JSX ini:
@@ -261,7 +261,7 @@ class: module-content
 
 ### Praktik: Tandai Menu Katalog yang Aktif
 
-Perbarui `src/components/Navbar.tsx`; bandingkan path saat ini dengan `/products`.
+Perbarui `src/components/nav-bar.tsx`; bandingkan path saat ini dengan `/products`.
 
 ```tsx {1-3|5-7|12-17|all}
 "use client";

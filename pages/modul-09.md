@@ -426,7 +426,7 @@ class: module-content
 
 ### Daftarkan Field Judul dan Pesan Error
 
-Buat `src/app/suggestions/TitleField.tsx`. `register` menghubungkan input native ke form.
+Buat `src/app/suggestions/title-field.tsx`. `register` menghubungkan input native ke form.
 
 ```tsx
 import { useId } from "react";
@@ -472,7 +472,7 @@ class: module-content
 
 ### Daftarkan Field Alasan dengan Pola yang Sama
 
-Buat `src/app/suggestions/ReasonField.tsx`. Field `reason` menyimpan alasan buku tersebut diusulkan untuk Toko Belajar.
+Buat `src/app/suggestions/reason-field.tsx`. Field `reason` menyimpan alasan buku tersebut diusulkan untuk Toko Belajar.
 
 ```tsx
 import { useId } from "react";
@@ -516,13 +516,13 @@ class: module-content
 
 ### Gabungkan Field dan Status Pengiriman
 
-Buat `src/app/suggestions/SuggestionForm.tsx`. `handleSubmit` memeriksa data sebelum memanggil `submit`.
+Buat `src/app/suggestions/suggestion-form.tsx`. `handleSubmit` memeriksa data sebelum memanggil `submit`.
 
 ```tsx
 "use client";
 import { useSuggestionForm } from "@/hooks/use-suggestion-form";
-import TitleField from "./TitleField";
-import ReasonField from "./ReasonField";
+import TitleField from "./title-field";
+import ReasonField from "./reason-field";
 
 export default function SuggestionForm() {
   const { form, mutation, submit } = useSuggestionForm();
@@ -566,7 +566,7 @@ Buat `src/app/suggestions/page.tsx`, lalu tambahkan tautannya pada katalog.
 #### Halaman Server
 
 ```tsx
-import SuggestionForm from "./SuggestionForm";
+import SuggestionForm from "./suggestion-form";
 
 export default function SuggestionsPage() {
   return (

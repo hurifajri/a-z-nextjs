@@ -1,5 +1,5 @@
-import BookNotice from "@/components/BookNotice";
-import BookQuantity from "./BookQuantity";
+import BookNotice from "@/components/book-notice";
+import BookQuantity from "./book-quantity";
 
 type Props = {
   params: Promise<{ id: string }>;

@@ -5,13 +5,13 @@ Lanjutkan proyek setelah Modul 12. Buat perubahan kecil sesuai slide; file lengk
 | Unduhan                                               | Tujuan pada aplikasi                                    |
 | ----------------------------------------------------- | ------------------------------------------------------- |
 | [book-placeholder.png](./assets/book-placeholder.png) | `public/images/book-placeholder.png`                    |
-| [Geist.ttf](./assets/Geist.ttf)                       | `src/app/fonts/Geist.ttf`                               |
+| [geist-sans.ttf](./assets/geist-sans.ttf)             | `src/app/fonts/geist-sans.ttf`                          |
 | [OFL.txt](./assets/OFL.txt)                           | `src/app/fonts/OFL.txt`                                 |
 | [layout.tsx](./files/layout.tsx)                      | `src/app/layout.tsx`                                    |
 | [globals.css](./files/globals.css)                    | `src/app/globals.css` (merge dengan token shadcn Antum) |
 | [products-page.tsx](./files/products-page.tsx)        | `src/app/products/page.tsx`                             |
 | [product-page.tsx](./files/product-page.tsx)          | `src/app/products/[id]/page.tsx`                        |
-| [BookDetails.tsx](./files/BookDetails.tsx)            | `src/app/products/[id]/BookDetails.tsx`                 |
+| [book-details.tsx](./files/book-details.tsx)          | `src/app/products/[id]/book-details.tsx`                |
 
 Metadata di root menambahkan identitas toko. Page katalog memakai title tetap; detail memakai generateMetadata dengan getBook dari Modul 07. Pertahankan CartProvider, QueryProvider, Navbar, footer, Suspense, dan generateStaticParams.
 

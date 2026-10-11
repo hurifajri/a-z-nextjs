@@ -1,7 +1,7 @@
 "use client";
 import Link from "next/link";
 import { usePathname } from "next/navigation";
-import CartLink from "@/components/cart/CartLink";
+import CartLink from "@/components/cart/cart-link";
 export default function Navbar() {
   const pathname = usePathname();
   return (
@@ -15,7 +15,6 @@ export default function Navbar() {
         Katalog
       </Link>
       <CartLink />
-      <Link href="/suggestions">Usulkan buku</Link>
       <Link href="/about">Tentang</Link>
     </nav>
   );

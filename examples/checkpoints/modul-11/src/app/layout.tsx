@@ -1,8 +1,8 @@
 import type { ReactNode } from "react";
 import "./globals.css";
-import QueryProvider from "@/components/QueryProvider";
-import Navbar from "@/components/Navbar";
-import CartProvider from "@/components/cart/CartProvider";
+import QueryProvider from "@/components/query-provider";
+import Navbar from "@/components/nav-bar";
+import CartProvider from "@/components/cart/cart-provider";
 export default function RootLayout({ children }: { children: ReactNode }) {
   return (
     <html lang="id">

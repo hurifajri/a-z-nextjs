@@ -110,7 +110,7 @@ class: module-content
 
 ### Praktik: Dari Teks ke Tombol
 
-Buat `src/components/BookNotice.tsx`. Perhatikan perubahan, lalu gunakan versi akhir.
+Buat `src/components/book-notice.tsx`. Perhatikan perubahan, lalu gunakan versi akhir.
 
 ````md magic-move
 ```tsx
@@ -167,7 +167,7 @@ class: module-content
 Perbarui `src/app/products/page.tsx`. ID masih berupa nilai tetap.
 
 ```tsx {1|4|9|all}
-import BookNotice from "@/components/BookNotice";
+import BookNotice from "@/components/book-notice";
 
 export default function ProductsPage() {
   const id = "buku-react";
@@ -231,7 +231,7 @@ class: module-content
 
 ```text {1|2|3|all}
 page.tsx                                  Server Component
-└── import BookNotice.tsx                 Batas: "use client"
+└── import book-notice.tsx                 Batas: "use client"
     └── komponen/helper yang diimpornya   Ikut masuk sisi client
 ```
 
@@ -329,7 +329,7 @@ class: module-content
 
 ### Pengayaan: Sediakan Tempat untuk Isi
 
-Perbarui `BookNotice.tsx` agar menerima `children`, seperti layout pada Modul 02.
+Perbarui `book-notice.tsx` agar menerima `children`, seperti layout pada Modul 02.
 
 ```tsx {3-4|12-14|all}
 "use client";
@@ -370,7 +370,7 @@ class: module-content
 Di `src/app/products/page.tsx`, tempatkan isi di antara tag `BookNotice`.
 
 ```tsx {1|7-10|all}
-import BookNotice from "@/components/BookNotice";
+import BookNotice from "@/components/book-notice";
 
 export default function ProductsPage() {
   const id = "buku-react";
@@ -444,7 +444,7 @@ Lanjutkan halaman katalog. Waktu: **10–15 menit**.
 
 <v-clicks>
 
-1. Buat `BookNotice.tsx` versi tombol; page mengirim `id` melalui props.
+1. Buat `book-notice.tsx` versi tombol; page mengirim `id` melalui props.
 2. Buka `/products`. Cocokkan ID di halaman dengan isi dialog saat tombol diklik.
 3. Ganti ID di page, simpan, lalu coba tombol lagi.
 4. Tunjukkan letak directive, asal props, dan kapan `showId` dijalankan.
@@ -495,7 +495,7 @@ class: module-content
 
 <LearningCheck
   question="ProductsPage menyiapkan judul katalog. BookNotice perlu onClick untuk menampilkan ID. File mana yang diberi use client?"
-  :options='["page.tsx saja agar semua anaknya ikut client", "BookNotice.tsx; page tetap server dan mengirim id", "Keduanya, karena berada di folder yang sama"]'
+  :options='["page.tsx saja agar semua anaknya ikut client", "book-notice.tsx; page tetap server dan mengirim id", "Keduanya, karena berada di folder yang sama"]'
   :answer="1"
   explanation="BookNotice memerlukan handler di browser. Page tetap di server dan mengirim id berupa string. Lokasi folder tidak menentukan batas client."
 />

@@ -230,9 +230,11 @@ class: module-content
 Acuan kelas per 4 Oktober 2026: Next.js 16.3.7, TypeScript, App Router, dan Tailwind CSS v4.
 
 ```bash
-npx create-next-app@16.3.7 my-next-app --use-npm
+npx create-next-app@16.3.7 my-next-app
 cd my-next-app
 ```
+
+Jalankan tanpa flag tambahan, lalu pilih **No, customize settings** agar pertanyaan berikut muncul.
 
 | Pertanyaan di terminal              | Pilih untuk latihan ini        |
 | :---------------------------------- | :----------------------------- |
@@ -249,11 +251,14 @@ cd my-next-app
 npx menjalankan alat create-next-app; alat ini membuat kerangka proyek dan memasang dependensi. Jika npx meminta izin memasang create-next-app, pilih y.
 cd = change directory, berpindah ke folder proyek. Gunakan folder induk yang belum memiliki my-next-app.
 Versi CLI dipin agar acuan kelas jelas. Verifikasi versi dependensi dengan npm ls next react react-dom; simpan package-lock.json hasil setup.
-Prompt CLI dapat berbeda karena versi atau preferensi tersimpan. Pastikan pilihan akhir sesuai tabel, terutama src/, ESLint, dan App Router.
+Pada create-next-app 16.3.7, flag panjang apa pun memicu mode noninteraktif untuk opsi yang belum diberikan. Termasuk --use-npm: walaupun fungsinya memilih package manager, pada versi ini efeknya juga melewati prompt konfigurasi. Karena dijalankan melalui npx, npm sudah dipilih tanpa flag tersebut.
+Perintah tanpa flag diuji langsung: pilih No, customize settings, lalu prompt TypeScript, linter, React Compiler, dan Tailwind muncul. No, reuse previous settings juga dapat muncul bila ada preferensi tersimpan; pilih customize untuk menyamakan latihan.
+Prompt CLI dapat berubah pada versi lain. Jika pertanyaan tidak muncul, pastikan perintah dijalankan di terminal interaktif tanpa --yes/flag tambahan atau mode CI. Pastikan hasil akhir memakai src/, ESLint, dan App Router sesuai tabel.
 React Compiler adalah optimasi tambahan; belum dibutuhkan untuk tujuan latihan. AGENTS.md adalah petunjuk bagi coding agent, bukan syarat menjalankan aplikasi.
 Rilis 16.3.7 sudah tersedia ketika diaudit. Hindari memakai jadwal rilis sebagai bukti bahwa sebuah versi telah diterbitkan.
 Sumber rilis: https://github.com/vercel/next.js/releases/tag/v16.3.7
 Sumber CLI: https://nextjs.org/docs/app/api-reference/cli/create-next-app
+Implementasi versi kelas: https://github.com/vercel/next.js/blob/v16.3.7/packages/create-next-app/index.ts
 Sumber pembaruan keamanan: https://nextjs.org/blog/nextjs-security-update-september-22-2026
 Sebelum kelas berikutnya, cek rilis dan advisory kembali, lalu uji starter yang akan dibagikan.
 -->

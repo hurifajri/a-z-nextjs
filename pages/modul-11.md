@@ -136,9 +136,9 @@ class: module-content
 ```text
 src/
 ├── app/suggestions/
-│   ├── page.tsx, SuggestionForm.tsx   # Perbarui dari 09
-│   ├── TitleField.tsx, ReasonField.tsx # Pakai dari 09
-│   ├── SuggestionItem.tsx             # Baru
+│   ├── page.tsx, suggestion-form.tsx   # Perbarui dari 09
+│   ├── title-field.tsx, reason-field.tsx # Pakai dari 09
+│   ├── suggestion-item.tsx             # Baru
 │   └── loading.tsx, error.tsx         # Baru
 ├── app/api/suggestions/
 │   ├── preview/route.ts              # Dari modul 10
@@ -895,14 +895,14 @@ class: module-content
 
 ### 14. Form yang Sama Dipakai untuk Tambah dan Edit
 
-**Ganti isi** `src/app/suggestions/SuggestionForm.tsx`. Kedua komponen field dari modul 09 tetap digunakan.
+**Ganti isi** `src/app/suggestions/suggestion-form.tsx`. Kedua komponen field dari modul 09 tetap digunakan.
 
 ```tsx
 "use client";
 import type { BookSuggestion } from "@/lib/book-suggestion-schema";
 import { useSuggestionForm } from "@/hooks/use-suggestion-form";
-import TitleField from "./TitleField";
-import ReasonField from "./ReasonField";
+import TitleField from "./title-field";
+import ReasonField from "./reason-field";
 
 type Props = { suggestion?: BookSuggestion; onClose?: () => void };
 
@@ -931,7 +931,7 @@ class: module-content
 
 ### Form: Ganti return null dengan Markup
 
-Masih di `SuggestionForm.tsx`, **di dalam fungsi komponennya**.
+Masih di `suggestion-form.tsx`, **di dalam fungsi komponennya**.
 
 ```tsx
 return (
@@ -1006,14 +1006,14 @@ class: module-content
 
 ### 16. Satu Item Dapat Membuka Editor
 
-Buat `src/app/suggestions/SuggestionItem.tsx`. Markup daftar menggantikan `return null` pada slide berikut.
+Buat `src/app/suggestions/suggestion-item.tsx`. Markup daftar menggantikan `return null` pada slide berikut.
 
 ```tsx
 "use client";
 import { useState } from "react";
 import type { BookSuggestion } from "@/lib/book-suggestion-schema";
 import { useDeleteSuggestion } from "@/hooks/use-delete-suggestion";
-import SuggestionForm from "./SuggestionForm";
+import SuggestionForm from "./suggestion-form";
 
 export default function SuggestionItem({
   suggestion,
@@ -1048,7 +1048,7 @@ class: module-content
 
 ### Item: Ganti return null dengan Tampilan Usulan
 
-Masih di `SuggestionItem.tsx`. Tombol **Edit** membuka form, **Hapus** menjalankan mutasi.
+Masih di `suggestion-item.tsx`. Tombol **Edit** membuka form, **Hapus** menjalankan mutasi.
 
 ```tsx
 return (
@@ -1090,8 +1090,8 @@ class: module-content
 import { connection } from "next/server";
 import { db } from "@/db";
 import { suggestions } from "@/db/schema";
-import SuggestionForm from "./SuggestionForm";
-import SuggestionItem from "./SuggestionItem";
+import SuggestionForm from "./suggestion-form";
+import SuggestionItem from "./suggestion-item";
 
 export const runtime = "nodejs";
 export default async function SuggestionsPage() {

@@ -5,10 +5,10 @@ import { redirect } from "next/navigation";
 import { getVerifiedSession } from "@/lib/session";
 import { suggestions, suggestionFields } from "@/db/schema";
 
-import SuggestionForm from "./SuggestionForm";
-import SuggestionItem from "./SuggestionItem";
-import LogoutButton from "@/components/LogoutButton";
-import SuggestionHelp from "./SuggestionHelp";
+import SuggestionForm from "./suggestion-form";
+import SuggestionItem from "./suggestion-item";
+import SignOutButton from "./sign-out-button";
+import SuggestionHelp from "./suggestion-help";
 
 export const runtime = "nodejs";
 export default async function SuggestionsPage() {
@@ -27,7 +27,7 @@ export default async function SuggestionsPage() {
         <h1 className="text-2xl font-bold">Usulan Buku Toko Belajar</h1>
         <div className="flex flex-wrap gap-2">
           <SuggestionHelp />
-          <LogoutButton />
+          <SignOutButton />
         </div>
       </header>
       <section className="max-w-xl" aria-label="Tambah usulan buku">

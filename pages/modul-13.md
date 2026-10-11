@@ -197,7 +197,7 @@ class: module-content
 
 ### 5. Pasang Image pada BookDetails
 
-Tambahkan import `Image` dan JSX ini pada `src/app/products/[id]/BookDetails.tsx`, setelah judul buku.
+Tambahkan import `Image` dan JSX ini pada `src/app/products/[id]/book-details.tsx`, setelah judul buku.
 
 ```tsx
 import Image from "next/image";
@@ -259,7 +259,7 @@ class: module-content
 
 ### 6. Siapkan Font Lokal yang Bisa Dibangun Ulang
 
-Unduh [Geist.ttf dan lisensinya](/examples/modul-13/README.md), lalu tempatkan di `src/app/fonts/`.
+Unduh [geist-sans.ttf dan lisensinya](/examples/modul-13/README.md), lalu tempatkan di `src/app/fonts/`.
 
 Di bagian atas `src/app/layout.tsx`:
 
@@ -267,7 +267,7 @@ Di bagian atas `src/app/layout.tsx`:
 import localFont from "next/font/local";
 
 const geist = localFont({
-  src: "./fonts/Geist.ttf",
+  src: "./fonts/geist-sans.ttf",
   display: "swap",
   variable: "--font-geist-sans",
 });

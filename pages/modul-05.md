@@ -27,7 +27,7 @@ class: module-content
 
 ### Dari Klik ke Tampilan yang Berubah
 
-Buat `src/app/products/[id]/BookQuantity.tsx`. Bandingkan kedua versi; gunakan versi akhir.
+Buat `src/app/products/[id]/book-quantity.tsx`. Bandingkan kedua versi; gunakan versi akhir.
 
 ````md magic-move
 ```tsx
@@ -125,8 +125,8 @@ class: module-content
 Perbarui `src/app/products/[id]/page.tsx`. Page tetap Server Component.
 
 ```tsx {1-2|15|all}
-import BookNotice from "@/components/BookNotice";
-import BookQuantity from "./BookQuantity";
+import BookNotice from "@/components/book-notice";
+import BookQuantity from "./book-quantity";
 
 type Props = {
   params: Promise<{ id: string }>;
@@ -211,7 +211,7 @@ class: module-content
 
 ### Nilai Turunan: Hitung dari Data yang Ada
 
-Buat `src/app/products/[id]/BookSummary.tsx`. Komponen ini akan menerima jumlah dari parent.
+Buat `src/app/products/[id]/book-summary.tsx`. Komponen ini akan menerima jumlah dari parent.
 
 ```tsx {1|4-5|all}
 type Props = { quantity: number };
@@ -285,11 +285,11 @@ layout: two-cols
 
 ### Praktik: Hubungkan Tombol dan Ringkasan
 
-Kedua file berada di `src/app/products/[id]/`; gunakan `BookSummary.tsx` yang sudah dibuat.
+Kedua file berada di `src/app/products/[id]/`; gunakan `book-summary.tsx` yang sudah dibuat.
 
 ::left::
 
-#### Buat `BookControls.tsx`
+#### Buat `book-controls.tsx`
 
 ```tsx {1-4|8-9|all}
 type Props = {
@@ -308,13 +308,13 @@ export default function BookControls(props: Props) {
 
 ::right::
 
-#### Perbarui `BookQuantity.tsx`
+#### Perbarui `book-quantity.tsx`
 
 ```tsx {1-4|7-10|13-14|all}
 "use client";
 import { useState } from "react";
-import BookControls from "./BookControls";
-import BookSummary from "./BookSummary";
+import BookControls from "./book-controls";
+import BookSummary from "./book-summary";
 
 export default function BookQuantity() {
   const [quantity, setQuantity] = useState(1);
@@ -510,7 +510,7 @@ class: module-content
 
 ### Lab Terpisah: Timer dengan Cleanup
 
-Buat `src/app/products/[id]/StudyTimer.tsx` untuk mengamati cleanup. Lepas timer dari page setelah percobaan; katalog tidak memerlukan timer permanen. Interval hidup selama komponen dipasang.
+Buat `src/app/products/[id]/study-timer.tsx` untuk mengamati cleanup. Lepas timer dari page setelah percobaan; katalog tidak memerlukan timer permanen. Interval hidup selama komponen dipasang.
 
 ```tsx {5|7-10|12-13|all}
 "use client";
@@ -641,7 +641,7 @@ Waktu **10–15 menit**. Lanjutkan komponen yang sudah dibuat.
 1. Coba tombol `+1`: jumlah dan total harus berubah bersama.
 2. Tambahkan tombol **Reset** di `BookQuantity` yang memanggil `setQuantity(1)`.
 3. Coba handler `addThree` dengan tiga updater. Dari jumlah 1, hasilnya **4** dan total **200000 rupiah**.
-4. Di bagian import page, tambahkan `import StudyTimer from "./StudyTimer";`. Di dalam `main`, tampilkan `<StudyTimer />`.
+4. Di bagian import page, tambahkan `import StudyTimer from "./study-timer";`. Di dalam `main`, tampilkan `<StudyTimer />`.
 
 </v-clicks>
 

@@ -1,8 +1,8 @@
 "use client";
 import { useState } from "react";
-import BookControls from "./BookControls";
-import AddToCart from "@/components/cart/AddToCart";
-import BookSummary from "./BookSummary";
+import BookControls from "./book-controls";
+import AddToCart from "@/components/cart/add-to-cart";
+import BookSummary from "./book-summary";
 
 export default function BookQuantity() {
   const [quantity, setQuantity] = useState(1);

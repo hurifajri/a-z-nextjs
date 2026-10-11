@@ -69,7 +69,7 @@ layout: two-cols
 
 ### Baca Kata Pencarian dari URL
 
-Buat `src/app/products/QueryLabel.tsx`; komponen ini menampilkan isi parameter `q`.
+Buat `src/app/products/query-label.tsx`; komponen ini menampilkan isi parameter `q`.
 
 ::left::
 
@@ -105,7 +105,7 @@ export default function QueryLabel() {
 </BrutalCard>
 
 <!--
-File QueryLabel.tsx bukan rute, sesuai materi colocation Modul 02. Komponen belum dipakai sampai langkah Gabungkan.
+File query-label.tsx bukan rute, sesuai materi colocation Modul 02. Komponen belum dipakai sampai langkah Gabungkan.
 get mengembalikan null jika parameter tidak ada; ?? memberi nilai pengganti. String kosong juga ditampilkan sebagai semua buku melalui || pada JSX.
 Pada query berulang, get membaca nilai pertama. Validasi dan parameter berulang dapat dibahas saat peserta sudah memahami satu nilai.
 Label mengikuti URL saat navigasi, reload, serta Back/Forward. Ini belum menyaring daftar buku.
@@ -118,7 +118,7 @@ class: module-content
 
 ### Navigasi Setelah Form Dikirim
 
-Buat `src/components/SearchForm.tsx`. `useRouter` membantu membuka URL yang disusun dari isian form.
+Buat `src/components/search-form.tsx`. `useRouter` membantu membuka URL yang disusun dari isian form.
 
 ```tsx {1-3|5-7|8-12|14-20|all}
 "use client";
@@ -166,8 +166,8 @@ Perbarui `src/app/products/page.tsx`. Label mengikuti URL; daftar buku belum dis
 ```tsx
 import Link from "next/link";
 import { Suspense } from "react";
-import SearchForm from "@/components/SearchForm";
-import QueryLabel from "./QueryLabel";
+import SearchForm from "@/components/search-form";
+import QueryLabel from "./query-label";
 
 export default function ProductsPage() {
   return (
@@ -334,7 +334,7 @@ class: module-content
 
 ### Siapkan Tempat Menyimpan Cache Query
 
-Jalankan perintah di proyek latihan, lalu buat `src/components/QueryProvider.tsx`.
+Jalankan perintah di proyek latihan, lalu buat `src/components/query-provider.tsx`.
 
 ```bash
 npm install @tanstack/react-query@5
@@ -376,7 +376,7 @@ Perbarui `src/app/layout.tsx` dari Modul 06; letakkan provider query di sekitar 
 #### Tambahkan Import
 
 ```tsx
-import QueryProvider from "@/components/QueryProvider";
+import QueryProvider from "@/components/query-provider";
 ```
 
 #### Ganti Bagian `{children}`
@@ -637,7 +637,7 @@ class: module-content
 
 ### Tampilkan Tautan Buku atau Hasil Kosong
 
-Buat `src/app/products/BookHits.tsx`. Data yang diterima sudah diperiksa oleh helper.
+Buat `src/app/products/book-hits.tsx`. Data yang diterima sudah diperiksa oleh helper.
 
 ```tsx
 import Link from "next/link";
@@ -672,10 +672,10 @@ class: module-content
 
 ### Sediakan Muat Ulang dan Pesan Gagal
 
-Buat `src/app/products/BookResults.tsx`. Data yang masih tersedia tetap dirender.
+Buat `src/app/products/book-results.tsx`. Data yang masih tersedia tetap dirender.
 
 ```tsx
-import BookHits from "./BookHits";
+import BookHits from "./book-hits";
 import type { BookHit } from "@/lib/book-search";
 type Props = {
   books?: BookHit[];
@@ -714,13 +714,13 @@ class: module-content
 
 ### Baca URL, Lalu Jalankan Query
 
-Buat `src/app/products/BookSearch.tsx`. Hook tetap dipanggil sebelum percabangan.
+Buat `src/app/products/book-search.tsx`. Hook tetap dipanggil sebelum percabangan.
 
 ```tsx {all|6-7|8-9|13-18|all}
 "use client";
 import { useSearchParams } from "next/navigation";
 import { useBookSearch } from "@/hooks/use-book-search";
-import BookResults from "./BookResults";
+import BookResults from "./book-results";
 export default function BookSearch() {
   const keyword = (useSearchParams().get("q") ?? "").trim();
   const query = useBookSearch(keyword);
@@ -763,7 +763,7 @@ Perbarui `src/app/products/page.tsx` yang sudah memiliki form dan tautan dari ta
 #### Ganti Import Label
 
 ```tsx
-import BookSearch from "./BookSearch";
+import BookSearch from "./book-search";
 ```
 
 Hapus import `QueryLabel` karena pencarian kini menampilkan kata kunci beserta hasilnya.

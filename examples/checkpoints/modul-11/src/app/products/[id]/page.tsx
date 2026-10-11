@@ -1,5 +1,5 @@
 import { Suspense } from "react";
-import BookDetails from "./BookDetails";
+import BookDetails from "./book-details";
 
 type Props = { params: Promise<{ id: string }> };
 

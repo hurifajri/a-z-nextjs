@@ -1,8 +1,8 @@
 import { connection } from "next/server";
 import { db } from "@/db";
 import { suggestions } from "@/db/schema";
-import SuggestionForm from "./SuggestionForm";
-import SuggestionItem from "./SuggestionItem";
+import SuggestionForm from "./suggestion-form";
+import SuggestionItem from "./suggestion-item";
 
 export const runtime = "nodejs";
 export default async function SuggestionsPage() {

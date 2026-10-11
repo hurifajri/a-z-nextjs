@@ -2,7 +2,7 @@
 import { useState } from "react";
 import type { BookSuggestion } from "@/lib/book-suggestion-schema";
 import { useDeleteSuggestion } from "@/hooks/use-delete-suggestion";
-import SuggestionForm from "./SuggestionForm";
+import SuggestionForm from "./suggestion-form";
 
 export default function SuggestionItem({
   suggestion,

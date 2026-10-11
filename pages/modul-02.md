@@ -349,7 +349,7 @@ Colocation berarti menyimpan file yang berkaitan di tempat yang berdekatan.
 src/app/products/
 ├── page.tsx             → /products
 ├── layout.tsx
-├── ProductCard.tsx      → komponen pendukung
+├── product-card.tsx     → komponen pendukung
 └── format-price.ts      → fungsi pendukung
 ```
 
@@ -358,14 +358,14 @@ src/app/products/
 ├── page.tsx             → /products
 ├── layout.tsx
 ├── _components/
-│   └── ProductCard.tsx
+│   └── product-card.tsx
 └── _lib/
     └── format-price.ts
 ```
 ````
 
 <BrutalCard v-click class="mt-3">
-  <code>ProductCard.tsx</code> tidak otomatis menjadi halaman. Awalan <code>_</code> mengecualikan folder dan turunannya dari routing; ini bukan pengaturan hak akses.
+  <code>product-card.tsx</code> tidak otomatis menjadi halaman. Awalan <code>_</code> mengecualikan folder dan turunannya dari routing; ini bukan pengaturan hak akses.
 </BrutalCard>
 
 <!--
@@ -453,23 +453,59 @@ Nama file khusus ditentukan framework; nama file pendukung dapat disepakati bers
 
 <v-clicks>
 
-- File komponen: **ProductCard.tsx**. Nama komponennya **ProductCard**.
-- File fungsi pendukung: **format-price.ts**. Nama fungsi **formatPrice**.
-- Folder biasa memakai huruf kecil; pisahkan kata dengan tanda hubung: **new-arrivals**.
+- File buatan sendiri memakai **kebab-case**: **product-card.tsx**, **format-price.ts**.
+- Nama komponen **ProductCard** memakai **PascalCase**; fungsi **formatPrice** memakai **camelCase**.
+- Folder biasa juga kebab-case: **new-arrivals**. Cocokkan huruf pada path import dengan nama file.
 
 </v-clicks>
 
 ::bottom::
 
 <BrutalCard v-click class="mt-3 text-xs">
-  Tim lain boleh memakai <code>product-card.tsx</code>. Saat digunakan di JSX, nama komponen tetap diawali huruf besar: <code>&lt;ProductCard /&gt;</code>.
+  Kebab-case adalah kesepakatan kelas. Tim lain dapat memilih PascalCase untuk file komponen. Di JSX, nama komponen tetap diawali huruf besar: <code>&lt;ProductCard /&gt;</code>.
 </BrutalCard>
 
 <!--
 Tekankan bahwa gaya nama file bukan syarat universal Next.js. Hindari kalimat “tidak ada aturan mutlak” yang dapat membuat peserta mengira Page.tsx bisa menggantikan page.tsx.
-Nama fungsi dan variabel biasa menggunakan camelCase dalam contoh kelas; tidak perlu menghafal kategori penamaan tambahan sekarang.
+README.md, nama file konfigurasi, serta file hasil generator mengikuti konvensi tool masing-masing. Jangan mengganti nama file khusus Next.js atau metadata migrasi hanya untuk menyeragamkan gaya. File komponen, hook, helper, dan aset yang ditulis untuk latihan memakai kebab-case.
+Perhatikan kapitalisasi import: perbedaan yang lolos pada filesystem tertentu dapat gagal di Linux. Nama file dan nama ekspor adalah dua hal berbeda.
 Sumber konvensi framework: https://nextjs.org/docs/app/api-reference/file-conventions/page
 Sumber komponen React: https://react.dev/learn/your-first-component
+-->
+
+---
+class: module-content
+---
+
+### Pilih Nama Sesuai Isi dan Tugasnya
+
+Gunakan pola berikut secara konsisten dalam kode latihan.
+
+| Yang dinamai                | Pola                           | Contoh                      |
+| :-------------------------- | :----------------------------- | :-------------------------- |
+| Komponen / tipe / class     | PascalCase                     | `ProductCard`, `Suggestion` |
+| Fungsi biasa                | camelCase, jelaskan tindakan   | `getBook`, `formatPrice`    |
+| Variabel                    | camelCase, jelaskan isi        | `bookTitle`, `totalItems`   |
+| Nilai boolean               | Awalan `is`, `has`, atau `can` | `isPending`, `hasSession`   |
+| Custom hook React           | `use` diikuti huruf besar      | `useBookSearch`             |
+| Konstanta konfigurasi tetap | UPPER_SNAKE_CASE               | `MAX_TITLE_LENGTH`          |
+
+```tsx
+import ProductCard from "./product-card";
+const bookTitle = "Belajar React";
+```
+
+<BrutalCard v-click class="mt-3 text-sm">
+  <code>const</code> tidak membuat semua nama harus kapital. Pilih nama yang jelas; <code>totalItems</code> lebih mudah dipahami daripada <code>x</code>. Tanda hubung dipakai pada nama file, bukan identifier JavaScript.
+</BrutalCard>
+
+<!--
+Ini konvensi yang dipilih kelas, bukan satu standar universal JavaScript. Nama komponen berawalan kapital dan aturan penamaan hook punya makna khusus bagi React. Kebab-case tidak valid sebagai satu identifier karena tanda - dibaca sebagai operator pengurangan.
+Jangan memperkenalkan implementasi hook atau class baru di sini; tabel hanya acuan penamaan saat istilah tersebut muncul. Hook dipraktikkan pada modul berikutnya. Nama callback yang umum seperti onClick atau API framework mengikuti kontrak asalnya.
+Konstanta lokal tetap boleh camelCase. Schema Valibot pada materi selanjutnya memakai PascalCase dengan akhiran Schema agar mudah dikenali; jangan mengubah API atau nama field dari layanan eksternal demi gaya lokal.
+Sumber komponen: https://react.dev/learn/your-first-component
+Sumber hook: https://react.dev/learn/reusing-logic-with-custom-hooks#hook-names-always-start-with-use
+Sumber identifier dan const: https://developer.mozilla.org/en-US/docs/Web/JavaScript/Guide/Grammar_and_types
 -->
 
 ---
@@ -488,7 +524,7 @@ Letakkan file dekat pemakainya; pindahkan ke tempat bersama ketika mulai dipakai
 src/app/products/
 ├── page.tsx
 ├── layout.tsx
-├── ProductCard.tsx
+├── product-card.tsx
 └── promo/
     └── page.tsx
 ```
@@ -507,7 +543,7 @@ src/
 │       ├── page.tsx
 │       └── layout.tsx
 └── components/
-    └── ProductCard.tsx
+    └── product-card.tsx
 ```
 
 Komponen bersama boleh berada di **src/components/**. Perbarui import ketika memindahkannya.
@@ -518,7 +554,7 @@ Komponen bersama boleh berada di **src/components/**. Perbarui import ketika mem
 <!--
 Klik 1 dan 2 untuk dua kebutuhan berbeda. Diagram menampilkan sebagian file; promo tetap ada pada proyek.
 Ini pedoman kerja untuk kelas, bukan klaim bahwa struktur per fitur selalu lebih scalable daripada struktur per tipe. Next.js tidak mewajibkan satu pola organisasi.
-Alias @/* dari Modul 01 menunjuk ke src/*. Jika file dipindah ke src/components, contoh import-nya: import ProductCard from "@/components/ProductCard".
+Alias @/* dari Modul 01 menunjuk ke src/*. Jika file dipindah ke src/components, contoh import-nya: import ProductCard from "@/components/product-card".
 Belum perlu index.ts, barrel exports, atau evaluasi bundling untuk latihan ini.
 Sumber: https://nextjs.org/docs/app/getting-started/project-structure#organizing-your-project
 -->
@@ -547,7 +583,7 @@ Gunakan pola page yang sudah dicoba. Tambahkan `/about` dan `/cart`, lalu periks
 Beri waktu 5–8 menit. Peserta membuat src/app/about/page.tsx dan src/app/cart/page.tsx, masing-masing dengan export default komponen React, main, judul, dan teks sederhana.
 Gunakan bilah alamat; Link dan tombol navigasi menyusul di Modul 04. Keranjang masih berupa tampilan, belum ada state atau transaksi.
 Minta peserta menjelaskan letak dua page baru sebelum mengetik. Jika mencoba route group, cukup products yang dipindah; URL pemeriksaan tetap sama.
-Pertanyaan lanjutan: apakah src/app/products/ProductCard.tsx dapat dibuka sebagai /products/ProductCard? Tidak, file pendukung tidak otomatis menjadi halaman.
+Pertanyaan lanjutan: apakah src/app/products/product-card.tsx dapat dibuka sebagai /products/product-card? Tidak, file pendukung tidak otomatis menjadi halaman.
 Hasil latihan lima URL menjadi titik awal Modul 03. Tidak perlu menambahkan database atau folder untuk tiap buku.
 -->
 

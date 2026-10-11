@@ -1,13 +1,13 @@
 import type { ReactNode } from "react";
 import "./globals.css";
-import QueryProvider from "@/components/QueryProvider";
-import Navbar from "@/components/Navbar";
-import CartProvider from "@/components/cart/CartProvider";
+import QueryProvider from "@/components/query-provider";
+import Navbar from "@/components/nav-bar";
+import CartProvider from "@/components/cart/cart-provider";
 import type { Metadata } from "next";
 import localFont from "next/font/local";
 
 const geist = localFont({
-  src: "./fonts/Geist.ttf",
+  src: "./fonts/geist-sans.ttf",
   display: "swap",
   variable: "--font-geist-sans",
 });

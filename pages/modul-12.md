@@ -383,7 +383,7 @@ class: module-content
 
 ### 2. Pakai Button pada Form yang Sudah Ada
 
-Di `src/app/suggestions/SuggestionForm.tsx`, **tambahkan import**:
+Di `src/app/suggestions/suggestion-form.tsx`, **tambahkan import**:
 
 ```tsx
 import { Button } from "@/components/ui/button";
@@ -426,7 +426,7 @@ class: module-content
 
 ### 3. Siapkan Komponen untuk Kartu Usulan
 
-Di `src/app/suggestions/SuggestionItem.tsx`, **tambahkan import**:
+Di `src/app/suggestions/suggestion-item.tsx`, **tambahkan import**:
 
 ```tsx
 import { Button } from "@/components/ui/button";
@@ -460,7 +460,7 @@ class: module-content
 
 ### Kartu: Ganti Return Terakhir
 
-Masih di `SuggestionItem.tsx`. Isi footer dilengkapi pada slide berikut.
+Masih di `suggestion-item.tsx`. Isi footer dilengkapi pada slide berikut.
 
 ```tsx {1-8|9-13|14-16|all}
 return (
@@ -535,7 +535,7 @@ class: module-content
 
 ### 4. Buat Dialog Panduan Usulan
 
-Buat `src/app/suggestions/SuggestionHelp.tsx`.
+Buat `src/app/suggestions/suggestion-help.tsx`.
 
 ```tsx
 "use client";
@@ -570,7 +570,7 @@ class: module-content
 
 ### Dialog: Isi, Pemicu, dan Tombol Tutup
 
-Di `SuggestionHelp.tsx`, **ganti return null** dengan:
+Di `suggestion-help.tsx`, **ganti return null** dengan:
 
 ```tsx
 return (
@@ -621,9 +621,9 @@ Di `src/app/suggestions/page.tsx`, gunakan import dan query berikut.
 import { connection } from "next/server";
 import { db } from "@/db";
 import { suggestions } from "@/db/schema";
-import SuggestionForm from "./SuggestionForm";
-import SuggestionItem from "./SuggestionItem";
-import SuggestionHelp from "./SuggestionHelp";
+import SuggestionForm from "./suggestion-form";
+import SuggestionItem from "./suggestion-item";
+import SuggestionHelp from "./suggestion-help";
 
 export const runtime = "nodejs";
 export default async function SuggestionsPage() {

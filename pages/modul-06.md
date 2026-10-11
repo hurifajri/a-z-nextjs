@@ -152,7 +152,7 @@ class: module-content
 
 ### Praktik: Simpan State di Provider
 
-Buat `src/components/cart/CartProvider.tsx`.
+Buat `src/components/cart/cart-provider.tsx`.
 
 ```tsx {1-5|8-12|14-18|all}
 "use client";
@@ -194,7 +194,7 @@ class: module-content
 Di `src/app/layout.tsx`, tambahkan import:
 
 ```tsx
-import CartProvider from "@/components/cart/CartProvider";
+import CartProvider from "@/components/cart/cart-provider";
 ```
 
 Di dalam `body`, bungkus header dan `children` yang sudah ada:
@@ -232,7 +232,7 @@ class: module-content
 
 ### Praktik: Baca Total melalui Context
 
-Buat `src/components/cart/CartLink.tsx`. Bandingkan props dengan Context; gunakan versi akhir.
+Buat `src/components/cart/cart-link.tsx`. Bandingkan props dengan Context; gunakan versi akhir.
 
 ````md magic-move
 ```tsx
@@ -273,10 +273,10 @@ class: module-content
 
 ### Praktik: Hubungkan ke Navbar
 
-Di `src/components/Navbar.tsx`, tambahkan import ini:
+Di `src/components/nav-bar.tsx`, tambahkan import ini:
 
 ```tsx
-import CartLink from "@/components/cart/CartLink";
+import CartLink from "@/components/cart/cart-link";
 ```
 
 Ganti tautan keranjang lama dengan `CartLink`:
@@ -317,7 +317,7 @@ Jumlah lokal dari Modul 05 ditambahkan ke total bersama ketika tombol diklik.
 
 ::left::
 
-#### Buat `AddToCart.tsx`
+#### Buat `add-to-cart.tsx`
 
 Lokasi: `src/components/cart/`.
 
@@ -342,14 +342,14 @@ export default function AddToCart(props: Props) {
 
 ::right::
 
-#### Edit `BookQuantity.tsx`
+#### Edit `book-quantity.tsx`
 
 Lokasi: `src/app/products/[id]/`.
 
 Tambahkan import:
 
 ```tsx
-import AddToCart from "@/components/cart/AddToCart";
+import AddToCart from "@/components/cart/add-to-cart";
 ```
 
 Di dalam `section`, setelah `BookSummary`, tambahkan:
@@ -385,7 +385,7 @@ Ganti isi halaman `/cart` dari Modul 02 dengan ringkasan state bersama.
 
 ::left::
 
-#### `CartSummary.tsx`
+#### `cart-summary.tsx`
 
 Buat di `src/components/cart/`.
 
@@ -411,7 +411,7 @@ export default function CartSummary() {
 #### `src/app/cart/page.tsx`
 
 ```tsx
-import CartSummary from "@/components/cart/CartSummary";
+import CartSummary from "@/components/cart/cart-summary";
 
 export default function CartPage() {
   return (

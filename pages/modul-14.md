@@ -920,7 +920,7 @@ zoom: 0.9
 
 ### 16. Tambahkan Tombol Logout
 
-Buat **`src/app/suggestions/SignOutButton.tsx`**. Slide berikut melengkapi `return`.
+Buat **`src/app/suggestions/sign-out-button.tsx`**. Slide berikut melengkapi `return`.
 
 ```tsx
 "use client";
@@ -981,7 +981,7 @@ return (
 );
 ```
 
-Di `suggestions/page.tsx`, import `SignOutButton` dari `"./SignOutButton"`, lalu ganti `<SuggestionHelp />` di header dengan:
+Di `suggestions/page.tsx`, import `SignOutButton` dari `"./sign-out-button"`, lalu ganti `<SuggestionHelp />` di header dengan:
 
 ```tsx
 <div className="flex flex-wrap items-start gap-2">
@@ -1051,7 +1051,7 @@ catch (error) {
 }
 ```
 
-Pada `SuggestionItem.tsx`, ganti isi pesan error penghapusan:
+Pada `suggestion-item.tsx`, ganti isi pesan error penghapusan:
 
 ```tsx
 <p role="alert">

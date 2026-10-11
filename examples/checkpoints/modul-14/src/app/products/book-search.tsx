@@ -1,7 +1,7 @@
 "use client";
 import { useSearchParams } from "next/navigation";
 import { useBookSearch } from "@/hooks/use-book-search";
-import BookResults from "./BookResults";
+import BookResults from "./book-results";
 export default function BookSearch() {
   const keyword = (useSearchParams().get("q") ?? "").trim();
   const query = useBookSearch(keyword);

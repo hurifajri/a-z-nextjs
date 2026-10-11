@@ -2,6 +2,12 @@
 
 Mulai dari satu proyek pada Modul 01 dan lanjutkan sampai Modul 16. Kelas ini untuk pemula Next.js dengan bekal JavaScript, React, serta TypeScript dasar.
 
+## Kesepakatan penamaan
+
+File dan folder buatan sendiri memakai kebab-case, termasuk `book-notice.tsx`, `use-book-search.ts`, dan `book-suggestion-schema.ts`. Nama ekspor mengikuti perannya: komponen/type/class PascalCase (`BookNotice`), fungsi/variabel camelCase (`getBook`, `totalItems`), hook berawalan `use` (`useBookSearch`), dan konstanta konfigurasi tetap UPPER_SNAKE_CASE (`MAX_TITLE_LENGTH`). Boolean sebaiknya jelas, misalnya `isPending` atau `hasSession`.
+
+Nama khusus seperti `page.tsx`, `layout.tsx`, `next.config.ts`, `README.md`, dan file migrasi hasil generator mengikuti konvensi framework/tool. Samakan kapitalisasi path import dengan file. Kebab-case untuk file adalah pilihan kelas; proyek lain dapat mempunyai kesepakatan berbeda. Lihat Modul 02 untuk contohnya.
+
 ## Jalur inti
 
 | Modul | Fokus dan hasil                                                 |

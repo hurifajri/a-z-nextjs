@@ -1,4 +1,4 @@
-import PreviewForm from "./PreviewForm";
+import PreviewForm from "./preview-form";
 export default function ActionPreviewPage() {
   return (
     <main className="mx-auto max-w-xl p-8">
