@@ -2,9 +2,11 @@
 
 Prasyarat: salinan checkpoint 11. CRUD utama tetap memakai Route Handlers. Form ini hanya memvalidasi input; tidak membaca atau menulis data akun.
 
+Siapkan aplikasi dengan `npm ci`, salin `.env.example` menjadi `.env`, lalu jalankan `npm run db:migrate` dari folder checkpoint. [Panduan menjalankan lab](../README.md) menyediakan contoh perintah lengkap dari repository presentasi.
+
 1. Buat folder `src/app/action-preview/` di salinan aplikasi.
 2. Salin [actions.ts](./actions.ts), [preview-form.tsx](./preview-form.tsx), dan [page.tsx](./page.tsx) ke folder itu.
-3. Jalankan aplikasi dan buka `/action-preview`.
+3. Jalankan `npm run dev` dari folder aplikasi, lalu buka `http://localhost:3000/action-preview`.
 4. Coba judul kosong, alasan pendek, lalu input valid dengan spasi di tepi. Server menolak input salah dan memangkas input valid. Input dipertahankan agar mudah diperbaiki.
 5. Di Network, gunakan throttling untuk mengamati pending dan tombol nonaktif. Jalankan build, lalu coba lagi pada `npm run start`.
 

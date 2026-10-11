@@ -53,3 +53,10 @@ Perubahan konten diverifikasi melalui parser, build, dan browser; tidak menambah
 - Review terpisah tidak menemukan masalah kritis atau penting. Tiga rujukan lama pada Modul 11/12/14 telah diperbaiki.
 
 Hosting eksternal tidak dideploy atau diuji. Batas akun untuk aplikasi latihan tetap dijelaskan pada Modul 14 dan README checkpoint.
+
+## Koreksi instalasi mandiri — 11 Oktober 2026
+
+- Laporan `next: command not found` mengungkap lockfile checkpoint 06/08/11 berisi tautan ke `../modul-14/node_modules`. Pemeriksaan sebelumnya memakai dependensi bersama sehingga belum membuktikan instalasi mandiri dari unduhan.
+- Ketiga lockfile dibuat ulang di folder bersih yang hanya berisi manifest masing-masing. ZIP dan checksum dibentuk ulang; packager kini menolak dependensi lokal sebelum menerbitkan arsip. Dua test regresi lulus, termasuk penolakan tautan antarmodul.
+- `npm ci` Modul 06 berhasil pada folder pengguna; server memberi HTTP 200 untuk halaman utama, katalog, dan keranjang. ZIP 08/11 diekstrak dan dipasang masing-masing tanpa folder Modul 14. Katalog/detail 08 dan halaman/API usulan 11 memberi HTTP 200; migrasi SQLite 11 berhasil. Pemeriksaan 08/11 memakai fixture buku eksplisit.
+- Tiga berkas lab Server Action disalin ke checkpoint 11 hasil ekstraksi; `/action-preview` memberi HTTP 200. Panduan baru `public/examples/pengayaan/README.md` menjelaskan perbedaan praktik slide dan lab pilihan, titik mulai, persiapan, serta URL tiap lab.

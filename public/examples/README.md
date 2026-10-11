@@ -50,6 +50,8 @@ Setiap ZIP berisi source, README, dan lockfile. Ekstrak ke folder baru, baca REA
 
 ## Pengayaan
 
+Mulai dari [panduan menjalankan lab pengayaan](./pengayaan/README.md) untuk memilih checkpoint, menyiapkan salinan aplikasi, dan mengetahui URL hasilnya. Folder pengayaan berisi panduan/berkas tambahan; jalankan npm dari folder aplikasi Next.js, bukan dari folder panduan.
+
 - [Zustand setelah Context](./pengayaan/zustand.md).
 - [Invalidasi dan model cache lanjutan](./pengayaan/cache-lanjutan.md).
 - [Server Action setelah CRUD](./pengayaan/server-action/README.md).

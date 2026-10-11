@@ -2,6 +2,8 @@
 
 Prasyarat: CRUD Modul 11 berjalan. Lab opsional; jalur inti memakai kontrak ringkas Modul 10. API tanpa akun hanya untuk latihan lokal. Setelah Modul 14, perbarui kontrak menjadi versi berakun.
 
+Mulai dari salinan [checkpoint 11](../checkpoints/modul-11.zip). Jalankan `npm ci`, salin `.env.example` menjadi `.env`, lalu jalankan `npm run db:migrate` dari folder aplikasi. Lihat [panduan menjalankan lab](./README.md) untuk langkah persiapan dan lokasi folder.
+
 ### Dari API yang Berjalan ke Kontrak yang Bisa Dibaca
 
 Teman satu tim ingin memakai fitur **Usulan Buku Toko Belajar**.
@@ -87,7 +89,7 @@ Content-Type: application/json
 
 ### Siapkan Dokumen Pendamping
 
-Unduh [openapi.yaml untuk Toko Belajar](/examples/contracts/suggestions.openapi.yaml), lalu simpan sebagai **`public/openapi.yaml` di proyek Next.js**.
+Unduh [openapi.yaml untuk Toko Belajar](../contracts/suggestions.openapi.yaml), lalu simpan sebagai **`public/openapi.yaml` di proyek Next.js**.
 
 ```text
 proyek-toko-belajar/
@@ -101,7 +103,7 @@ proyek-toko-belajar/
 
 - Jalankan aplikasi, lalu buka `http://localhost:3000/openapi.yaml`.
 - File ini mendokumentasikan API modul 11–12 yang belum memakai akun.
-- Slide berikut membaca potongan dokumen; berkas unduhan sudah lengkap.
+- Bagian berikut membaca potongan dokumen; berkas unduhan sudah lengkap.
 
 ### Baca Kepala Dokumen OpenAPI
 
@@ -195,8 +197,8 @@ cp node_modules/swagger-ui-dist/swagger-ui-bundle.js.LICENSE.txt public/swagger-
 ```
 
 - Aset lokal membuat browser memuat UI dan API dari origin yang sama.
-- Buat `public/api-docs.html` pada slide berikut.
-- Buka melalui server Next.js; URL latihannya **`/api-docs.html`**.
+- Salin [halaman pembaca dokumentasi](../contracts/api-docs.html) menjadi `public/api-docs.html`, atau gunakan kode lengkap pada bagian berikut.
+- Jalankan `npm run dev` dari folder aplikasi Next.js, lalu buka **`http://localhost:3000/api-docs.html`**.
 
 ### Buat Halaman Pembaca Dokumentasi
 
@@ -347,7 +349,7 @@ Dokumentasi resmi diperiksa pada **9 Oktober 2026**.
 - [OpenAPI dan keluarga alat Swagger](https://swagger.io/docs/specification/v3_0/about/)
 - [Instalasi Swagger UI](https://swagger.io/docs/open-source-tools/swagger-ui/usage/installation/)
 - [Konfigurasi Swagger UI](https://swagger.io/docs/open-source-tools/swagger-ui/usage/configuration/)
-- [Dokumen latihan lengkap](/examples/contracts/suggestions.openapi.yaml)
+- [Dokumen latihan lengkap](../contracts/suggestions.openapi.yaml)
 
 #### Cocokkan dengan Aplikasi
 

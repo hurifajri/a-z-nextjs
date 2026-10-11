@@ -2,6 +2,8 @@
 
 Lab pilihan; tidak menjadi prasyarat modul berikutnya. Kerjakan pada salinan checkpoint agar jalur inti tetap tersedia.
 
+Mulai dari [checkpoint 06](../checkpoints/modul-06.zip), ekstrak ke folder baru, lalu jalankan `npm ci` di folder aplikasi. Lihat [panduan menjalankan lab](./README.md) untuk membedakan folder panduan dan aplikasi.
+
 ### Alternatif: Store dengan Zustand
 
 Zustand menyediakan tempat state dan tindakan, lalu komponen memilih nilai yang ingin diikuti melalui **selector**.
@@ -126,6 +128,10 @@ Ganti juga baris hook **di dalam fungsi** kedua komponen berikut:
 | ------------------ | ----------------------------------------------------------------------------------------------- |
 | `add-to-cart.tsx`  | `const addItems = useCart((s) => s.addItems);`                                                  |
 | `cart-summary.tsx` | `const totalItems = useCart((s) => s.totalItems);`<br/>`const reset = useCart((s) => s.reset);` |
+
+### Jalankan dan Periksa Hasilnya
+
+Setelah seluruh perubahan selesai, jalankan `npm run dev` dari folder aplikasi. Buka `http://localhost:3000/products`, pilih buku, lalu tambahkan beberapa item. Total pada Navbar dan `/cart` harus sama; tombol reset mengosongkan total. Reload penuh tetap mengembalikan total ke nol karena lab ini belum menyimpan state ke storage.
 
 ### Apa yang Berubah saat Nilai Diperbarui?
 

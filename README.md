@@ -17,6 +17,8 @@ Buka `http://localhost:3030`. Urutan materi ada di [slides.md](./slides.md); isi
 
 Di presentasi, bahan tersedia pada `/examples/README.md`. Pada GitHub, gunakan tautan relatif di dokumen ini; ZIP ada di `public/examples/checkpoints/`.
 
+Untuk latihan pilihan, baca [cara menjalankan lab pengayaan](./public/examples/pengayaan/README.md). Folder lab berisi panduan dan berkas tambahan yang diterapkan pada salinan checkpoint; npm dijalankan dari folder aplikasi tersebut.
+
 ## Menjaga kesinambungan
 
 - Bahasa terlihat berbicara langsung kepada peserta. Arahan presenter berada dalam komentar HTML.
@@ -27,5 +29,7 @@ Di presentasi, bahan tersedia pada `/examples/README.md`. Pada GitHub, gunakan t
 - Perubahan contoh perlu dicocokkan dengan checkpoint, kontrak, serta modul yang menggunakannya.
 
 Setelah memperbarui source checkpoint, jalankan `python3 scripts/package-checkpoints.py` untuk membentuk ZIP unduhan. Script hanya memasukkan source/config/aset; database, secret, build, dan node_modules dikecualikan.
+
+Setiap checkpoint harus dapat dipasang sendiri dengan `npm ci`. Buat lockfile dari dependensi registry tanpa tautan ke folder modul lain; packager menolak tautan lokal tersebut sebelum membuat ZIP. Jalankan `python3 scripts/test-checkpoint-packaging.py` untuk memeriksa pengaman ini.
 
 Baseline contoh: Next.js 16.3.7, React 19.3.0, Node 24 LTS. Versi ini adalah acuan kelas, bukan klaim terbaru. Simpan lockfile dan periksa dukungan/advisory sebelum rilis untuk pengguna nyata.

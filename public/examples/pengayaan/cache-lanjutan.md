@@ -2,6 +2,8 @@
 
 Lab pilihan; tidak menjadi prasyarat modul berikutnya. Kerjakan pada salinan checkpoint agar jalur inti tetap tersedia.
 
+Jika memakai [checkpoint 08](../checkpoints/modul-08.zip), ekstrak ke folder baru, jalankan `npm ci`, lalu salin `.env.example` menjadi `.env` di folder aplikasi. [Panduan menjalankan lab](./README.md) menjelaskan persiapan bersama. Bagian eksperimen berikut dapat langsung dipraktikkan; bagian invalidasi, Cache Components, dan PPR menjadi bacaan lanjutan yang memerlukan penyesuaian proyek.
+
 ### Eksperimen: Render Saat Request
 
 Mulai dari hasil Modul 07 atau salinan checkpoint 08. Pertahankan `cacheComponents: false` dan `partialPrefetching: false`.
@@ -14,7 +16,7 @@ const res = await fetch(url, { cache: "no-store" });
 ```
 
 3. Hapus sementara ekspor `generateStaticParams` dari `src/app/products/[id]/page.tsx`.
-4. Hentikan server, jalankan `npm run build`, lalu `npm run start`. Periksa bahwa route detail kini dirender saat request. Buka URL detail langsung, lalu reload penuh.
+4. Hentikan server, jalankan `npm run build`, lalu `npm run start` dari folder aplikasi. Periksa bahwa route detail kini dirender saat request. Buka `http://localhost:3000/products/OL20915214W` langsung, lalu reload penuh.
 5. Bandingkan dengan hasil build jalur inti. Judul yang tetap sama tidak membuktikan cache masih aktif: sumber dapat mengirim nilai yang sama.
 6. Setelah selesai, kembalikan `next: { revalidate: 60 }` dan `generateStaticParams`, lalu build ulang sebelum melanjutkan modul.
 

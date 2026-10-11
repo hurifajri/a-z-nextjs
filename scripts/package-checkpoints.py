@@ -6,6 +6,26 @@ from zipfile import ZipFile, ZipInfo, ZIP_DEFLATED
 
 repo = Path(__file__).resolve().parents[1]
 target = repo / "public/examples/checkpoints"
+
+# Each download must install independently, even when no other checkpoint exists.
+# Validate every lockfile before replacing any published archive.
+for number in (6, 8, 11, 14):
+    name = f"modul-{number:02}"
+    source = repo / "examples/checkpoints" / name
+    lock = json.loads((source / "package-lock.json").read_text())
+    for location, package in lock["packages"].items():
+        resolved = package.get("resolved", "")
+        outside = location and (
+            not location.startswith("node_modules/") or ".." in Path(location).parts
+        )
+        if outside or package.get("link") or (
+            resolved and not resolved.startswith(("https://", "http://"))
+        ):
+            raise SystemExit(
+                f"{name}: package-lock.json contains a local dependency at {location}. "
+                "Regenerate the lockfile in a clean directory without node_modules."
+            )
+
 target.mkdir(parents=True, exist_ok=True)
 excluded_dirs = {"node_modules", ".next", ".git", ".e2e", "test-results", "playwright-report"}
 manifest = {}
